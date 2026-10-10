@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIMPEL BBLKL</title>
 
+    {{-- FAVICON RESISTENSI (LOGO KEMENKES) --}}
+    <link rel="icon" type="image/png" href="{{ asset('kemenkes.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('kemenkes.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('kemenkes.png') }}">
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,3 +1,8 @@
+{{-- FAVICON RESISTENSI (LOGO KEMENKES) --}}
+<link rel="icon" type="image/png" href="{{ asset('kemenkes.png') }}">
+<link rel="shortcut icon" type="image/png" href="{{ asset('kemenkes.png') }}">
+<link rel="apple-touch-icon" href="{{ asset('kemenkes.png') }}">
+
 {{-- SCRIPT INISIALISASI TEMA ANTI-FLICKER (ANTI-FOUC) & STYLES GLOBAL DARK MODE --}}
 <script>
     (function() {

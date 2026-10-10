@@ -537,17 +537,33 @@
             background-color: #334155 !important;
             color: #ffffff !important;
         }
-        html.dark button[title="Buka/Tutup Filter"] {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
-            color: #cbd5e1 !important;
+        html.dark button[onclick="resetMapView()"] {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+            border-color: rgba(59, 130, 246, 0.45) !important;
+            color: #60a5fa !important;
         }
-        html.dark button[title="Buka/Tutup Filter"]:hover {
-            background-color: #334155 !important;
+        html.dark button[onclick="resetMapView()"]:hover {
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        html.dark button[title="Buka/Tutup Filter"] {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+            border-color: rgba(59, 130, 246, 0.45) !important;
+            color: #60a5fa !important;
+        }
+        html.dark button[title="Buka/Tutup Filter"]:hover,
+        html.dark .group:hover button[title="Buka/Tutup Filter"] {
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
             color: #ffffff !important;
         }
         html.dark #filterCollapseIcon {
-            color: #cbd5e1 !important;
+            color: #60a5fa !important;
+        }
+        html.dark button[title="Buka/Tutup Filter"]:hover #filterCollapseIcon,
+        html.dark .group:hover #filterCollapseIcon {
+            color: #ffffff !important;
         }
 
         /* Filter Toolbar Peta */
@@ -915,7 +931,7 @@
             {{-- ================================================= --}}
             <div class="mt-4 rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
                 {{-- Header Filter dengan Tombol Collapse --}}
-                <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-white select-none cursor-pointer" onclick="toggleFilterPanel()">
+                <div class="group flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-white hover:bg-slate-50/70 select-none cursor-pointer transition" onclick="toggleFilterPanel()">
                     <div class="flex items-center gap-2.5">
                         <span class="text-xs font-bold text-slate-800 tracking-wider uppercase">
                             FILTER
@@ -924,9 +940,9 @@
                             Nasional • Provinsi • Kabupaten
                         </span>
                     </div>
-                    <button type="button" class="h-6 w-6 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition" title="Buka/Tutup Filter">
-                        <svg id="filterCollapseIcon" class="h-3.5 w-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                    <button type="button" class="h-7 w-7 rounded-full border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 flex items-center justify-center shadow-2xs transition-all cursor-pointer" title="Buka/Tutup Filter">
+                        <svg id="filterCollapseIcon" class="h-4 w-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
                         </svg>
                     </button>
                 </div>
@@ -1073,13 +1089,19 @@
                         </select>
                     </div>
 
-                    {{-- TOMBOL RESET --}}
-                    <div class="shrink-0">
-                        <button type="button" onclick="resetAllFilters()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:text-slate-800 px-4 py-2 text-xs font-semibold text-slate-600 transition shadow-2xs cursor-pointer whitespace-nowrap" title="Reset Semua Filter">
+                    {{-- TOMBOL RESET FILTER & RESET PETA --}}
+                    <div class="shrink-0 flex items-center gap-2">
+                        <button type="button" onclick="resetAllFilters()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:text-slate-800 px-3 py-2 text-xs font-semibold text-slate-600 transition shadow-2xs cursor-pointer whitespace-nowrap" title="Reset Semua Filter">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
-                            <span>Reset</span>
+                            <span>Reset Filter</span>
+                        </button>
+                        <button type="button" onclick="resetMapView()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 px-3 py-2 text-xs font-semibold text-blue-700 transition shadow-2xs cursor-pointer whitespace-nowrap group" title="Kembalikan Tampilan Peta ke Posisi Awal (Seluruh Indonesia)">
+                            <svg class="h-3.5 w-3.5 text-blue-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            <span>Reset Peta</span>
                         </button>
                     </div>
 
@@ -1285,6 +1307,31 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
             }).addTo(map);
+
+            // Kontrol Tombol Reset View Peta di Leaflet (di bawah tombol zoom)
+            const ResetViewControl = L.Control.extend({
+                options: { position: 'topleft' },
+                onAdd: function() {
+                    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                    const btn = L.DomUtil.create('a', 'leaflet-control-reset-view', container);
+                    btn.href = '#';
+                    btn.title = 'Reset Tampilan Peta (Kembali ke Semula)';
+                    btn.role = 'button';
+                    btn.setAttribute('aria-label', 'Reset Tampilan Peta');
+                    btn.style.display = 'flex';
+                    btn.style.alignItems = 'center';
+                    btn.style.justifyContent = 'center';
+                    btn.style.cursor = 'pointer';
+                    btn.innerHTML = `<svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>`;
+                    L.DomEvent.disableClickPropagation(btn);
+                    L.DomEvent.on(btn, 'click', function(e) {
+                        L.DomEvent.preventDefault(e);
+                        window.resetMapView();
+                    });
+                    return container;
+                }
+            });
+            map.addControl(new ResetViewControl());
 
             window.updateMapTheme = function(isDark) {
                 // Mode gelap peta dikendalikan via CSS filter pada leaflet-tile-pane tanpa butuh API key eksternal
@@ -2640,7 +2687,24 @@
                     desaMarkerLayer.clearLayers();
                 }
                 renderDashboard(false);
-                map.flyTo([-2.5, 118], 5, { duration: 1.2 });
+                window.resetMapView();
+            };
+
+            // Fungsi Reset Posisi & Tampilan Peta ke Awal (Seluruh Indonesia)
+            window.resetMapView = function() {
+                if (map) {
+                    map.flyTo([-2.5, 118], 5, { duration: 1.0 });
+                }
+                if (window.unpinDetailCard) {
+                    window.unpinDetailCard();
+                }
+                if (activeTooltipLayer) {
+                    try { activeTooltipLayer.closeTooltip(); } catch (e) {}
+                    activeTooltipLayer = null;
+                }
+                if (desaMarkerLayer) {
+                    desaMarkerLayer.clearLayers();
+                }
             };
 
             // Fungsi Menyorot Titik Lokasi Desa / Alamat Tertentu di Peta
