@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisis Data Hasil Uji Resistensi - SIMPEL BBLKL</title>
 
+    {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
+    @include('dark_mode_head')
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -614,9 +617,13 @@
 
     {{-- INISIALISASI GRAFIK CHART.JS --}}
     <script>
-        // Konfigurasi Global Chart.js
+        // Konfigurasi Global Chart.js responsif terhadap mode gelap / terang
+        const allCharts = [];
+        const isDarkInit = document.documentElement.classList.contains('dark');
+        const chartTextColor = isDarkInit ? '#94a3b8' : '#64748b';
+        const chartGridColor = isDarkInit ? 'rgba(51, 65, 85, 0.6)' : '#f1f5f9';
         Chart.defaults.font.family = "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif";
-        Chart.defaults.color = '#64748b';
+        Chart.defaults.color = chartTextColor;
 
         // 1. GRAFIK TREN TAHUNAN STATUS RESISTENSI
         const ctxTren = document.getElementById('chartTrenTahun').getContext('2d');
@@ -982,6 +989,23 @@
                 }
             });
         }
+
+        // Sinkronisasi Grafik saat Ganti Mode Gelap / Terang
+        window.addEventListener('themeChanged', function(e) {
+            const isDark = e.detail && e.detail.isDark;
+            const newTextColor = isDark ? '#94a3b8' : '#64748b';
+            const newGridColor = isDark ? 'rgba(51, 65, 85, 0.6)' : '#f1f5f9';
+            Chart.defaults.color = newTextColor;
+            if (window.Chart && window.Chart.instances) {
+                Object.values(window.Chart.instances).forEach(c => {
+                    if (c && c.options && c.options.scales) {
+                        if (c.options.scales.y && c.options.scales.y.grid) c.options.scales.y.grid.color = newGridColor;
+                        if (c.options.scales.x && c.options.scales.x.grid) c.options.scales.x.grid.color = newGridColor;
+                    }
+                    c.update();
+                });
+            }
+        });
     </script>
 
 </body>

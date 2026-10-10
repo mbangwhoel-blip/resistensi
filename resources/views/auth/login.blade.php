@@ -32,16 +32,16 @@
     </style>
 </head>
 
-<body class="min-h-screen md:h-screen bg-mesh text-slate-100 flex flex-col justify-center items-center px-4 py-3 sm:py-5 relative overflow-y-auto md:overflow-hidden selection:bg-teal-500 selection:text-white">
+<body class="min-h-screen bg-mesh text-slate-100 flex flex-col justify-center items-center px-4 py-8 sm:py-10 relative overflow-y-auto selection:bg-teal-500 selection:text-white">
 
     {{-- GRID BACKGROUND OVERLAY --}}
-    <div class="absolute inset-0 bg-grid-dots pointer-events-none"></div>
+    <div class="fixed inset-0 bg-grid-dots pointer-events-none"></div>
 
     {{-- AMBIENT GLOW ACCENTS --}}
-    <div class="absolute -top-32 -left-32 w-80 h-80 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed -top-32 -left-32 w-80 h-80 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed -bottom-32 -right-32 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="w-full max-w-md relative z-10 my-auto">
+    <div class="w-full max-w-md relative z-10 my-auto py-2">
 
         {{-- BRANDING & LOGO HEADER --}}
         <div class="text-center mb-3 sm:mb-4">

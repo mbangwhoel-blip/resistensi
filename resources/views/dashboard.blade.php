@@ -7,6 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Dashboard - SIMPEL BBLKL</title>
 
+    {{-- DARK MODE INITIALIZATION & GLOBAL STYLES --}}
+    @include('dark_mode_head')
+
     {{-- LEAFLET CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -300,6 +303,442 @@
         .leaflet-container {
             font-family: inherit !important;
         }
+
+        /* ======================================================== */
+        /* MODE GELAP (DARK MODE) COMPREHENSIVE STYLES               */
+        /* ======================================================== */
+        html.dark,
+        html.dark body {
+            background-color: #0a0f1d !important;
+            color: #f1f5f9 !important;
+        }
+
+        html.dark main {
+            background-color: #0a0f1d !important;
+        }
+
+        /* Topbar Header */
+        html.dark header.sticky {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+        }
+        html.dark header h1 {
+            color: #f8fafc !important;
+        }
+        html.dark header p {
+            color: #94a3b8 !important;
+        }
+
+        /* Tombol Tema & Dropdown User */
+        html.dark #themeToggleBtn {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark #themeToggleBtn:hover {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+        }
+        html.dark #userDropdownBtn {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark #userDropdownBtn:hover {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+        }
+        html.dark #userDropdownBtn p.text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark #userDropdownBtn p.text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark #userDropdownMenu {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+        }
+        html.dark #userDropdownMenu .bg-slate-50\/60,
+        html.dark #userDropdownMenu .border-slate-100 {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        html.dark #userDropdownMenu p.text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark #userDropdownMenu p.text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark #dropdownThemeToggle {
+            color: #cbd5e1 !important;
+        }
+        html.dark #dropdownThemeToggle:hover {
+            background-color: #1e293b !important;
+        }
+
+        /* Semua Background Putih di Main Menjadi Dark Slate */
+        html.dark main .bg-white:not(#themeSwitchThumb),
+        html.dark main div.bg-white,
+        html.dark main header.bg-white {
+            background-color: #0f172a !important;
+        }
+        html.dark #themeSwitchThumb {
+            background-color: #ffffff !important;
+        }
+
+        /* Container Card Shadow & Border */
+        html.dark main .rounded-xl.border,
+        html.dark main .rounded-2xl.border {
+            border-color: #1e293b !important;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        /* Border Halus di Mode Gelap */
+        html.dark main .border-slate-100,
+        html.dark main .border-slate-200 {
+            border-color: #1e293b !important;
+        }
+
+        /* Teks Judul, Label, dan Deskripsi */
+        html.dark main h1,
+        html.dark main h2,
+        html.dark main h3,
+        html.dark main h4,
+        html.dark main .text-slate-900,
+        html.dark main .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark main .text-slate-700 {
+            color: #e2e8f0 !important;
+        }
+        html.dark main .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+        html.dark main .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark main .text-slate-400 {
+            color: #94a3b8 !important;
+        }
+        html.dark main label {
+            color: #e2e8f0 !important;
+        }
+        html.dark main label.cursor-pointer span {
+            color: #e2e8f0 !important;
+        }
+
+        /* Badges & Pills Contrast di Mode Gelap */
+        html.dark main .bg-emerald-50 {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+        }
+        html.dark main .text-emerald-700,
+        html.dark main .text-emerald-600 {
+            color: #34d399 !important;
+        }
+        html.dark main .border-emerald-200 {
+            border-color: rgba(16, 185, 129, 0.35) !important;
+        }
+
+        html.dark main .bg-blue-50 {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+        }
+        html.dark main .text-blue-700,
+        html.dark main .text-blue-600 {
+            color: #60a5fa !important;
+        }
+        html.dark main .border-blue-200,
+        html.dark main .border-blue-100 {
+            border-color: rgba(59, 130, 246, 0.35) !important;
+        }
+
+        html.dark main .bg-indigo-50 {
+            background-color: rgba(99, 102, 241, 0.15) !important;
+        }
+        html.dark main .text-indigo-700,
+        html.dark main .text-indigo-600 {
+            color: #818cf8 !important;
+        }
+
+        html.dark main .bg-amber-50 {
+            background-color: rgba(245, 158, 11, 0.15) !important;
+        }
+        html.dark main .text-amber-700,
+        html.dark main .text-amber-600 {
+            color: #fbbf24 !important;
+        }
+        html.dark main .border-amber-200 {
+            border-color: rgba(245, 158, 11, 0.35) !important;
+        }
+
+        html.dark main .bg-rose-50 {
+            background-color: rgba(244, 63, 94, 0.15) !important;
+        }
+        html.dark main .text-rose-700,
+        html.dark main .text-rose-600 {
+            color: #fb7185 !important;
+        }
+        html.dark main .border-rose-200 {
+            border-color: rgba(244, 63, 94, 0.35) !important;
+        }
+
+        /* Kotak Pencarian */
+        html.dark #headerSearch,
+        html.dark #tableSearchInput {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark #headerSearch::placeholder,
+        html.dark #tableSearchInput::placeholder {
+            color: #64748b !important;
+        }
+        html.dark #headerSearch:focus,
+        html.dark #tableSearchInput:focus {
+            border-color: #3b82f6 !important;
+            background-color: #0f172a !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+        }
+        html.dark #headerClearBtn,
+        html.dark #tableSearchClearBtn {
+            color: #94a3b8 !important;
+        }
+        html.dark #headerClearBtn:hover,
+        html.dark #tableSearchClearBtn:hover {
+            color: #f43f5e !important;
+        }
+
+        /* Panel Filter Form & Inputs */
+        html.dark #filterPanelBody {
+            background-color: #0f172a !important;
+        }
+        html.dark #filterPanelBody select,
+        html.dark #filterPanelBody input[type="text"] {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark #filterPanelBody select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        html.dark #filterPanelBody select:disabled {
+            background-color: #0b1120 !important;
+            border-color: #1e293b !important;
+            color: #64748b !important;
+        }
+        html.dark button[onclick="resetAllFilters()"] {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        html.dark button[onclick="resetAllFilters()"]:hover {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+        html.dark button[title="Buka/Tutup Filter"] {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        html.dark button[title="Buka/Tutup Filter"]:hover {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+        html.dark #filterCollapseIcon {
+            color: #cbd5e1 !important;
+        }
+
+        /* Filter Toolbar Peta */
+        html.dark #filterJenisNyamuk,
+        html.dark #filterInsektisida,
+        html.dark #filterMetode,
+        html.dark #filterStatus {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark #filterJenisNyamuk option,
+        html.dark #filterInsektisida option,
+        html.dark #filterMetode option,
+        html.dark #filterStatus option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        /* Tabel Data Pemeriksaan */
+        html.dark #tablePemeriksaanSection {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
+        html.dark #tablePemeriksaanSection .border-b {
+            border-color: #1e293b !important;
+        }
+        html.dark #tablePemeriksaanSection thead {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #94a3b8 !important;
+        }
+        html.dark #tablePemeriksaanSection thead th {
+            color: #94a3b8 !important;
+        }
+        html.dark #tableDataBody tr {
+            border-color: #1e293b !important;
+        }
+        html.dark #tableDataBody tr:hover {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+        }
+        html.dark #tablePageSizeSelect {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark div:has(> #tablePageSizeSelect) {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        html.dark #dashboardTablePagination {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
+        html.dark #dashboardTablePagination button {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        html.dark #dashboardTablePagination button:hover:not(:disabled) {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+        html.dark button[onclick^="showRowDetailModal"] {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        html.dark button[onclick^="showRowDetailModal"]:hover {
+            background-color: #334155 !important;
+            color: #60a5fa !important;
+            border-color: #60a5fa !important;
+        }
+
+        /* Modal Detail */
+        html.dark #rowDetailModalCard {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+            color: #f1f5f9 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+        }
+        html.dark #rowDetailModalCard .border-b,
+        html.dark #rowDetailModalCard .border-t {
+            border-color: #1e293b !important;
+        }
+        html.dark #rowDetailModalCard .bg-gradient-to-r {
+            background: linear-gradient(to right, #0f172a, #1e293b) !important;
+        }
+        html.dark #modalDetailFooter {
+            background-color: #0b1120 !important;
+        }
+        html.dark #modalDetailBody {
+            color: #e2e8f0 !important;
+        }
+        html.dark #modalDetailBody .bg-slate-50,
+        html.dark #modalDetailBody .bg-slate-100 {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        html.dark #modalDetailBody .border-slate-100,
+        html.dark #modalDetailBody .border-slate-200 {
+            border-color: #334155 !important;
+        }
+
+        /* Peta Leaflet Dark Mode Tiles (Bebas Watermark & Tanpa Perlu API Key) */
+        .leaflet-tile-pane {
+            transition: filter 0.35s ease;
+        }
+        html.dark .leaflet-tile-pane {
+            filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+        }
+        html.dark .leaflet-container {
+            background-color: #0b1120 !important;
+        }
+
+        html.dark #map {
+            border-color: #1e293b !important;
+        }
+        html.dark .leaflet-bar a {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark .leaflet-bar a:hover {
+            background-color: #334155 !important;
+        }
+        html.dark .leaflet-container .leaflet-control-attribution {
+            background: rgba(15, 23, 42, 0.85) !important;
+            color: #94a3b8 !important;
+        }
+        html.dark .leaflet-container .leaflet-control-attribution a {
+            color: #60a5fa !important;
+        }
+        html.dark .region-map-label {
+            background: #1e293b !important;
+            border: 1px solid #475569 !important;
+            color: #f1f5f9 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+        }
+        html.dark .map-detail-panel {
+            background: rgba(15, 23, 42, 0.88) !important;
+            border: 1px solid rgba(51, 65, 85, 0.9) !important;
+            color: #f1f5f9 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+        }
+        html.dark .map-detail-panel.is-pinned,
+        html.dark .map-detail-panel:hover {
+            background: rgba(15, 23, 42, 0.95) !important;
+        }
+        html.dark .map-detail-panel .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark .map-detail-panel .border-slate-100 {
+            border-color: #334155 !important;
+        }
+        html.dark .map-detail-panel .bg-slate-50 {
+            background-color: #1e293b !important;
+        }
+        html.dark .map-legend-control {
+            background: rgba(15, 23, 42, 0.88) !important;
+            border: 1px solid rgba(51, 65, 85, 0.9) !important;
+            color: #f1f5f9 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+        }
+        html.dark .map-legend-control:hover {
+            background: rgba(15, 23, 42, 0.95) !important;
+        }
+        html.dark .map-legend-control .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark .map-legend-control .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+        html.dark .leaflet-popup-content-wrapper {
+            background: #0f172a !important;
+            color: #f1f5f9 !important;
+            border: 1px solid #334155 !important;
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.7) !important;
+        }
+        html.dark .leaflet-popup-tip {
+            background: #0f172a !important;
+        }
+        html.dark .leaflet-popup-content .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark .leaflet-popup-content .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+        html.dark .leaflet-popup-content .border-slate-100 {
+            border-color: #334155 !important;
+        }
     </style>
 </head>
 
@@ -323,7 +762,7 @@
             </div>
 
             <div class="flex items-center gap-3 shrink-0">
-                {{-- PROFIL PENGGUNA & DROPDOWN MENU TERPADU (SATU KESATUAN) --}}
+                {{-- PROFIL PENGGUNA & TOMBOL TEMA TERPADU --}}
                 @include('header_profile')
             </div>
         </header>
@@ -841,9 +1280,15 @@
                 scrollWheelZoom: true
             }).setView([-2.5, 118], 5);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+            // Layer Tile Bebas API Key & Tanpa Watermark (OpenStreetMap)
+            const mapTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
             }).addTo(map);
+
+            window.updateMapTheme = function(isDark) {
+                // Mode gelap peta dikendalikan via CSS filter pada leaflet-tile-pane tanpa butuh API key eksternal
+            };
 
             const rawData = @json($data);
             const polygonsLayer = L.layerGroup().addTo(map);

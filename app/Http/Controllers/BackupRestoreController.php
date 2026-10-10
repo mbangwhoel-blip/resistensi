@@ -114,7 +114,7 @@ class BackupRestoreController extends Controller
 
             $sqlDump .= "SET FOREIGN_KEY_CHECKS = 1;\n";
 
-            $filename = "backup_simpelbblk_" . date('Y-m-d_His') . ".sql";
+            $filename = "backup_resistensi_" . date('Y-m-d_His') . ".sql";
             $filePath = $this->backupDir . DIRECTORY_SEPARATOR . $filename;
 
             File::put($filePath, $sqlDump);

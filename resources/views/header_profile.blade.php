@@ -1,4 +1,20 @@
-{{-- KOMPONEN PROFIL & LOGOUT TERPADU (MENU DROPDOWN SATU KESATUAN) --}}
+{{-- KOMPONEN PROFIL & LOGOUT TERPADU DENGAN TOMBOL CEPAT TEMA --}}
+{{-- TOMBOL CEPAT MODE GELAP / TERANG --}}
+<button type="button"
+        id="themeToggleBtn"
+        onclick="toggleTheme()"
+        class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 px-3 shadow-2xs hover:border-blue-400 hover:bg-slate-50 transition cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-blue-100"
+        title="Ganti Mode Gelap / Terang">
+    <div class="relative flex h-5 w-9 items-center rounded-full bg-amber-100 border border-amber-300/80 p-0.5 transition-colors duration-300" id="themeSwitchTrack">
+        <div class="flex h-4 w-4 transform items-center justify-center rounded-full bg-white shadow-xs transition-transform duration-300 translate-x-0" id="themeSwitchThumb">
+            <svg id="themeThumbIcon" class="h-2.5 w-2.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+    </div>
+    <span id="themeToggleText" class="hidden sm:inline text-xs font-bold text-slate-700">Mode Terang</span>
+</button>
+
 <div class="relative inline-block text-left" id="userMenuDropdown">
 
     {{-- TOMBOL UTAMA PROFIL (SATU ELEMEN TERPADU) --}}
@@ -65,6 +81,20 @@
             </div>
         </div>
         
+        {{-- OPSI GANTI TEMA GELAP / TERANG DI DALAM DROPDOWN --}}
+        <div class="px-1 py-1 mb-1 border-b border-slate-100">
+            <button type="button"
+                    onclick="toggleTheme()"
+                    class="w-full flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer select-none"
+                    id="dropdownThemeToggle">
+                <span class="flex items-center gap-2">
+                    <span id="dropdownThemeIcon">☀️</span>
+                    <span id="dropdownThemeLabel">Mode Terang</span>
+                </span>
+                <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-300" id="dropdownThemeBadge">Aktif</span>
+            </button>
+        </div>
+
         @if (Auth::check())
             {{-- TOMBOL LOGOUT TERPADU --}}
             <a href="{{ route('logout') }}"
@@ -129,5 +159,84 @@
             });
         };
         window.initUserDropdown();
+    }
+
+    // Fungsi Pengatur Tema (Dark / Light Mode)
+    if (typeof window.updateThemeUI !== 'function') {
+        window.updateThemeUI = function(isDark) {
+            const track = document.getElementById('themeSwitchTrack');
+            const thumb = document.getElementById('themeSwitchThumb');
+            const thumbIcon = document.getElementById('themeThumbIcon');
+            const text = document.getElementById('themeToggleText');
+            const dropIcon = document.getElementById('dropdownThemeIcon');
+            const dropLabel = document.getElementById('dropdownThemeLabel');
+            const dropBadge = document.getElementById('dropdownThemeBadge');
+
+            if (isDark) {
+                if (track) {
+                    track.classList.remove('bg-amber-100', 'bg-slate-200');
+                    track.classList.add('bg-blue-600');
+                }
+                if (thumb) {
+                    thumb.classList.remove('translate-x-0');
+                    thumb.classList.add('translate-x-4');
+                }
+                if (thumbIcon) {
+                    thumbIcon.className = 'h-2.5 w-2.5 text-blue-200';
+                    thumbIcon.innerHTML = '<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>';
+                }
+                if (text) {
+                    text.textContent = 'Mode Gelap';
+                    text.classList.remove('text-slate-700');
+                    text.classList.add('text-slate-200');
+                }
+                if (dropIcon) dropIcon.textContent = '🌙';
+                if (dropLabel) dropLabel.textContent = 'Mode Gelap';
+                if (dropBadge) {
+                    dropBadge.textContent = 'Aktif';
+                    dropBadge.className = 'text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-700/60';
+                }
+            } else {
+                if (track) {
+                    track.classList.remove('bg-blue-600');
+                    track.classList.add('bg-amber-100');
+                }
+                if (thumb) {
+                    thumb.classList.remove('translate-x-4');
+                    thumb.classList.add('translate-x-0');
+                }
+                if (thumbIcon) {
+                    thumbIcon.className = 'h-2.5 w-2.5 text-amber-500';
+                    thumbIcon.innerHTML = '<path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>';
+                }
+                if (text) {
+                    text.textContent = 'Mode Terang';
+                    text.classList.remove('text-slate-200');
+                    text.classList.add('text-slate-700');
+                }
+                if (dropIcon) dropIcon.textContent = '☀️';
+                if (dropLabel) dropLabel.textContent = 'Mode Terang';
+                if (dropBadge) {
+                    dropBadge.textContent = 'Aktif';
+                    dropBadge.className = 'text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-300';
+                }
+            }
+        };
+
+        window.toggleTheme = function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('simpel_theme', isDark ? 'dark' : 'light');
+            window.updateThemeUI(isDark);
+            if (typeof window.updateMapTheme === 'function') {
+                window.updateMapTheme(isDark);
+            }
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { isDark } }));
+        };
+
+        // Sinkronisasi status awal UI saat dokumen siap
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentIsDark = document.documentElement.classList.contains('dark');
+            window.updateThemeUI(currentIsDark);
+        });
     }
 </script>

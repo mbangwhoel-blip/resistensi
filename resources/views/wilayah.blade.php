@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Data Wilayah - SIMPEL BBLKL</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
+    @include('dark_mode_head')
 </head>
 
 <body class="bg-slate-100 text-slate-800">

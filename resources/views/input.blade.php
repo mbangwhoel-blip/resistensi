@@ -11,6 +11,8 @@
 
     <title>Input Data - SIMPEL BBLKL</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
+    @include('dark_mode_head')
 </head>
 
 
