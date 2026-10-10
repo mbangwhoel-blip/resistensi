@@ -10,7 +10,7 @@
     >
 
     <title>Input Data - SIMPEL BBLKL</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
 
@@ -22,1615 +22,1076 @@
 
 
     {{-- MAIN--}}
+    <main class="ml-64 min-h-screen">
 
-    <main class="ml-64 min-h-screen p-6">
+        {{-- TOPBAR DENGAN PROFIL & LOGOUT DI KANAN ATAS --}}
+        <header class="sticky top-0 z-40 flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
+            <div class="min-w-0 flex flex-col justify-center">
+                <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug">
+                    Input Data Uji Resistensi
+                </h1>
+                <p class="text-xs text-slate-500 font-medium mt-1">
+                    Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL)
+                </p>
+            </div>
 
-        {{-- HEADER --}}
-        <section class="mb-6 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 via-white to-purple-50 p-6 shadow-sm">
+            <div class="flex items-center gap-3 shrink-0">
+                @include('header_profile')
+            </div>
+        </header>
 
-            <div class="flex flex-wrap items-start justify-between gap-5">
-                
-                <div>
-                    <div class="flex items-center gap-3">
+        <section class="p-6 lg:p-8 space-y-5">
 
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
+            {{-- HEADER KARTU & FILTER PERIODE BULANAN (RINGKAS & PROPORSIONAL) --}}
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    
+                    {{-- SISI KIRI: JUDUL & INFORMASI LAB --}}
+                    <div class="flex items-center gap-3.5">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs font-bold text-base">
                             📊
                         </div>
-
                         <div>
-                            <h1 class="text-2xl font-bold text-slate-900">
-                                Input Bulanan
-                            </h1>
-
-                            <p class="mt-1 text-sm text-slate-500">
-                                Penginputan data uji resistensi laboratorium
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h2 class="text-lg font-bold text-slate-800">
+                                    Input Data Bulanan
+                                </h2>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200/70">
+                                    Periode: 
+                                    @if($bulan == 'Semua' && $tahun == 'Semua')
+                                        Semua Periode
+                                    @elseif($bulan == 'Semua')
+                                        Semua Bulan ({{ $tahun }})
+                                    @elseif($tahun == 'Semua')
+                                        {{ $bulan }} (Semua Tahun)
+                                    @else
+                                        {{ $bulan }} {{ $tahun }}
+                                    @endif
+                                </span>
+                            </div>
+                            <p class="mt-0.5 text-xs text-slate-500">
+                                Penginputan & rekapitulasi data uji resistensi vektor • Lab: <span class="font-semibold text-slate-700">BBLKL</span>
                             </p>
                         </div>
-
                     </div>
 
-                    <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                        
-                        <span> 
-                            Lab:
-                            <strong class="text-slate-800">
-                                Balai Besar Laboratorium Kesehatan Lingkungan
-                            </strong>
-                        </span>
+                    {{-- SISI KANAN: FORM FILTER BULAN & TAHUN RINGKAS --}}
+                    <form id="formFilterBulanTahun" method="GET" action="{{ route('input') }}" class="flex flex-wrap items-center gap-2.5">
+                        @if(!empty($search))
+                            <input type="hidden" name="search" value="{{ $search }}">
+                        @endif
 
-                        <span>•</span>
+                        {{-- FILTER BULAN --}}
+                        <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 shadow-2xs hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Bulan:</span>
+                            <select name="bulan" onchange="document.getElementById('formFilterBulanTahun').submit()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-1">
+                                <option value="Semua" {{ $bulan == 'Semua' ? 'selected' : '' }}>Semua Bulan</option>
+                                @foreach ($daftarBulan as $b)
+                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>{{ $b }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                        <span>
-                            Filter:
-                            <strong class="text-slate-800">
-                               Semua bulan 2026
-                            </strong>
-                        </span>
+                        {{-- FILTER TAHUN --}}
+                        <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 shadow-2xs hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tahun:</span>
+                            <select name="tahun" onchange="document.getElementById('formFilterBulanTahun').submit()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-1">
+                                <option value="Semua" {{ $tahun == 'Semua' ? 'selected' : '' }}>Semua Tahun</option>
+                                @foreach ($daftarTahun as $y)
+                                    <option value="{{ $y }}" {{ (string)$tahun == (string)$y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    </div>
+                        @if($bulan != 'Semua' || $tahun != 'Semua' || !empty($search))
+                            <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition shadow-2xs" title="Reset filter ke bulan berjalan">
+                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Reset</span>
+                            </a>
+                        @endif
+                    </form>
+
                 </div>
+            </div>
 
-                {{-- PERIODE --}}
-                <div class="rounded-xl border-border-slate-200 bg-white px-5 py-4 shadow-sm">
+            {{-- 4 KOTAK STATISTIK (PROPORSIONAL, RAPI & RINGKAS) --}}
+            <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Entri pada
-                    </p>
+                {{-- ITEM PERIODE / FILTER --}}
+                <div class="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:shadow-xs hover:border-blue-300 transition">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                            Item <span class="text-slate-300 font-normal">|</span> <span class="text-slate-500 font-medium normal-case">Filter Periode</span>
+                        </p>
+                        <div class="mt-1 flex items-baseline gap-1.5">
+                            <span class="text-2xl font-black text-slate-800 tracking-tight leading-none">
+                                {{ number_format($totalFilteredItem) }}
+                            </span>
+                            <span class="text-[11px] font-medium text-slate-400">data pengujian</span>
+                        </div>
+                    </div>
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                        <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
 
-                    <p class="mt-1 text-lg font-bold text-slate-800">
-                        Oktober 2026
-                    </p>
+                {{-- SAMPEL PERIODE / FILTER --}}
+                <div class="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:shadow-xs hover:border-indigo-300 transition">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                            Sampel <span class="text-slate-300 font-normal">|</span> <span class="text-slate-500 font-medium normal-case">Filter Periode</span>
+                        </p>
+                        <div class="mt-1 flex items-baseline gap-1.5">
+                            <span class="text-2xl font-black text-slate-800 tracking-tight leading-none">
+                                {{ number_format($totalFilteredSampel) }}
+                            </span>
+                            <span class="text-[11px] font-medium text-slate-400">ekor spesimen</span>
+                        </div>
+                    </div>
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+                        <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                    </div>
+                </div>
 
+                {{-- ITEM TAHUN BERJALAN / KESELURUHAN --}}
+                <div class="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:shadow-xs hover:border-amber-300 transition">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                            Item <span class="text-slate-300 font-normal">|</span> <span class="text-slate-500 font-medium normal-case">{{ $tahun == 'Semua' ? 'Semua Tahun' : 'Tahun ' . $tahun }}</span>
+                        </p>
+                        <div class="mt-1 flex items-baseline gap-1.5">
+                            <span class="text-2xl font-black text-slate-800 tracking-tight leading-none">
+                                {{ number_format($dataTahunBerjalan->count()) }}
+                            </span>
+                            <span class="text-[11px] font-medium text-slate-400">{{ $tahun == 'Semua' ? 'total keseluruhan' : 'total tahun ' . $tahun }}</span>
+                        </div>
+                    </div>
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+                        <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+
+                {{-- SAMPEL TAHUN BERJALAN / KESELURUHAN --}}
+                <div class="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                            Sampel <span class="text-slate-300 font-normal">|</span> <span class="text-slate-500 font-medium normal-case">{{ $tahun == 'Semua' ? 'Semua Tahun' : 'Tahun ' . $tahun }}</span>
+                        </p>
+                        <div class="mt-1 flex items-baseline gap-1.5">
+                            <span class="text-2xl font-black text-slate-800 tracking-tight leading-none">
+                                {{ number_format($dataTahunBerjalan->sum('sampel_diperiksa')) }}
+                            </span>
+                            <span class="text-[11px] font-medium text-slate-400">{{ $tahun == 'Semua' ? 'total spesimen' : 'total tahun ' . $tahun }}</span>
+                        </div>
+                    </div>
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
                 </div>
 
             </div>
 
-            {{-- FILTER --}}
-            <div class="mt-6 grid gap-4 md:grid-cols-2">
-                
-                {{-- BULAN --}}
+        @php
+    $daftarNyamuk = !empty($daftarNyamuk) ? $daftarNyamuk : [
+        'Ae. aegypti', 'Culex sp', 'Anhopheles', 'Aedes sp', 'An. Farauti', 'An. Vagus',
+        'An. tessellatus', 'An. sundaicus s.I', 'An. punctulatus s.I.', 'An. peditaeniatus',
+        'An. parensis', 'An. letifer', 'An. koliensis', 'An. kochi', 'An. indefinitus',
+        'An. hyrcanus s.I.', 'An. farauti s.s', 'An. barbirostris', 'An. aconitus', 'An. Albopictus'
+    ];
+
+    $daftarInsektisida = !empty($daftarInsektisida) ? $daftarInsektisida : [
+        'Cypermethrin', 'Lamdacyhalothrin', 'Deltamethrin', 'Alphacypermethrin',
+        'Cyfluthrin', 'Permethrin', 'Malathion', 'Deltamethrin 0,025%',
+        'Lambda-cyhalothrin 0,0025%', 'Temefos (Abate)', 'Bendiocarb', 'Sipermethrin'
+    ];
+
+    $daftarMetode = !empty($daftarMetode) ? $daftarMetode : [
+        'Sequencing', 'WHO Tube Bioassay', 'WHO larval bioassay',
+        'WHO susceptibilitity test', 'WHO test kit_adults', 'CDC bottle_adults',
+        'CDC bottle bioassay', 'WHO standards bioassay'
+    ];
+@endphp
+
+        {{-- NOTIFIKASI SUCCESS --}}
+        @if (session('success'))
+            <div class="mb-6 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-4 text-emerald-800 shadow-sm">
+                <svg class="h-6 w-6 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-sm">{{ session('success') }}</span>
+            </div>
+        @endif
+
+        {{-- NOTIFIKASI ERROR --}}
+        @if ($errors->any())
+            <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-6 text-rose-800 shadow-sm">
+                <div class="flex items-center gap-2 font-semibold text-rose-900 mb-2">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>Data belum dapat disimpan:</span>
+                </div>
+                <ul class="list-inside list-disc text-sm space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- TABEL DATA UJI RESISTENSI --}}
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+            {{-- HEADER TABEL: SEARCH BOX + IMPORT EXCEL + TAMBAH DATA --}}
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 px-6 py-4.5 bg-white">
                 <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">
-                        Bulan
-                    </label>
-
-                    <select class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
-                        <option>
-                            Semua bulan
-                        </option>
-
-                        <option>
-                            Januari
-                        </option>
-
-                        <option>
-                            Februari
-                        </option>
-
-                        <option>
-                            Maret
-                        </option>
-
-                        <option>
-                            April
-                        </option>
-
-                        <option>
-                            Mei
-                        </option>
-
-                        <option>
-                            Juni
-                        </option>
-
-                        <option>
-                            Juli
-                        </option>
-
-                        <option>
-                            Agustus
-                        </option>
-
-                        <option>
-                            September
-                        </option>
-
-                        <option selected>
-                            Oktober
-                        </option>
-
-                        <option>
-                            November
-                        </option>
-
-                        <option>
-                            Desember
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                {{-- TAHUN --}}
-                <div>
-                    <label class="mb-2 block text-sm font-semibold ttext-slate-700">
-                        Tahun
-                    </label>
-
-                    <select class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
-                        <option>
-                            2024
-                        </option>
-
-                        <option>
-                            2025
-                        </option>
-
-                        <option selected>
-                            2026
-                        </option>
-
-                        <option>
-                            2027
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        {{-- STATISTIC CARDS --}}
-        <section class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    
-            {{-- ITEM BULAN --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                <div class="flex items-start justify-between">
-    
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                            Item
-                        </p>
-
-                        <p class="mt-1 text-sm text-slate-500">
-                            Filter Bulan
-                        </p>
-
+                    <div class="flex items-center gap-2.5">
+                        <div class="h-3 w-3 rounded-full bg-blue-600 ring-4 ring-blue-100"></div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-800">
+                            Data Uji Resistensi
+                        </h2>
                     </div>
+                    <p class="mt-1 text-xs text-slate-500 flex flex-wrap items-center gap-1.5">
+                        <span>Periode:</span>
+                        <span class="font-semibold text-slate-700">
+                            @if($bulan === 'Semua' && $tahun === 'Semua')
+                                Semua Periode
+                            @elseif($bulan === 'Semua')
+                                Semua Bulan ({{ $tahun }})
+                            @elseif($tahun === 'Semua')
+                                {{ $bulan }} (Semua Tahun)
+                            @else
+                                {{ $bulan }} {{ $tahun }}
+                            @endif
+                        </span>
+                        <span class="text-slate-300">•</span>
+                        <span>Total:</span>
+                        <span class="font-bold text-blue-600">{{ number_format($data->total()) }} Data</span>
+                        @if(!empty($search))
+                            <span class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 border border-blue-200">
+                                🔍 Kata kunci: "{{ $search }}"
+                            </span>
+                        @endif
+                    </p>
                 </div>
 
-                <p class="mt-4 text-3xl font-bold text-slate-900"> 
-                    {{ $data->count() }}
-                </p>
+                {{-- TOOLBAR KANAN: KOTAK PENCARIAN + TOMBOL IMPORT EXCEL + TOMBOL TAMBAH DATA --}}
+                <div class="flex flex-wrap items-center gap-2.5">
+                    {{-- KOTAK PENCARIAN --}}
+                    <form method="GET" action="{{ route('input') }}" class="relative flex items-center">
+                        @if(request('bulan') && request('bulan') !== 'Semua')
+                            <input type="hidden" name="bulan" value="{{ request('bulan') }}">
+                        @endif
+                        @if(request('tahun') && request('tahun') !== 'Semua')
+                            <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+                        @endif
+                        
+                        <div class="relative w-64 sm:w-72">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                value="{{ $search ?? '' }}"
+                                placeholder="Cari provinsi, kota, nyamuk, insektisida..." 
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2 pl-9 pr-8 text-xs font-medium text-slate-800 placeholder-slate-400 shadow-2xs transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                            >
+                            @if(!empty($search))
+                                <a href="{{ route('input', ['bulan' => $bulan, 'tahun' => $tahun]) }}" 
+                                   class="absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400 hover:text-rose-500 transition" 
+                                   title="Hapus pencarian">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </a>
+                            @endif
+                        </div>
+                    </form>
 
-            </div>
+                    {{-- TOMBOL IMPORT EXCEL --}}
+                    <button 
+                        type="button" 
+                        onclick="openModal('modalImportExcel')"
+                        class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-700 shadow-2xs transition hover:bg-emerald-600 hover:text-white hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300 cursor-pointer"
+                        title="Import data pemeriksaan dari berkas Excel (.xlsx / .csv)"
+                    >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Import Excel</span>
+                    </button>
 
-            {{-- SAMPEL BULAN --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                
-                <div class="flex items-start justify-between">
-                
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                            Sampel
-                        </p>
-
-                        <p class="mt-1 text-sm text-slate-500">
-                            Filter Bulan
-                        </p>
-
-                    </div>
-
+                    {{-- TOMBOL TAMBAH DATA --}}
+                    <button 
+                        type="button" 
+                        onclick="openModal('modalTambahData')"
+                        class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-2xs transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
+                    >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Tambah Data</span>
+                    </button>
                 </div>
-
-                <p class="mt-4 text-3xl font-bold text-slate-900">
-                    {{ $data->sum('sampel_diperiksa') }}
-                </p>
-
             </div>
 
-            {{-- ITEM TAHUN --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                      
-                <div class="flex items-start justify-between">
-                          
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                            Item
-                        </p>
+            {{-- TABEL KONTEN --}}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="border-b border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3.5 text-center w-12">No</th>
+                            <th class="px-4 py-3.5 whitespace-nowrap">Periode</th>
+                            <th class="px-4 py-3.5">Provinsi</th>
+                            <th class="px-4 py-3.5">Kota / Kab</th>
+                            <th class="px-4 py-3.5 min-w-[200px]">Alamat / Lokasi</th>
+                            <th class="px-4 py-3.5">Jenis Nyamuk</th>
+                            <th class="px-4 py-3.5">Insektisida</th>
+                            <th class="px-4 py-3.5">Metode</th>
+                            <th class="px-4 py-3.5 text-center">Sampel</th>
+                            <th class="px-4 py-3.5 text-center">Status</th>
+                            <th class="px-4 py-3.5 text-center w-28">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($data as $item)
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="px-4 py-3.5 text-center font-medium text-slate-600">
+                                    {{ $data->firstItem() + $loop->index }}
+                                </td>
+                                <td class="px-4 py-3.5 text-xs whitespace-nowrap">
+                                    <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-700">
+                                        {{ $item->bulan }} {{ $item->tahun }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3.5 font-medium text-slate-800">
+                                    {{ $item->provinsi->nama_provinsi ?? '-' }}
+                                </td>
+                                <td class="px-4 py-3.5 text-slate-700">
+                                    {{ $item->kabupaten->nama_kabupaten ?? '-' }}
+                                </td>
+                                <td class="px-4 py-3.5 text-slate-600">
+                                    @if (!empty($item->alamat))
+                                        <div class="flex items-start gap-1.5 text-xs text-slate-800 font-medium">
+                                            <span class="text-blue-500 mt-0.5 shrink-0">📍</span>
+                                            <span class="line-clamp-2" title="{{ $item->alamat }}">{{ $item->alamat }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-xs text-slate-400 italic">Belum diisi</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3.5 whitespace-nowrap">
+                                    <span class="inline-block rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700">
+                                        {{ $item->jenis_nyamuk }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3.5 text-slate-700 text-xs">
+                                    {{ $item->insektisida }}
+                                </td>
+                                <td class="px-4 py-3.5 text-slate-600 text-xs">
+                                    {{ $item->metode }}
+                                </td>
+                                <td class="px-4 py-3.5 text-center font-bold text-slate-800">
+                                    {{ number_format($item->sampel_diperiksa) }}
+                                </td>
+                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                    @if ($item->status === 'Resisten')
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2.5 py-1 text-xs font-bold text-rose-700">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
+                                        </span>
+                                    @elseif ($item->status === 'Rentan')
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
+                                        </span>
+                                    @elseif (in_array($item->status, ['Toleran/Terduga Resisten', 'Toleran', 'Terduga Resisten']))
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2.5 py-1 text-xs font-bold text-amber-700">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-slate-400 italic">-</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <button 
+                                            type="button" 
+                                            onclick='openEditModal(@json($item))'
+                                            class="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
+                                            title="Edit Data"
+                                        >
+                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            onclick="openDeleteModal({{ $item->id }})"
+                                            class="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition"
+                                            title="Hapus Data"
+                                        >
+                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="11" class="px-6 py-12 text-center">
+                                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3.5 border border-blue-100 shadow-2xs">
+                                        @if(!empty($search))
+                                            <svg class="h-7 w-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        @else
+                                            <svg class="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        @endif
+                                    </div>
 
-                        <p class="mt-1 text-sm text-slate-500">
-                            Tahun Berjalan
-                        </p>
+                                    @if(!empty($search))
+                                        <p class="text-sm font-bold text-slate-800">Tidak ada data yang cocok dengan pencarian</p>
+                                        <p class="mt-1 text-xs text-slate-500 max-w-md mx-auto">
+                                            Tidak ditemukan hasil untuk kata kunci <span class="font-bold text-slate-700">"{{ $search }}"</span> pada filter periode saat ini.
+                                        </p>
+                                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+                                            <a href="{{ route('input', ['bulan' => 'Semua', 'tahun' => 'Semua', 'search' => $search]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                                🔍 Cari di Semua Periode
+                                            </a>
+                                            <a href="{{ route('input', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+                                                Hapus Kata Kunci
+                                            </a>
+                                        </div>
+                                    @else
+                                        <p class="text-sm font-bold text-slate-800">Belum ada data uji resistensi untuk periode ini</p>
+                                        <p class="mt-1 text-xs text-slate-500 max-w-md mx-auto">
+                                            Tidak ada catatan pemeriksaan untuk periode <span class="font-bold text-slate-700">{{ $bulan }} {{ $tahun }}</span>.
+                                            @if($totalSemuaData > 0)
+                                                <br><span class="text-blue-600 font-semibold">Tersedia {{ number_format($totalSemuaData) }} data di database</span> dari hasil import Excel / pemeriksaan sebelumnya.
+                                            @endif
+                                        </p>
+                                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+                                            @if($totalSemuaData > 0)
+                                                <a href="{{ route('input', ['bulan' => 'Semua', 'tahun' => 'Semua']) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                                    📊 Tampilkan Semua Periode ({{ number_format($totalSemuaData) }} Data)
+                                                </a>
+                                            @endif
+                                            <button 
+                                                type="button" 
+                                                onclick="openModal('modalImportExcel')" 
+                                                class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                            >
+                                                📥 Import File Excel
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onclick="openModal('modalTambahData')" 
+                                                class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-2xs hover:bg-blue-700 transition cursor-pointer"
+                                            >
+                                                + Tambah Data Baru
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                    </div>
-
+            {{-- PAGINATION --}}
+            @if ($data->hasPages() || $data->total() > 0)
+                <div class="border-t border-slate-200 bg-white px-6 py-4">
+                    {{ $data->links() }}
                 </div>
-
-                <p class="mt-4 text-3xl font-bold text-slate-900">
-                    {{ $data->count() }}
-                </p>
-
-            </div>
-
-            {{-- SAMPEL TAHUN --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                <div class="flex items-start justify-between">
-
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                            Sampel
-                        </p>
-
-                        <p class="mt-1 text-sm text-slate-500">
-                            Tahun Berjalan
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <p class="mt-4 text-3xl font-bold text-slate-900">
-                    {{ $data->sum('sampel_diperiksa') }}
-                </p>
-
-            </div>
-
-        </section>
-
-        {{-- INFO --}}
-        <div class="mb-6 flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-bluee-800">
-
-            <div>
-                <strong>
-                    Data yang akan di entri:
-                </strong>
-                Bulan Oktober, Tahun 2026
-            </div>
+            @endif
 
         </div>
 
-        {{-- PESAN SUCCESS --}}
+    </section>
 
-        @if (session('success'))
+</main>
 
-            <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
-                {{ session('success') }}
-            </div>
-        @endif
+    {{-- ========================================================================= --}}
+    {{-- ========================================================================= --}}
+    {{-- MODAL IMPORT EXCEL --}}
+    {{-- ========================================================================= --}}
+    <div id="modalImportExcel" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 transition-all">
+        <div class="min-h-full flex items-center justify-center py-6 w-full">
+            <div class="relative w-full max-w-2xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-100 my-auto">
+                {{-- HEADER MODAL --}}
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 font-bold text-lg border border-emerald-100">
+                            📥
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Import Data dari Excel / CSV</h3>
+                            <p class="text-xs text-slate-500">Unggah berkas spreadsheet untuk memasukkan data uji resistensi ke sistem</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeModal('modalImportExcel')" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition" title="Tutup">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
 
-        {{-- ERROR --}}
+                {{-- FORM UPLOAD FILE --}}
+                <form method="POST" action="{{ route('import.process') }}" enctype="multipart/form-data" class="mt-6 space-y-5">
+                    @csrf
 
-        @if ($errors->any())
+                    {{-- DOWNLOAD TEMPLATE BANNER --}}
+                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/70 text-xs text-blue-900">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-base">📋</span>
+                            <span>Gunakan template resmi untuk format kolom yang benar</span>
+                        </div>
+                        <a href="{{ route('import.template') }}" class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700 transition shrink-0 shadow-2xs">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>Unduh Template CSV</span>
+                        </a>
+                    </div>
 
-            <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
- 
-                <p class="font-bold">
-                    Data belum dapat disimpan:
-                </p>
-
-                <ul class="mt-2 list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-
-                        <li>
-                            {{ $error }}
-                        </li>
-
-                    @endforeach
-
-                </ul>
-
-            </div>
-
-        @endif
-
-        {{-- FORM INPUT --}}
-        <section class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-
-            {{-- HEADER TABLE --}}
-            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-5 py-4">
-
-                <div class="flex items-center gap-3">
-
-                    <div class="h-3 w-3 rounded-full bg-blue-600"></div>
-
+                    {{-- DRAG & DROP FILE ZONE --}}
                     <div>
-                        <h2 class="text-lg font-bold text-slate-800">
-                            Form Entri
-                        </h2>
+                        <label class="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer bg-slate-50/70 hover:bg-emerald-50/40 hover:border-emerald-400 transition">
+                            <div class="flex flex-col items-center justify-center pt-4 pb-5 px-4 text-center">
+                                <div class="w-11 h-11 mb-2.5 rounded-xl bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                </div>
+                                <p class="text-xs sm:text-sm text-slate-700 font-bold">
+                                    Pilih atau seret berkas spreadsheet ke sini
+                                </p>
+                                <p class="text-[11px] text-slate-400 mt-1">
+                                    Mendukung format berkas <strong>.XLSX (Excel)</strong>, <strong>.XLS</strong>, atau <strong>.CSV</strong>
+                                </p>
+                                <div id="modalFileNamePreview" class="mt-2.5 hidden items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-lg border border-emerald-200">
+                                    <span>📄</span>
+                                    <span id="modalFileNameText">nama_file.xlsx</span>
+                                </div>
+                            </div>
+                            <input type="file" name="file" id="modalFileInput" accept=".xlsx, .xls, .csv, .txt" class="hidden" required onchange="showModalFileName(this)" />
+                        </label>
+                    </div>
 
-                        <p class="text-xs text-slate-500">
-                            Masukkan data pemeriksaan laboratorium
+                    {{-- RINGKASAN PETUNJUK FORMAT KOLOM --}}
+                    <div class="rounded-xl border border-slate-100 bg-slate-50/80 p-3.5 text-xs text-slate-600 space-y-1.5">
+                        <div class="font-bold text-slate-700 flex items-center gap-1.5">
+                            <span>💡</span> Format Kolom Excel yang Didukung:
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                            Kolom: <strong>provinsi</strong>, <strong>kabupaten</strong>, <strong>alamat</strong>, <strong>jenis_nyamuk</strong>, <strong>insektisida</strong>, <strong>metode</strong>, <strong>sampel_diperiksa</strong>, <strong>bulan</strong>, <strong>tahun</strong>, status resistensi (<strong>resisten</strong>, <strong>rentan</strong>, <strong>toleran</strong>), dan <strong>publikasi</strong>.
                         </p>
-
                     </div>
 
-                </div>
+                    {{-- TOMBOL AKSI --}}
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                        <button type="button" onclick="closeModal('modalImportExcel')" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-2xs hover:bg-emerald-700 transition cursor-pointer">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                            <span>Mulai Impor ke Tabel</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="flex flex-wrap gap-2">
-
-                    <button type="button" id="btnTambahBaris" class="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                        + Tambah Baris
+    {{-- ========================================================================= --}}
+    {{-- MODAL TAMBAH DATA --}}
+    {{-- ========================================================================= --}}
+    <div id="modalTambahData" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 transition-all">
+        <div class="min-h-full flex items-center justify-center py-6 w-full">
+            <div class="relative w-full max-w-3xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-100 my-auto">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-lg">
+                            🔬
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Tambah Data Uji Resistensi</h3>
+                            <p class="text-xs text-slate-500">Isi formulir pemeriksaan laboratorium dan lokasi survei vektor</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeModal('modalTambahData')" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition" title="Tutup">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
-
                 </div>
 
+                <form method="POST" action="{{ route('input.store') }}" autocomplete="off" class="mt-6 space-y-5">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                        {{-- BULAN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Bulan Pemeriksaan *</label>
+                            <select name="bulan" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                @foreach ($daftarBulan as $b)
+                                    <option value="{{ $b }}" {{ $bulanAktif == $b ? 'selected' : '' }}>
+                                        {{ $b }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- TAHUN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun *</label>
+                            <input type="number" name="tahun" value="{{ $tahun == 'Semua' ? date('Y') : $tahun }}" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- PROVINSI --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Provinsi *</label>
+                            <select id="tambahProvinsi" name="provinsi_id" onchange="fetchKabupatenForTambah(this.value)" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Provinsi --</option>
+                                @foreach ($provinsis as $p)
+                                    <option value="{{ $p->id }}">{{ $p->nama_provinsi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- KABUPATEN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kabupaten / Kota *</label>
+                            <select id="tambahKabupaten" name="kabupaten_id" required disabled class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed transition">
+                                <option value="">-- Pilih Provinsi Dahulu --</option>
+                            </select>
+                        </div>
+
+                        {{-- ALAMAT / LOKASI --}}
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                                Alamat / Lokasi Survei
+                            </label>
+                            <textarea name="alamat" rows="2" autocomplete="off" placeholder="Contoh: RT 03/RW 02 Desa Sukamaju, Puskesmas Melati / Lokasi Penangkapan Vektor" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400"></textarea>
+                            <p class="mt-1.5 text-[11px] text-slate-400 flex items-center gap-1">
+                                <span>📍</span> Alamat ini akan ditampilkan di popup peta sebaran dashboard saat titik lokasi diklik.
+                            </p>
+                        </div>
+
+                        {{-- JENIS NYAMUK --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jenis Nyamuk *</label>
+                            <select name="jenis_nyamuk" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Jenis Nyamuk --</option>
+                                @foreach ($daftarNyamuk as $nyamuk)
+                                    <option value="{{ $nyamuk }}">{{ $nyamuk }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- INSEKTISIDA --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Insektisida *</label>
+                            <select name="insektisida" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Insektisida --</option>
+                                @foreach ($daftarInsektisida as $ins)
+                                    <option value="{{ $ins }}">{{ $ins }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- METODE --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Metode *</label>
+                            <select name="metode" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Metode --</option>
+                                @foreach ($daftarMetode as $met)
+                                    <option value="{{ $met }}">{{ $met }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- JUMLAH SAMPEL --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jumlah Sampel Diperiksa *</label>
+                            <input type="number" name="sampel_diperiksa" min="1" required autocomplete="off" placeholder="Contoh: 100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
+                        <div class="md:col-span-2 rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                                    Status Kerentanan Uji *
+                                </label>
+                                <span class="text-[11px] font-medium text-slate-400">Pilih salah satu kategori hasil uji</span>
+                            </div>
+                            <select name="status" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Status Kerentanan --</option>
+                                <option value="Resisten">🔴 Resisten</option>
+                                <option value="Rentan">🟢 Rentan</option>
+                                <option value="Toleran">🟡 Toleran</option>
+                            </select>
+                            <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                <span class="font-medium text-slate-600">Panduan Kategori:</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-semibold border border-rose-200 text-[11px]">Resisten</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 text-[11px]">Rentan</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-semibold border border-amber-200 text-[11px]">Toleran/Terduga Resisten</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeModal('modalTambahData')" class="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition shadow-2xs">
+                            Batal
+                        </button>
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 transition">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Simpan Data
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            {{-- FORM --}}
-            <form id="formInput" method="POST" action="{{ route('input.store') }}">
-                @csrf
-
-                {{-- TABLE WRAPPER --}}
-                <div class="overflow-x-auto">
-
-                    <table class="min-w-[1500px] w-full border-collapse">
-
-                        {{-- TABLE HEAD --}}
-                        <thead>
-                            <tr class="border-b border-slate-200 bg-slate-50">
-
-                                <th class="w-16 px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    No
-                                </th>
-
-                                <th  class="min-w-[220px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Provinsi
-                                </th>
-
-                                <th class="min-w-[220px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Kota/Kab
-                                </th>
-
-                                <th class="min-w-[190px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-
-                                    Jenis Nyamuk
-                                </th>
-
-                                <th class="min-w-[230px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500>">
-                                    Insektisida
-                                </th>
-
-                                <th class="min-w-[190px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Metode
-                                </th>
-
-                                <th class="min-w-[170px] px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Sampel Diperiksa
-                                </th>
-
-                                <th class="w-24 px-4 py-4 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Aksi
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        {{-- TABLE BODY --}}
-                        <tbody id="tableBody">
-
-                            {{-- BARIS PERTAMA --}}
-                            <tr class="entry-row border-b border-slate-100 transition hover:bg-slate-50">
-
-                                {{-- NO --}}
-                                <td class="row-number px-4 py-4 align-top text-sm font-semibold text-slate-600">
-                                    1
-                                </td>
-
-                                {{-- PROVINSI --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <select 
-                                        name="rows[0][provinsi_id]" 
-                                        class="provinsi w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"      
-                                        required>
-
-                                        <option value="">
-                                            Pilih Provinsi
-                                        </option>
-
-                                        @foreach ($provinsis as $provinsi)
-
-                                            <option value="{{ $provinsi->id }}">
-                                                {{ $provinsi->nama_provinsi }}
-                                            </option>
-
-                                        @endforeach
-
-                                    </select>
-
-                                </td>
-
-
-                                {{-- KABUPATEN --}}
-
-                                <td class="px-4 py-4  align-top">
-
-                                    <select name="rows[0][kabupaten_id]" class="kabupaten w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2.5 text-sm text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed"
-                                        disabled
-                                        required>
-
-                                        <option value="">
-                                            Pilih Provinsi Terlebih Dahulu
-                                        </option>
-
-                                    </select>
-
-                                </td>
-
-
-                                {{-- Jenis Nyamuk --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <select 
-                                        name="rows[0][jenis_nyamuk]" 
-                                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Pilih Jenis
-                                        </option>
-
-                                        <option value="Ae. aegypti">
-                                            Ae. aegypti
-                                        </option>
-
-                                        <option value="Culex sp">
-                                            Culex sp
-                                        </option>
-
-                                        <option value="Anhopheles">
-                                            Anhopheles
-                                        </option>
-
-                                        <option value="Aedes sp">
-                                            Aedes sp
-                                        </option>
-
-                                        <option value="An. Farauti">
-                                            An. Farauti
-                                        </option>
-
-                                        <option value="An. Vagus">
-                                            An. Vagus
-                                        </option>
-
-                                        <option value="An. tessellatus">
-                                            An. tessellatus
-                                        </option>
-
-                                        <option value="An. sundaicus s.I">
-                                            An. sundaicus s.I
-                                        </option>
-
-                                        <option value="An. punctulatus s.I.">
-                                            An. punctulatus s.I.
-                                        </option>
-
-                                        <option value="An. peditaeniatus">
-                                            An. peditaeniatus
-                                        </option>
-
-                                        <option value="An. parensis">
-                                            An. parensis
-                                        </option>
-
-                                        <option value="An. letifer">
-                                            An. letifer
-                                        </option>
-
-                                        <option value="An. koliensis">
-                                            An. koliensis
-                                        </option>
-
-                                        <option value="An. kochi">
-                                            An. kochi
-                                        </option>
-
-                                        <option value="An. indefinitus">
-                                            An. indefinitus
-                                        </option>
-
-                                        <option value="An. hyrcanus s.I.">
-                                            An. hyrcanus s.I.
-                                        </option>
-
-                                        <option value="An. farauti s.s">
-                                            An. farauti s.s
-                                        </option>
-
-                                        <option value="An. barbirostris">
-                                            An. barbirostris
-                                        </option>
-
-                                        <option value="An. aconitus">
-                                            An. aconitus
-                                        </option>
-
-                                        <option value="An. Albopictus">
-                                            An. Albopictus
-                                        </option>
-
-                                    </select>
-
-                                </td>
-
-                                {{-- INSEKTISIDA --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <select 
-                                        name="rows[0][insektisida]" 
-                                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Pilih Insektisida
-                                        </option>
-
-                                        <option value="Cypermethrin">
-                                            Cypermethrin
-                                        </option>
-
-                                        <option value="Lamdacyhalothrin">
-                                            Lamdacyhalothrin
-                                        </option>
-
-                                        <option value="Deltamethrin">
-                                            Deltamethrin
-                                        </option>
-
-                                        <option value="Alphacypermethrin">
-                                            Alphacypermethrin
-                                        </option>
-
-                                        <option value="Cyfluthrin">
-                                            Cyfluthrin
-                                        </option>
-
-                                        <option value="Permethrin">
-                                           Permethrin
-                                        </option>
-
-                                        <option value="Malathion">
-                                           Malathion
-                                        </option>
-
-                                        <option value="Deltamethrin 0,025%">
-                                           Deltamethrin 0,025%
-                                        </option>
-
-                                        <option value="Lambda-cyhalothrin 0,0025%">
-                                           Lambda-cyhalothrin 0,0025%
-                                        </option>
-
-                                        <option value="Temefos (Abate)">
-                                           Temefos (Abate)
-                                        </option>
-
-                                        <option value="Bendiocarb">
-                                           Bendiocarb
-                                        </option>
-
-                                        <option value="Sipermethrin">
-                                           Sipermethrin
-                                        </option>
-
-                                    </select>
-
-                                </td>
-
-
-                                {{-- METODE --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <select 
-                                        name="rows[0][metode]" 
-                                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Pilih Metode
-                                        </option>
-
-                                        <option value="Sequencing">
-                                            Sequencing
-                                        </option>
-
-                                        <option value="WHO Tube Bioassay">
-                                            WHO Tube Bioassay
-                                        </option>
-
-                                        <option value="WHO larval bioassay">
-                                            WHO larval bioassay
-                                        </option>
-
-                                        <option value="WHO susceptibilitity test">
-                                            WHO susceptibilitity test
-                                        </option>
-
-                                        <option value="WHO test kit_adullts">
-                                            WHO test kit_adults
-                                        </option>
-
-                                        <option value="CDC bottle_adults">
-                                            WHO bottle_adults
-                                        </option>
-
-                                        <option value="CDC bottle bioassay">
-                                            CDC bottle bioassay
-                                        </option>
-
-                                        <option value="WHO standars bioassay">
-                                            WHO standards bioassay
-                                        </option>
-
-                                    </select>
-
-                                </td>
-
-                                {{-- JUMLAH SAMPEL --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <input type="number" name="rows[0][sampel_diperiksa]" min="1" placeholder="0"
-                                        class="w-full
-                                               rounded-lg
-                                               border
-                                               border-slate-300
-                                               bg-white
-                                               px-3
-                                               py-2.5
-                                               text-sm
-                                               focus:border-blue-500
-                                               focus:outline-none
-                                               focus:ring-2
-                                               focus:ring-blue-100"
-                                        required
-                                    >
-
-                                </td>
-
-                                {{-- AKSI --}}
-                                <td class="px-4 py-4 align-top">
-
-                                    <button type="button" class="btnHapus rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50"
-                                        disabled
-                                    >
-                                        Hapus
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                {{-- FOOTER FORM --}}
-                <div class="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 bg-slate-200 px-5 py-4">
-
-                    <p class="text-xs text-slate-500">
-                        Gunakan tombol
-                        <strong>
-                            + Tambah Baris
-                        </strong>
-                        untuk menambahkan data lainnya.
-                    </p>
-
-                    <button type="submit" class="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                        Simpan Semua
+        </div>
+    </div>
+
+    {{-- ========================================================================= --}}
+    {{-- MODAL EDIT DATA --}}
+    {{-- ========================================================================= --}}
+    <div id="modalEditData" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 transition-all">
+        <div class="min-h-full flex items-center justify-center py-6 w-full">
+            <div class="relative w-full max-w-3xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-100 my-auto">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 font-bold text-lg">
+                            ✏️
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Edit Data Uji Resistensi</h3>
+                            <p class="text-xs text-slate-500">Perbarui hasil pemeriksaan laboratorium dan lokasi survei</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeModal('modalEditData')" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition" title="Tutup">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
-
                 </div>
 
-            </form>
+                <form id="formEditData" method="POST" autocomplete="off" class="mt-6 space-y-5">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                        {{-- BULAN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Bulan Pemeriksaan *</label>
+                            <select id="editBulan" name="bulan" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                @foreach ($daftarBulan as $b)
+                                    <option value="{{ $b }}">{{ $b }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-        </section>
+                        {{-- TAHUN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun *</label>
+                            <input type="number" id="editTahun" name="tahun" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
 
-        {{-- DATA YANG SUDAH TERSIMPAN --}}
-        <section class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
- 
-            <div class="border-b border-slate-200 px-5 py-4">
+                        {{-- PROVINSI --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Provinsi *</label>
+                            <select id="editProvinsi" name="provinsi_id" onchange="fetchKabupatenForEdit(this.value)" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Provinsi --</option>
+                                @foreach ($provinsis as $p)
+                                    <option value="{{ $p->id }}">{{ $p->nama_provinsi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                <h2 class="text-lg font-bold text-slate-800">
-                    Data Tersimpan
-                </h2>
+                        {{-- KABUPATEN --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kabupaten / Kota *</label>
+                            <select id="editKabupaten" name="kabupaten_id" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Kabupaten --</option>
+                            </select>
+                        </div>
 
-                <p class="mt-1 text-xs tetx-slate-500">
-                    Data yang sudah berhasil disimpan ke database.
-                </p>
+                        {{-- ALAMAT / LOKASI --}}
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                                Alamat / Lokasi Survei
+                            </label>
+                            <textarea id="editAlamat" name="alamat" rows="2" autocomplete="off" placeholder="Contoh: RT 03/RW 02 Desa Sukamaju, Puskesmas Melati / Lokasi Penangkapan Vektor" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400"></textarea>
+                            <p class="mt-1.5 text-[11px] text-slate-400 flex items-center gap-1">
+                                <span>📍</span> Alamat ini akan ditampilkan di popup peta sebaran dashboard saat titik lokasi diklik.
+                            </p>
+                        </div>
 
+                        {{-- JENIS NYAMUK --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jenis Nyamuk *</label>
+                            <select id="editJenisNyamuk" name="jenis_nyamuk" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Jenis Nyamuk --</option>
+                                @foreach ($daftarNyamuk as $nyamuk)
+                                    <option value="{{ $nyamuk }}">{{ $nyamuk }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- INSEKTISIDA --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Insektisida *</label>
+                            <select id="editInsektisida" name="insektisida" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Insektisida --</option>
+                                @foreach ($daftarInsektisida as $ins)
+                                    <option value="{{ $ins }}">{{ $ins }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- METODE --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Metode *</label>
+                            <select id="editMetode" name="metode" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Metode --</option>
+                                @foreach ($daftarMetode as $met)
+                                    <option value="{{ $met }}">{{ $met }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- JUMLAH SAMPEL --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jumlah Sampel Diperiksa *</label>
+                            <input type="number" id="editSampelDiperiksa" name="sampel_diperiksa" min="1" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
+                        <div class="md:col-span-2 rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                                    Status Kerentanan Uji *
+                                </label>
+                                <span class="text-[11px] font-medium text-slate-400">Pilih salah satu kategori hasil uji</span>
+                            </div>
+                            <select id="editStatus" name="status" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <option value="">-- Pilih Status Kerentanan --</option>
+                                <option value="Resisten">🔴 Resisten</option>
+                                <option value="Rentan">🟢 Rentan</option>
+                                <option value="Toleran">🟡 Toleran</option>
+                                <option value="Toleran/Terduga Resisten" class="hidden">🟡 Toleran/Terduga Resisten</option>
+                            </select>
+                            <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                <span class="font-medium text-slate-600">Panduan Kategori:</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-semibold border border-rose-200 text-[11px]">Resisten</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 text-[11px]">Rentan</span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-semibold border border-amber-200 text-[11px]">Toleran/Terduga Resisten</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeModal('modalEditData')" class="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition shadow-2xs">
+                            Batal
+                        </button>
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 transition">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Perbarui Data
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
 
-            <div class="overflow-x-auto">
-
-                <table class="w-full text-sm">
-
-                    <thead>
-                        <tr class="border-b border-slate-200 bg-slate-50">
-
-                            <th class="px-4 py-4 text-xs font-bold text-slate-500">
-                                No
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Provinsi
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Kota/Kab
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Jenis Nyamuk
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Insektisida
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Metode
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Sampel Diperiksa
-                            </th>
-
-                            <th class="px-4 py-3 text-xs font-bold text-slate-500">
-                                Aksi
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse ($data as $item)
-                            <tr class="border-b border-slate-100 hover:bg-slate-50">
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->no }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->provinsi->nama_provinsi ?? '-' }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->kabupaten->nama_kabupaten ?? '-' }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->jenis_nyamuk }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->insektisida }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    {{ $item->metode }}
-                                </td>
-
-                                <td class="px-4 py-3 text-sm font-semibold">
-                                    {{ $item->sampel_diperiksa }}
-                                </td>
-
-                                <td class="px-4 py-3">
-                                    <button
-                                        type="button"
-                                        onclick="openDeleteModal({{ $item->id }})"
-                                        class="rounded-md border border-red-500 px-3 py-2 text-sm text-red-500 transition hover:bg-red-50"
-                                    >
-                                        Hapus
-                                    </button>
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-                                <td colspan="8" class="px-4 py-10 text-center text-sm text-slate-400">
-                                    Belum ada data yang tersimpan.
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </main>
-
-            {{-- popup konfirmasi hapus --}}
-        <div
-            id="deleteModal"
-            class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/40 px-4">
-        
-            <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
-
+    {{-- ========================================================================= --}}
+    {{-- MODAL KONFIRMASI HAPUS --}}
+    {{-- ========================================================================= --}}
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-4 transition-all">
+        <div class="min-h-full flex items-center justify-center py-6 w-full">
+            <div class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 my-auto">
                 <div class="text-center">
-                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-                        <span class="text-xl font-bold text-red-600">
-                            !
-                        </span>
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-100">
+                        <span class="text-2xl font-bold text-rose-600">!</span>
                     </div>
 
-                    <h3 class="mt-4 text-lg font-bold text-slate-800">
-                        Hapus Data?
-                    </h3>
-
-                    <p class="mt-2 text-sm text-slate-500">
-                        Apakah kamu yakin ingin menghapus data ini?
-                        <br>
-                        Data yang sudah dihapus tidak dapat dikembalikan.
+                    <h3 class="mt-4 text-lg font-bold text-slate-800">Hapus Data Pemeriksaan?</h3>
+                    <p class="mt-2 text-xs text-slate-500">
+                        Tindakan ini tidak dapat dibatalkan. Data hasil uji resistensi ini akan dihapus permanen dari sistem.
                     </p>
-
                 </div>
 
                 <div class="mt-6 flex justify-center gap-3">
                     <button 
                         type="button"
                         onclick="closeDeleteModal()"
-                        class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        class="w-1/2 rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
                     >
                         Batal
                     </button>
 
-                    <form
-                        id="deleteForm"
-                        method="POST"
-                    >
+                    <form id="deleteForm" method="POST" class="w-1/2">
                         @csrf
-
                         @method('DELETE')
-
                         <button
                             type="submit"
-                            class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                            >
-                                Ya, Hapus
+                            class="w-full rounded-xl bg-rose-600 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 shadow-sm transition"
+                        >
+                            Ya, Hapus
                         </button>
-
                     </form>
-
                 </div>
-
             </div>
-            
         </div>
+    </div>
 
-
-    {{-- JAVASCRIPT --}}
+    {{-- SCRIPT INTERAKSI MODAL & DINAMIS KABUPATEN --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const tableBody = document.getElementById('tableBody');
-
-            const btnTambahBaris = document.getElementById('btnTambahBaris');
-
-                /*LOAD KABUPATEN*/
-                function loadKabupaten(
-                    provinsiSelect,
-                    kabupatenSelect
-                ) {
-
-                    const provinsiId =
-                        provinsiSelect.value;
-
-
-                    if (!provinsiId) {
-
-                        kabupatenSelect.innerHTML = `
-                            <option value="">
-                                Pilih Provinsi Terlebih Dahulu
-                            </option>
-                        `;
-
-                        kabupatenSelect.disabled =
-                            true;
-
-                        return;
-                    }
-
-
-                    kabupatenSelect.innerHTML = `
-                        <option value="">
-                            Memuat Kabupaten...
-                        </option>
-                    `;
-
-                    kabupatenSelect.disabled =
-                        true;
-
-
-                    fetch(
-                        `/kabupaten/${provinsiId}`
-                    )
-
-                    .then(response => {
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                'Gagal mengambil data kabupaten'
-                            );
-
-                        }
-
-                        return response.json();
-
-                    })
-
-                    .then(data => {
-
-                        kabupatenSelect.innerHTML = `
-                            <option value="">
-                                Pilih Kota/Kabupaten
-                            </option>
-                        `;
-
-
-                        if (data.length === 0) {
-
-                            kabupatenSelect.innerHTML = `
-                                <option value="">
-                                    Kabupaten tidak tersedia
-                                </option>
-                            `;
-
-                            kabupatenSelect.disabled =
-                                true;
-
-                            return;
-                        }
-
-
-                        data.forEach(
-                            function (item) {
-
-                                const option =
-                                    document.createElement(
-                                        'option'
-                                    );
-
-                                option.value =
-                                    item.id;
-
-                                option.textContent =
-                                    item.nama_kabupaten;
-
-                                kabupatenSelect.appendChild(
-                                    option
-                                );
-
-                            }
-                        );
-
-
-                        kabupatenSelect.disabled =
-                            false;
-
-                    })
-
-                    .catch(error => {
-
-                        console.error(
-                            'ERROR:',
-                            error
-                        );
-
-
-                        kabupatenSelect.innerHTML = `
-                            <option value="">
-                                Gagal memuat Kabupaten
-                            </option>
-                        `;
-
-
-                        kabupatenSelect.disabled =
-                            true;
-
-                    });
-
-                }
-
-
-                /*EVENT PROVINSI*/
-                function attachProvinsiEvent(
-                    row
-                ) {
-
-                    const provinsi =
-                        row.querySelector(
-                            '.provinsi'
-                        );
-
-                    const kabupaten =
-                        row.querySelector(
-                            '.kabupaten'
-                        );
-
-
-                    if (!provinsi ||
-                        !kabupaten) {
-                        return;
-                    }
-
-
-                    provinsi.addEventListener(
-                        'change',
-                        function () {
-
-                            loadKabupaten(
-                                provinsi,
-                                kabupaten
-                            );
-
-                        }
-                    );
-
-                }
-
-
-                /*UPDATE NOMOR*/
-                function updateNomor() {
-
-                    const rows =
-                        tableBody.querySelectorAll(
-                            '.entry-row'
-                        );
-
-
-                    rows.forEach(
-                        function (row, index) {
-
-                            const number =
-                                row.querySelector(
-                                    '.row-number'
-                                );
-
-                            if (number) {
-
-                                number.textContent =
-                                    index + 1;
-
-                            }
-
-                        }
-                    );
-
-
-                    const buttons =
-                        tableBody.querySelectorAll(
-                            '.btnHapus'
-                        );
-
-
-                    buttons.forEach(
-                        function (button) {
-
-                            button.disabled =
-                                rows.length <= 1;
-
-                        }
-                    );
-
-                }
-
-
-                /*EVENT HAPUS*/
-                function attachHapusEvent(
-                    row
-                ) {
-
-                    const button =
-                        row.querySelector(
-                            '.btnHapus'
-                        );
-
-
-                    if (!button) {
-                        return;
-                    }
-
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-
-                            const rows =
-                                tableBody.querySelectorAll(
-                                    '.entry-row'
-                                );
-
-
-                            if (rows.length <= 1) {
-                                return;
-                            }
-
-
-                            row.remove();
-
-                            updateNomor();
-
-                        }
-                    );
-
-                }
-
-
-                /*TAMBAH BARIS*/
-                btnTambahBaris.addEventListener(
-                    'click',
-                    function () {
-
-                        const rows =
-                            tableBody.querySelectorAll(
-                                '.entry-row'
-                            );
-
-                        const index =
-                            rows.length;
-
-
-                        const row =
-                            document.createElement(
-                                'tr'
-                            );
-
-
-                        row.className =
-                            'entry-row border-b border-slate-100 hover:bg-slate-50';
-
-
-                        row.innerHTML = `
-
-                            <td
-                                class="row-number
-                                       px-4
-                                       py-4
-                                       align-top
-                                       text-sm
-                                       font-semibold
-                                       text-slate-600"
-                            >
-                                ${index + 1}
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <select
-                                    name="rows[${index}][provinsi_id]"
-                                    class="provinsi
-                                           w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-white
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Pilih Provinsi
-                                    </option>
-
-                                    @foreach ($provinsis as $provinsi)
-
-                                        <option
-                                            value="{{ $provinsi->id }}"
-                                        >
-                                            {{ $provinsi->nama_provinsi }}
-                                        </option>
-
-                                    @endforeach
-
-                                </select>
-
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <select
-                                    name="rows[${index}][kabupaten_id]"
-                                    class="kabupaten
-                                           w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-slate-100
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    disabled
-                                    required
-                                >
-
-                                    <option value="">
-                                        Pilih Provinsi Terlebih Dahulu
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <select
-                                    name="rows[${index}][jenis_nyamuk]"
-                                    class="w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-white
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Pilih Jenis Nyamuk
-                                    </option>
-
-                                    <option value="Ae. aegypti">
-                                        Ae. aegypti
-                                    </option>
-
-                                    <option value="Culex sp">
-                                        Culex sp
-                                    </option>
-
-                                    <option value="Anhopheles">
-                                        Anhopheles
-                                    </option>
-
-                                    <option value="Aedes sp">
-                                        Aedes sp
-                                    </option>
-
-                                    <option value="Culex">
-                                        Culex
-                                    </option>
-
-                                    <option value="An. Farauti">
-                                        An. Farauti
-                                    </option>
-
-                                    <option value="An. Vagus">
-                                        An. Vagus
-                                    </option>
-
-                                    <option value="An. tessellatus">
-                                        An. tessellatus
-                                    </option>
-
-                                    <option value="An. sundaicus s.I.">
-                                        An. sundaicus s.I.
-                                    </option>
-
-                                    <option value="An. punctulatus">
-                                        An. punctulatus
-                                    </option>
-
-                                    <option value="An. peditaeniatus">
-                                        An. peditaeniatus
-                                    </option>
-
-                                    <option value="An. parensis">
-                                        An. parensis
-                                    </option>
-
-                                    <option value="An. letifer">
-                                        An. letifer
-                                    </option>
-
-                                    <option value="An. koliensis">
-                                        An. koliensis
-                                    </option>
-
-                                    <option value="An. kochi">
-                                        An. kochi
-                                    </option>
-
-                                    <option value="An. indefinitus">
-                                        An. indefinitus
-                                    </option>
-
-                                    <option value="An. hyrcanus s.I.">
-                                        An. hyrcanus s.I.
-                                    </option>
-
-                                    <option value="An. farauti s.s">
-                                        An. farauti s.s
-                                    </option>
-
-                                    <option value="An. barbirostris">
-                                        An. barbirostris
-                                    </option>
-
-                                    <option value="An. aconitus">
-                                        An. aconitus
-                                    </option>
-
-                                    <option value="An. Albopictus">
-                                        Ae. aegypti
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <select
-                                    name="rows[${index}][insektisida]"
-                                    class="w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-white
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Pilih Insektisida
-                                    </option>
-
-                                    <option value="Cypermethrin">
-                                        Cypermethrin
-                                    </option>
-
-                                    <option value="Lamdacyhalothrin">
-                                        Lamdacyhalothrin
-                                    </option>
-
-                                    <option value="Deltamethrin">
-                                        Deltamethrin
-                                    </option>
-
-                                    <option value="Alphacypermethrin">
-                                        Alphacypermethrin
-                                    </option>
-
-                                    <option value="Cyfluthrin">
-                                        Cyfluthrin
-                                    </option>
-
-                                    <option value="Permethrin">
-                                        Permethrin
-                                    </option>
-
-                                    <option value="Malathion">
-                                        Malathion
-                                    </option>
-
-                                    <option value="Deltamethrin 0,025%">
-                                        Deltamethrin 0,025%
-                                    </option>
-
-                                    <option value="Lambda-cyhalothrin 0,0025%">
-                                        Lambda-cyhalothrin 0,0025%
-                                    </option>
-
-                                    <option value="Temefos (Abate)">
-                                        Temefos (Abate)
-                                    </option>
-
-                                    <option value="Bendiocarb">
-                                        Bendiocarb
-                                    </option>
-
-                                    <option value="Sipermethrin">
-                                        Sipermethrin
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <select
-                                    name="rows[${index}][metode]"
-                                    class="w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-white
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Pilih Metode
-                                    </option>
-
-                                    <option value="Sequencing">
-                                        Sequencing
-                                    </option>
-
-                                    <option value="WHO Tube Bioassay">
-                                        WHO Tube Bioassay
-                                    </option>
-
-                                    <option value="WHO larval bioassay">
-                                        WHO larval bioasssay
-                                    </option>
-
-                                    <option value="WHO susceptibilitity test">
-                                        WHO susceptibilitity test
-                                    </option>
-
-                                    <option value="WHO test kit_adults">
-                                        WHO test kit_adults
-                                    </option>
-
-                                    <option value="CDC bottle_adults">
-                                        CDC bottle_adults
-                                    </option>
-
-                                    <option value="CDC bottle bioassay">
-                                        CDC bottle bioassay
-                                    </option>
-
-                                    <option value="WHO standard bioassay">
-                                        WHO standard bioassay
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-                            <td class="px-4 py-4 align-top">
-
-                                <input
-                                    type="number"
-                                    name="rows[${index}][sampel_diperiksa]"
-                                    min="1"
-                                    placeholder="0"
-                                    class="w-full
-                                           rounded-lg
-                                           border
-                                           border-slate-300
-                                           bg-white
-                                           px-3
-                                           py-2.5
-                                           text-sm"
-                                    required
-                                >
-
-                            </td>
-
-
-                            <td class="px-4 py-4 align-top">
-
-                                <button
-                                    type="button"
-                                    class="btnHapus
-                                           rounded-lg
-                                           border
-                                           border-red-200
-                                           px-3
-                                           py-2
-                                           text-xs
-                                           font-semibold
-                                           text-red-600
-                                           hover:bg-red-50"
-                                >
-                                    Hapus
-                                </button>
-
-                            </td>
-
-                        `;
-
-
-                        tableBody.appendChild(
-                            row
-                        );
-
-
-                        attachProvinsiEvent(
-                            row
-                        );
-
-                        attachHapusEvent(
-                            row
-                        );
-
-                        updateNomor();
-
-                    }
-                );
-
-
-                /*BARIS PERTAMA*/
-                const firstRow =
-                    tableBody.querySelector(
-                        '.entry-row'
-                    );
-
-
-                attachProvinsiEvent(
-                    firstRow
-                );
-
-
-                attachHapusEvent(
-                    firstRow
-                );
-
-
-                updateNomor();
-
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             }
-        );
+        }
 
-    </script>
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
 
-    <script>
-        window.openDeleteModal = function(id)
-        {
+        function showModalFileName(input) {
+            const preview = document.getElementById('modalFileNamePreview');
+            const text = document.getElementById('modalFileNameText');
+            if (input.files && input.files[0]) {
+                text.textContent = input.files[0].name + ' (' + (input.files[0].size / 1024).toFixed(1) + ' KB)';
+                preview.classList.remove('hidden');
+                preview.classList.add('inline-flex');
+            } else {
+                preview.classList.add('hidden');
+                preview.classList.remove('inline-flex');
+            }
+        }
+
+        function fetchKabupatenForTambah(provinsiId) {
+            const kabSelect = document.getElementById('tambahKabupaten');
+            kabSelect.innerHTML = '<option value="">Memuat data kabupaten...</option>';
+            kabSelect.disabled = true;
+
+            if (!provinsiId) {
+                kabSelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
+                return;
+            }
+
+            fetch('/kabupaten/' + provinsiId)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<option value="">-- Pilih Kabupaten / Kota --</option>';
+                    data.forEach(kab => {
+                        html += `<option value="${kab.id}">${kab.nama_kabupaten}</option>`;
+                    });
+                    kabSelect.innerHTML = html;
+                    kabSelect.disabled = false;
+                    kabSelect.classList.remove('bg-slate-50');
+                })
+                .catch(() => {
+                    kabSelect.innerHTML = '<option value="">Gagal memuat kabupaten</option>';
+                });
+        }
+
+        function fetchKabupatenForEdit(provinsiId, selectedKabId = null) {
+            const kabSelect = document.getElementById('editKabupaten');
+            kabSelect.innerHTML = '<option value="">Memuat data kabupaten...</option>';
+
+            if (!provinsiId) {
+                kabSelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
+                return;
+            }
+
+            fetch('/kabupaten/' + provinsiId)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<option value="">-- Pilih Kabupaten / Kota --</option>';
+                    data.forEach(kab => {
+                        const isSelected = selectedKabId && kab.id == selectedKabId ? 'selected' : '';
+                        html += `<option value="${kab.id}" ${isSelected}>${kab.nama_kabupaten}</option>`;
+                    });
+                    kabSelect.innerHTML = html;
+                })
+                .catch(() => {
+                    kabSelect.innerHTML = '<option value="">Gagal memuat kabupaten</option>';
+                });
+        }
+
+        function openEditModal(item) {
+            const form = document.getElementById('formEditData');
+            form.action = '/input/' + item.id;
+
+            document.getElementById('editBulan').value = item.bulan || '';
+            document.getElementById('editTahun').value = item.tahun || '';
+            document.getElementById('editProvinsi').value = item.provinsi_id || '';
+            document.getElementById('editAlamat').value = item.alamat || '';
+            document.getElementById('editJenisNyamuk').value = item.jenis_nyamuk || '';
+            document.getElementById('editInsektisida').value = item.insektisida || '';
+            document.getElementById('editMetode').value = item.metode || '';
+            let currentStatus = item.status || '';
+            if (['Toleran', 'Terduga Resisten', 'Toleran/Terduga Resisten'].includes(currentStatus)) {
+                document.getElementById('editStatus').value = 'Toleran';
+            } else {
+                document.getElementById('editStatus').value = currentStatus;
+            }
+
+            // Ambil kabupaten untuk provinsi yang dipilih dan set kabupatennya
+            if (item.provinsi_id) {
+                fetchKabupatenForEdit(item.provinsi_id, item.kabupaten_id);
+            }
+
+            openModal('modalEditData');
+        }
+
+        window.openDeleteModal = function(id) {
             const modal = document.getElementById('deleteModal');
             const form = document.getElementById('deleteForm');
 
-            if (!modal || !form) {
-                console.error('Popup atau form hapus tidak ditemukan');
-                return;
-            }
+            if (!modal || !form) return;
 
-            //menemukan data yg akan dihapus
             form.action = '/input/' + id;
-
-            //tampilan data yg akan dihapus
             modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         };
-        
-        window.closeDeleteModal = function()
-        {
+
+        window.closeDeleteModal = function() {
             const modal = document.getElementById('deleteModal');
-
-            if (!modal) {
-                return;
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
             }
-
-            //sembunyikan popup
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
         };
     </script>
 

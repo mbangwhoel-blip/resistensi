@@ -19,8 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'role',
+        'status',
+        'telepon',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     /**
@@ -40,5 +46,22 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'password' => 'hashed',
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPetugas(): bool
+    {
+        return in_array($this->role, ['admin', 'petugas']);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'aktif';
+    }
 }

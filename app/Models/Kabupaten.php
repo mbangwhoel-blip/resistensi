@@ -16,6 +16,26 @@ class Kabupaten extends Model
         'longitude',
     ];
 
+    public function setNamaKabupatenAttribute($value)
+    {
+        $val = trim($value ?? '');
+        $val = ucwords(strtolower($val));
+        $val = preg_replace_callback('/-([a-z])/', function ($matches) {
+            return '-' . strtoupper($matches[1]);
+        }, $val);
+        $this->attributes['nama_kabupaten'] = $val;
+    }
+
+    public function getNamaKabupatenAttribute($value)
+    {
+        $val = trim($value ?? '');
+        $val = ucwords(strtolower($val));
+        $val = preg_replace_callback('/-([a-z])/', function ($matches) {
+            return '-' . strtoupper($matches[1]);
+        }, $val);
+        return $val;
+    }
+
     public function provinsi()
     {
         return $this->belongsTo(Provinsi::class);

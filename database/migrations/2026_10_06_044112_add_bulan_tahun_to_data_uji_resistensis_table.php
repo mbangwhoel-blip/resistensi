@@ -9,14 +9,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_uji_resistensis', function (Blueprint $table) {
-            $table->integer('tahun')->after('bulan');
+            if (!Schema::hasColumn('data_uji_resistensis', 'bulan')) {
+                $table->string('bulan')->nullable()->after('no');
+            }
+            if (!Schema::hasColumn('data_uji_resistensis', 'tahun')) {
+                $table->integer('tahun')->nullable()->after('bulan');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('data_uji_resistensis', function (Blueprint $table) {
-            $table->dropColumn('tahun');
+            if (Schema::hasColumn('data_uji_resistensis', 'bulan')) {
+                $table->dropColumn('bulan');
+            }
+            if (Schema::hasColumn('data_uji_resistensis', 'tahun')) {
+                $table->dropColumn('tahun');
+            }
         });
     }
 };

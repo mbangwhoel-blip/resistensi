@@ -11,6 +11,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProvinsiSeeder::class,
             KabupatenSeeder::class,
+            KoordinatKabupatenSeeder::class,
+            InstansiSeeder::class,
+            KategoriUjiSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
