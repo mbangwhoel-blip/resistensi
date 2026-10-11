@@ -103,18 +103,29 @@
                                 📤
                             </span>
                             <div>
-                                <h2 class="text-base font-bold text-slate-800">Unggah Berkas CSV</h2>
+                                <h2 class="text-base font-bold text-slate-800">Unggah Berkas Excel & CSV</h2>
                                 <p class="text-xs text-slate-500">Pilih berkas dari komputer atau seret file ke area upload</p>
                             </div>
                         </div>
 
-                        <a href="{{ route('import.template') }}"
-                           class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-xs">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            <span>Download Template CSV</span>
-                        </a>
+                        <div class="flex items-center gap-2">
+                            {{-- TEMPLATE EXCEL (XLSX) --}}
+                            <a href="{{ route('import.template', ['format' => 'xlsx']) }}"
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs"
+                               title="Download template Excel (.xlsx) dengan kolom rapi, warna header, dan garis tabel">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span>Template Excel (.xlsx)</span>
+                            </a>
+
+                            {{-- TEMPLATE CSV --}}
+                            <a href="{{ route('import.template', ['format' => 'csv']) }}"
+                               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-2xs"
+                               title="Download template dalam format CSV standar">
+                                <span>Template CSV</span>
+                            </a>
+                        </div>
                     </div>
 
                     <form action="{{ route('import.process') }}" method="POST" enctype="multipart/form-data">
@@ -222,9 +233,15 @@
                             </div>
                         </li>
                         <li class="flex items-start gap-2">
-                            <span class="rounded bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.5 text-[10px]">12</span>
+                            <span class="rounded bg-purple-100 text-purple-700 font-bold px-1.5 py-0.5 text-[10px]">12</span>
                             <div>
-                                <strong class="text-slate-800">publikasi:</strong> Status / sumber publikasi (Contoh: <em>Publikasi BBLK 2026, Jurnal Vektor, Laporan Surveilans Dinkes</em>).
+                                <strong class="text-slate-800">mutasi:</strong> Status mutasi genetik / kdr nyamuk (Contoh: <em>Ya, Tidak, -</em>).
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="rounded bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.5 text-[10px]">13</span>
+                            <div>
+                                <strong class="text-slate-800">publikasi:</strong> Status / sumber publikasi resmi (Contoh: <em>Publikasi BBLK 2026, Jurnal Vektor, Laporan Surveilans Dinkes</em>).
                             </div>
                         </li>
                     </ul>

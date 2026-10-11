@@ -17,6 +17,15 @@ class UserController extends Controller
         $search = $request->get('search');
         $roleFilter = $request->get('role', 'Semua');
         $statusFilter = $request->get('status', 'Semua');
+        $perPageRaw = $request->get('per_page', 10);
+
+        if ($perPageRaw === 'all' || (int)$perPageRaw >= 999999) {
+            $perPage = 999999;
+        } elseif (in_array((int)$perPageRaw, [5, 10, 25, 50, 100])) {
+            $perPage = (int)$perPageRaw;
+        } else {
+            $perPage = 10;
+        }
 
         $query = User::query()->orderBy('id', 'desc');
 
@@ -37,7 +46,7 @@ class UserController extends Controller
             $query->where('status', $statusFilter);
         }
 
-        $users = $query->paginate(12)->withQueryString();
+        $users = $query->paginate($perPage)->withQueryString();
 
         // Statistik ringkas pengguna
         $stats = [
@@ -49,7 +58,7 @@ class UserController extends Controller
             'nonaktif' => User::where('status', 'nonaktif')->count(),
         ];
 
-        return view('users', compact('users', 'search', 'roleFilter', 'statusFilter', 'stats'));
+        return view('users', compact('users', 'search', 'roleFilter', 'statusFilter', 'stats', 'perPage', 'perPageRaw'));
     }
 
     /**

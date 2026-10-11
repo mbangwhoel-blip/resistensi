@@ -34,14 +34,13 @@ class DataUjiResistensiController extends Controller
 
         $search = trim($request->get('search', ''));
 
-        // Filter Bulan
+        // Filter Bulan (Default: Semua Bulan)
         $bulanSekarang = $daftarBulan[(int)date('n') - 1];
-        if ($request->has('bulan')) {
+        if ($request->has('bulan') && $request->get('bulan') !== '') {
             $bulan = $request->get('bulan');
             if ($bulan === 'Semua bulan') $bulan = 'Semua';
         } else {
-            // Jika ada pencarian tanpa filter bulan eksplisit, jangan kunci bulan
-            $bulan = $search !== '' ? 'Semua' : $bulanSekarang;
+            $bulan = 'Semua';
         }
 
         // Filter Tahun
@@ -88,7 +87,16 @@ class DataUjiResistensiController extends Controller
         $totalFilteredItem = (clone $query)->count();
         $totalFilteredSampel = (clone $query)->sum('sampel_diperiksa');
 
-        $data = $query->latest('id')->paginate(10)->withQueryString();
+        $perPageRaw = $request->input('per_page', 10);
+        if ($perPageRaw === 'all' || (int)$perPageRaw >= 999999) {
+            $perPage = 999999;
+        } elseif (in_array((int)$perPageRaw, [5, 10, 25, 50, 100])) {
+            $perPage = (int)$perPageRaw;
+        } else {
+            $perPage = 10;
+        }
+
+        $data = $query->latest('id')->paginate($perPage)->withQueryString();
 
         // Data untuk statistik tahun berjalan / semua tahun
         if ($tahun !== 'Semua' && !empty($tahun)) {
@@ -119,7 +127,8 @@ class DataUjiResistensiController extends Controller
             'search',
             'daftarNyamuk',
             'daftarInsektisida',
-            'daftarMetode'
+            'daftarMetode',
+            'perPageRaw'
         ));
     }
 
@@ -139,6 +148,8 @@ class DataUjiResistensiController extends Controller
                 'metode' => 'required|string',
                 'sampel_diperiksa' => 'required|integer|min:1',
                 'status' => 'nullable|string|max:50',
+                'mutasi' => 'nullable|string|max:100',
+                'publikasi' => 'nullable|string|max:255',
             ], [
                 'provinsi_id.required' => 'Pilih provinsi.',
                 'kabupaten_id.required' => 'Pilih kota/kabupaten.',
@@ -171,6 +182,8 @@ class DataUjiResistensiController extends Controller
                 'metode' => $validated['metode'],
                 'sampel_diperiksa' => $validated['sampel_diperiksa'],
                 'status' => $validated['status'] ?? null,
+                'mutasi' => $validated['mutasi'] ?? null,
+                'publikasi' => $validated['publikasi'] ?? null,
             ]);
 
             return redirect()
@@ -189,6 +202,9 @@ class DataUjiResistensiController extends Controller
             'rows.*.insektisida' => 'required|string',
             'rows.*.metode' => 'required|string',
             'rows.*.sampel_diperiksa' => 'required|integer|min:1',
+            'rows.*.status' => 'nullable|string|max:50',
+            'rows.*.mutasi' => 'nullable|string|max:100',
+            'rows.*.publikasi' => 'nullable|string|max:255',
         ]);
 
         $bulan = $request->input('bulan');
@@ -217,6 +233,9 @@ class DataUjiResistensiController extends Controller
                     'insektisida' => $row['insektisida'],
                     'metode' => $row['metode'],
                     'sampel_diperiksa' => $row['sampel_diperiksa'],
+                    'status' => $row['status'] ?? null,
+                    'mutasi' => $row['mutasi'] ?? null,
+                    'publikasi' => $row['publikasi'] ?? null,
                 ]);
             }
         });
@@ -241,6 +260,8 @@ class DataUjiResistensiController extends Controller
             'metode' => 'required|string',
             'sampel_diperiksa' => 'required|integer|min:1',
             'status' => 'nullable|string|max:50',
+            'mutasi' => 'nullable|string|max:100',
+            'publikasi' => 'nullable|string|max:255',
         ], [
             'provinsi_id.required' => 'Pilih provinsi.',
             'kabupaten_id.required' => 'Pilih kota/kabupaten.',
@@ -265,6 +286,8 @@ class DataUjiResistensiController extends Controller
             'metode' => $validated['metode'],
             'sampel_diperiksa' => $validated['sampel_diperiksa'],
             'status' => $validated['status'] ?? null,
+            'mutasi' => $validated['mutasi'] ?? null,
+            'publikasi' => $validated['publikasi'] ?? null,
         ]);
 
         return redirect()

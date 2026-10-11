@@ -346,17 +346,16 @@
         <thead>
             <tr>
                 <th style="width: 3.5%;">No</th>
-                <th style="width: 7.5%;">Periode</th>
-                <th style="width: 8.5%;">Provinsi</th>
-                <th style="width: 9.5%;">Kabupaten / Kota</th>
-                <th style="width: 9.5%;">Desa / Alamat</th>
-                <th style="width: 8.5%;">Jenis Vektor</th>
+                <th style="width: 14%;">Kab/Prov</th>
+                <th style="width: 11%;">Alamat / Lokasi</th>
+                <th style="width: 9%;">Jenis Nyamuk</th>
                 <th style="width: 11%;">Insektisida</th>
                 <th style="width: 8%;">Metode</th>
                 <th style="width: 5%;">Sampel</th>
                 <th style="width: 7%;">Status</th>
-                <th style="width: 5.5%;">Mutasi</th>
-                <th style="width: 16.5%;">Publikasi</th>
+                <th style="width: 8%;">Periode</th>
+                <th style="width: 6.5%;">Mutasi</th>
+                <th style="width: 17%;">Publikasi</th>
             </tr>
         </thead>
         <tbody>
@@ -366,11 +365,10 @@
                 @endphp
                 <tr>
                     <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td style="text-align: center;">
-                        {{ $row->bulan ? $row->bulan : '-' }} {{ $row->tahun }}
+                    <td>
+                        <strong>{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</strong>
+                        <div style="font-size: 6.5pt; color: #64748b;">{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</div>
                     </td>
-                    <td>{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</td>
-                    <td>{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</td>
                     <td>{{ $row->alamat ? $row->alamat : '-' }}</td>
                     <td style="font-style: italic;">{{ $row->jenis_nyamuk ?: '-' }}</td>
                     <td>{{ $row->insektisida ?: '-' }}</td>
@@ -389,6 +387,10 @@
                             <span class="badge">{{ ucfirst($statVal ?: '-') }}</span>
                         @endif
                     </td>
+                    <td style="text-align: center;">
+                        <strong>{{ $row->bulan ? $row->bulan : '-' }}</strong>
+                        <div style="font-size: 6.5pt; color: #64748b;">{{ $row->tahun }}</div>
+                    </td>
                     <td style="text-align: center;">{{ $row->mutasi ?: '-' }}</td>
                     <td style="font-size: 6.2pt; word-break: break-all; word-wrap: break-word; text-align: left;">
                         {{ $row->publikasi ?: '-' }}
@@ -396,7 +398,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="12" style="text-align: center; padding: 20px; color: #64748b; font-style: italic;">
+                    <td colspan="11" style="text-align: center; padding: 20px; color: #64748b; font-style: italic;">
                         Tidak ada data hasil uji resistensi yang sesuai dengan kriteria filter yang dipilih.
                     </td>
                 </tr>

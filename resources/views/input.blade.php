@@ -82,6 +82,9 @@
                         @if(!empty($search))
                             <input type="hidden" name="search" value="{{ $search }}">
                         @endif
+                        @if(request('per_page'))
+                            <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                        @endif
 
                         {{-- FILTER BULAN --}}
                         <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 shadow-2xs hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition">
@@ -105,8 +108,8 @@
                             </select>
                         </div>
 
-                        @if($bulan != 'Semua' || $tahun != 'Semua' || !empty($search))
-                            <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition shadow-2xs" title="Reset filter ke bulan berjalan">
+                        @if($bulan != 'Semua' || $tahun != 'Semua' || !empty($search) || (request('per_page') && request('per_page') != 10))
+                            <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition shadow-2xs" title="Reset filter ke default">
                                 <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
@@ -287,9 +290,9 @@
                     </p>
                 </div>
 
-                {{-- TOOLBAR KANAN: KOTAK PENCARIAN + TOMBOL IMPORT EXCEL + TOMBOL TAMBAH DATA --}}
-                <div class="flex flex-wrap items-center gap-2.5">
-                    {{-- KOTAK PENCARIAN --}}
+                {{-- TOOLBAR KANAN: KOTAK PENCARIAN + KONTROL TAMPIL DATA + TOMBOL IMPORT EXCEL + TOMBOL TAMBAH DATA --}}
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                    {{-- KOTAK PENCARIAN (DIPENDEKKAN AGAR SEJAJAR SEBARIS) --}}
                     <form method="GET" action="{{ route('input') }}" class="relative flex items-center">
                         @if(request('bulan') && request('bulan') !== 'Semua')
                             <input type="hidden" name="bulan" value="{{ request('bulan') }}">
@@ -297,10 +300,13 @@
                         @if(request('tahun') && request('tahun') !== 'Semua')
                             <input type="hidden" name="tahun" value="{{ request('tahun') }}">
                         @endif
+                        @if(request('per_page'))
+                            <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                        @endif
                         
-                        <div class="relative w-64 sm:w-72">
-                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="relative w-36 sm:w-44 lg:w-48">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-400">
+                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
@@ -308,14 +314,14 @@
                                 type="text" 
                                 name="search" 
                                 value="{{ $search ?? '' }}"
-                                placeholder="Cari provinsi, kota, nyamuk, insektisida..." 
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2 pl-9 pr-8 text-xs font-medium text-slate-800 placeholder-slate-400 shadow-2xs transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                placeholder="Cari data..." 
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2 pl-8 pr-7 text-xs font-medium text-slate-800 placeholder-slate-400 shadow-2xs transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
                             >
                             @if(!empty($search))
-                                <a href="{{ route('input', ['bulan' => $bulan, 'tahun' => $tahun]) }}" 
-                                   class="absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400 hover:text-rose-500 transition" 
+                                <a href="{{ route('input', array_merge(['bulan' => $bulan, 'tahun' => $tahun], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" 
+                                   class="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400 hover:text-rose-500 transition" 
                                    title="Hapus pencarian">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </a>
@@ -323,14 +329,27 @@
                         </div>
                     </form>
 
+                    {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR - TANPA ICON & LABEL AGAR RINGKAS) --}}
+                    <select id="tablePageSizeSelect" 
+                            onchange="changeTablePageSize(this.value)" 
+                            class="rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-2 text-xs font-bold text-slate-700 shadow-2xs transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer"
+                            title="Pilih jumlah data per halaman">
+                        <option value="5" {{ (string)($perPageRaw ?? request('per_page', 10)) === '5' ? 'selected' : '' }}>5 data</option>
+                        <option value="10" {{ (string)($perPageRaw ?? request('per_page', 10)) === '10' ? 'selected' : '' }}>10 data</option>
+                        <option value="25" {{ (string)($perPageRaw ?? request('per_page', 10)) === '25' ? 'selected' : '' }}>25 data</option>
+                        <option value="50" {{ (string)($perPageRaw ?? request('per_page', 10)) === '50' ? 'selected' : '' }}>50 data</option>
+                        <option value="100" {{ (string)($perPageRaw ?? request('per_page', 10)) === '100' ? 'selected' : '' }}>100 data</option>
+                        <option value="all" {{ (string)($perPageRaw ?? request('per_page', 10)) === 'all' ? 'selected' : '' }}>Semua data</option>
+                    </select>
+
                     {{-- TOMBOL IMPORT EXCEL --}}
                     <button 
                         type="button" 
                         onclick="openModal('modalImportExcel')"
-                        class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-700 shadow-2xs transition hover:bg-emerald-600 hover:text-white hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300 cursor-pointer"
+                        class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-700 shadow-2xs transition hover:bg-emerald-600 hover:text-white hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300 cursor-pointer dark:bg-emerald-950/70 dark:border-emerald-700 dark:text-white"
                         title="Import data pemeriksaan dari berkas Excel (.xlsx / .csv)"
                     >
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="h-4 w-4 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                         <span>Import Excel</span>
@@ -345,117 +364,117 @@
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        <span>Tambah Data</span>
+                        <span>Input Data</span>
                     </button>
                 </div>
             </div>
 
             {{-- TABEL KONTEN --}}
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="border-b border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div class="overflow-x-auto bg-slate-50">
+                <table class="w-full text-left text-xs table-fixed">
+                    <thead class="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
-                            <th class="px-4 py-3.5 text-center w-12">No</th>
-                            <th class="px-4 py-3.5 whitespace-nowrap">Periode</th>
-                            <th class="px-4 py-3.5">Provinsi</th>
-                            <th class="px-4 py-3.5">Kota / Kab</th>
-                            <th class="px-4 py-3.5 min-w-[200px]">Alamat / Lokasi</th>
-                            <th class="px-4 py-3.5">Jenis Nyamuk</th>
-                            <th class="px-4 py-3.5">Insektisida</th>
-                            <th class="px-4 py-3.5">Metode</th>
-                            <th class="px-4 py-3.5 text-center">Sampel</th>
-                            <th class="px-4 py-3.5 text-center">Status</th>
-                            <th class="px-4 py-3.5 text-center w-28">Aksi</th>
+                            <th class="w-[4%] px-1.5 py-2.5 text-center text-slate-500">No</th>
+                            <th class="w-[13%] px-2 py-2.5 whitespace-nowrap">Kab/Prov</th>
+                            <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Alamat / Lokasi</th>
+                            <th class="w-[11%] px-1.5 py-2.5 whitespace-nowrap">Jenis Nyamuk</th>
+                            <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Insektisida / Metode</th>
+                            <th class="w-[6%] px-1 py-2.5 text-center whitespace-nowrap">Sampel</th>
+                            <th class="w-[10%] px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
+                            <th class="w-[9%] px-1 py-2.5 text-center whitespace-nowrap">Periode</th>
+                            <th class="w-[15%] px-1.5 py-2.5 text-center whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-slate-100 bg-white">
                         @forelse ($data as $item)
                             <tr class="hover:bg-slate-50/80 transition">
-                                <td class="px-4 py-3.5 text-center font-medium text-slate-600">
+                                <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
-                                <td class="px-4 py-3.5 text-xs whitespace-nowrap">
-                                    <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-700">
-                                        {{ $item->bulan }} {{ $item->tahun }}
-                                    </span>
+                                <td class="px-2 py-2 text-xs truncate">
+                                    <div class="font-bold text-slate-800 leading-tight truncate" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
+                                        {{ $item->kabupaten->nama_kabupaten ?? '-' }}
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
+                                        {{ $item->provinsi->nama_provinsi ?? '-' }}
+                                    </div>
                                 </td>
-                                <td class="px-4 py-3.5 font-medium text-slate-800">
-                                    {{ $item->provinsi->nama_provinsi ?? '-' }}
-                                </td>
-                                <td class="px-4 py-3.5 text-slate-700">
-                                    {{ $item->kabupaten->nama_kabupaten ?? '-' }}
-                                </td>
-                                <td class="px-4 py-3.5 text-slate-600">
+                                <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">
                                     @if (!empty($item->alamat))
-                                        <div class="flex items-start gap-1.5 text-xs text-slate-800 font-medium">
-                                            <span class="text-blue-500 mt-0.5 shrink-0">📍</span>
-                                            <span class="line-clamp-2" title="{{ $item->alamat }}">{{ $item->alamat }}</span>
-                                        </div>
+                                        <span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="{{ $item->alamat }}">
+                                            <span class="text-blue-500 shrink-0">📍</span>
+                                            <span class="truncate">{{ $item->alamat }}</span>
+                                        </span>
                                     @else
-                                        <span class="text-xs text-slate-400 italic">Belum diisi</span>
+                                        <span class="italic text-slate-400">Belum diisi</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3.5 whitespace-nowrap">
-                                    <span class="inline-block rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700">
+                                <td class="px-1.5 py-2 whitespace-nowrap truncate">
+                                    <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full" title="{{ $item->jenis_nyamuk }}">
                                         {{ $item->jenis_nyamuk }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-3.5 text-slate-700 text-xs">
-                                    {{ $item->insektisida }}
+                                <td class="px-2 py-2 text-xs truncate">
+                                    <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->insektisida ?? '-' }}">
+                                        {{ $item->insektisida ?? '-' }}
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->metode ?? '-' }}">
+                                        {{ $item->metode ?? '-' }}
+                                    </div>
                                 </td>
-                                <td class="px-4 py-3.5 text-slate-600 text-xs">
-                                    {{ $item->metode }}
-                                </td>
-                                <td class="px-4 py-3.5 text-center font-bold text-slate-800">
+                                <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">
                                     {{ number_format($item->sampel_diperiksa) }}
                                 </td>
-                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                <td class="px-1.5 py-2 text-center whitespace-nowrap">
                                     @if ($item->status === 'Resisten')
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2.5 py-1 text-xs font-bold text-rose-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
                                         </span>
                                     @elseif ($item->status === 'Rentan')
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
                                         </span>
                                     @elseif (in_array($item->status, ['Toleran/Terduga Resisten', 'Toleran', 'Terduga Resisten']))
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2.5 py-1 text-xs font-bold text-amber-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
                                         </span>
                                     @else
                                         <span class="text-xs text-slate-400 italic">-</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
-                                    <div class="flex items-center justify-center gap-1.5">
+                                <td class="px-1 py-2 text-center text-[11px] text-slate-600 font-medium whitespace-nowrap truncate">
+                                    {{ $item->bulan }} {{ $item->tahun }}
+                                </td>
+                                <td class="px-1.5 py-2 text-center whitespace-nowrap">
+                                    <div class="flex items-center justify-center gap-1">
                                         <button 
                                             type="button" 
                                             onclick='openEditModal(@json($item))'
-                                            class="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
+                                            class="inline-flex items-center gap-0.5 rounded-md border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-700 hover:bg-amber-100 transition shadow-2xs cursor-pointer"
                                             title="Edit Data"
                                         >
-                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
-                                            Edit
+                                            <span>Edit</span>
                                         </button>
                                         <button 
                                             type="button" 
                                             onclick="openDeleteModal({{ $item->id }})"
-                                            class="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition"
+                                            class="inline-flex items-center gap-0.5 rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 text-[11px] font-semibold text-rose-700 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
                                             title="Hapus Data"
                                         >
-                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                            Hapus
+                                            <span>Hapus</span>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11" class="px-6 py-12 text-center">
+                                <td colspan="9" class="px-6 py-12 text-center">
                                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3.5 border border-blue-100 shadow-2xs">
                                         @if(!empty($search))
                                             <svg class="h-7 w-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -474,10 +493,10 @@
                                             Tidak ditemukan hasil untuk kata kunci <span class="font-bold text-slate-700">"{{ $search }}"</span> pada filter periode saat ini.
                                         </p>
                                         <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-                                            <a href="{{ route('input', ['bulan' => 'Semua', 'tahun' => 'Semua', 'search' => $search]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                            <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua', 'search' => $search], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
                                                 🔍 Cari di Semua Periode
                                             </a>
-                                            <a href="{{ route('input', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+                                            <a href="{{ route('input', array_merge(['bulan' => $bulan, 'tahun' => $tahun], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
                                                 Hapus Kata Kunci
                                             </a>
                                         </div>
@@ -491,7 +510,7 @@
                                         </p>
                                         <div class="mt-4 flex flex-wrap items-center justify-center gap-2.5">
                                             @if($totalSemuaData > 0)
-                                                <a href="{{ route('input', ['bulan' => 'Semua', 'tahun' => 'Semua']) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                                <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua'], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
                                                     📊 Tampilkan Semua Periode ({{ number_format($totalSemuaData) }} Data)
                                                 </a>
                                             @endif
@@ -507,7 +526,7 @@
                                                 onclick="openModal('modalTambahData')" 
                                                 class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-2xs hover:bg-blue-700 transition cursor-pointer"
                                             >
-                                                + Tambah Data Baru
+                                                + Input Data
                                             </button>
                                         </div>
                                     @endif
@@ -520,7 +539,7 @@
 
             {{-- PAGINATION --}}
             @if ($data->hasPages() || $data->total() > 0)
-                <div class="border-t border-slate-200 bg-white px-6 py-4">
+                <div class="border-t border-slate-100 bg-white px-4 py-2.5">
                     {{ $data->links() }}
                 </div>
             @endif
@@ -541,12 +560,14 @@
                 {{-- HEADER MODAL --}}
                 <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                     <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 font-bold text-lg border border-emerald-100">
-                            📥
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100/80 text-emerald-700 dark:bg-emerald-900/80 dark:text-white font-bold border border-emerald-200/80 dark:border-emerald-700/60">
+                            <svg class="h-5 w-5 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800">Import Data dari Excel / CSV</h3>
-                            <p class="text-xs text-slate-500">Unggah berkas spreadsheet untuk memasukkan data uji resistensi ke sistem</p>
+                            <h3 class="text-lg font-bold text-slate-800">Import Data dari Excel</h3>
+                            <p class="text-xs text-slate-500">Unggah berkas spreadsheet Excel (.xlsx) untuk memasukkan data uji resistensi ke sistem</p>
                         </div>
                     </div>
                     <button type="button" onclick="closeModal('modalImportExcel')" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition" title="Tutup">
@@ -560,17 +581,28 @@
                 <form method="POST" action="{{ route('import.process') }}" enctype="multipart/form-data" class="mt-6 space-y-5">
                     @csrf
 
-                    {{-- DOWNLOAD TEMPLATE BANNER --}}
-                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/70 text-xs text-blue-900">
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-base">📋</span>
-                            <span>Gunakan template resmi untuk format kolom yang benar</span>
+                    {{-- DOWNLOAD TEMPLATE EXCEL BANNER --}}
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-700/60 shadow-xs">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                                    Template Resmi Excel (.xlsx)
+                                </h4>
+                                <p class="text-xs font-semibold text-slate-700 dark:text-emerald-200 mt-0.5">
+                                    Kolom sudah terformat rapi dan siap diisi data pemeriksaan
+                                </p>
+                            </div>
                         </div>
-                        <a href="{{ route('import.template') }}" class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700 transition shrink-0 shadow-2xs">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        <a href="{{ route('import.template', ['format' => 'xlsx']) }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 px-4 py-2.5 text-xs font-bold text-white transition shrink-0 shadow-xs cursor-pointer" title="Download template Excel (.xlsx) dengan kolom rapi dan border tabel">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
-                            <span>Unduh Template CSV</span>
+                            <span>Unduh Template Excel</span>
                         </a>
                     </div>
 
@@ -578,16 +610,16 @@
                     <div>
                         <label class="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer bg-slate-50/70 hover:bg-emerald-50/40 hover:border-emerald-400 transition">
                             <div class="flex flex-col items-center justify-center pt-4 pb-5 px-4 text-center">
-                                <div class="w-11 h-11 mb-2.5 rounded-xl bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-11 h-11 mb-2.5 rounded-xl bg-emerald-100/70 text-emerald-600 dark:bg-emerald-900/60 dark:text-white flex items-center justify-center animate-bounce">
+                                    <svg class="w-6 h-6 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                     </svg>
                                 </div>
                                 <p class="text-xs sm:text-sm text-slate-700 font-bold">
-                                    Pilih atau seret berkas spreadsheet ke sini
+                                    Pilih atau seret berkas spreadsheet Excel ke sini
                                 </p>
                                 <p class="text-[11px] text-slate-400 mt-1">
-                                    Mendukung format berkas <strong>.XLSX (Excel)</strong>, <strong>.XLS</strong>, atau <strong>.CSV</strong>
+                                    Format berkas: <strong>.XLSX (Excel)</strong> atau <strong>.XLS</strong>
                                 </p>
                                 <div id="modalFileNamePreview" class="mt-2.5 hidden items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-lg border border-emerald-200">
                                     <span>📄</span>
@@ -604,7 +636,7 @@
                             <span>💡</span> Format Kolom Excel yang Didukung:
                         </div>
                         <p class="text-[11px] text-slate-500 leading-relaxed">
-                            Kolom: <strong>provinsi</strong>, <strong>kabupaten</strong>, <strong>alamat</strong>, <strong>jenis_nyamuk</strong>, <strong>insektisida</strong>, <strong>metode</strong>, <strong>sampel_diperiksa</strong>, <strong>bulan</strong>, <strong>tahun</strong>, status resistensi (<strong>resisten</strong>, <strong>rentan</strong>, <strong>toleran</strong>), dan <strong>publikasi</strong>.
+                            Kolom: <strong>provinsi</strong>, <strong>kabupaten</strong>, <strong>alamat</strong>, <strong>jenis_nyamuk</strong>, <strong>insektisida</strong>, <strong>metode</strong>, <strong>sampel_diperiksa</strong>, <strong>bulan</strong>, <strong>tahun</strong>, status resistensi (<strong>resisten</strong>, <strong>rentan</strong>, <strong>toleran</strong>), <strong>mutasi</strong>, dan <strong>publikasi</strong>.
                         </p>
                     </div>
 
@@ -637,7 +669,7 @@
                             🔬
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800">Tambah Data Uji Resistensi</h3>
+                            <h3 class="text-lg font-bold text-slate-800">Tambah Data Pengujian</h3>
                             <p class="text-xs text-slate-500">Isi formulir pemeriksaan laboratorium dan lokasi survei vektor</p>
                         </div>
                     </div>
@@ -736,6 +768,18 @@
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jumlah Sampel Diperiksa *</label>
                             <input type="number" name="sampel_diperiksa" min="1" required autocomplete="off" placeholder="Contoh: 100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- MUTASI (OPSIONAL) --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Mutasi (Opsional)</label>
+                            <input type="text" name="mutasi" autocomplete="off" placeholder="Contoh: V1016G, F1534C / Negatif" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                        </div>
+
+                        {{-- PUBLIKASI --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Publikasi / Jurnal</label>
+                            <input type="text" name="publikasi" autocomplete="off" placeholder="Contoh: Publikasi BBLKL 2026, Jurnal Vektor / Link URL" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
                         </div>
 
                         {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
@@ -887,6 +931,18 @@
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jumlah Sampel Diperiksa *</label>
                             <input type="number" id="editSampelDiperiksa" name="sampel_diperiksa" min="1" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- MUTASI (OPSIONAL) --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Mutasi (Opsional)</label>
+                            <input type="text" id="editMutasi" name="mutasi" autocomplete="off" placeholder="Contoh: V1016G, F1534C / Negatif" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                        </div>
+
+                        {{-- PUBLIKASI --}}
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Publikasi / Jurnal</label>
+                            <input type="text" id="editPublikasi" name="publikasi" autocomplete="off" placeholder="Contoh: Publikasi BBLKL 2026, Jurnal Vektor / Link URL" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
                         </div>
 
                         {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
@@ -1062,6 +1118,8 @@
             document.getElementById('editJenisNyamuk').value = item.jenis_nyamuk || '';
             document.getElementById('editInsektisida').value = item.insektisida || '';
             document.getElementById('editMetode').value = item.metode || '';
+            document.getElementById('editMutasi').value = item.mutasi || '';
+            document.getElementById('editPublikasi').value = item.publikasi || '';
             let currentStatus = item.status || '';
             if (['Toleran', 'Terduga Resisten', 'Toleran/Terduga Resisten'].includes(currentStatus)) {
                 document.getElementById('editStatus').value = 'Toleran';
@@ -1094,6 +1152,14 @@
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
             }
+        };
+
+        // Kontrol Page Size (Tampil X Data) Tabel Data Uji Resistensi
+        window.changeTablePageSize = function(val) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', val);
+            url.searchParams.delete('page');
+            window.location.href = url.toString();
         };
     </script>
 

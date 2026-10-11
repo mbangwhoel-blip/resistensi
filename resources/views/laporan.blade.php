@@ -149,7 +149,7 @@
 
             {{-- FORM FILTER PENCARIAN LAPORAN --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5">
                         <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-sm font-bold">
                             🔍
@@ -158,6 +158,32 @@
                             <h2 class="text-sm font-extrabold text-slate-900 leading-tight">Filter Parameter Laporan</h2>
                             <p class="text-[11px] text-slate-500">Sesuaikan kriteria data yang ingin ditampilkan dan dicetak ke PDF</p>
                         </div>
+                    </div>
+
+                    {{-- TOMBOL ACTION DENGAN FILTER AKTIF --}}
+                    @php
+                        $pdfQuery = request()->query();
+                    @endphp
+                    <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+                        <a href="{{ route('laporan.preview', $pdfQuery) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition cursor-pointer"
+                           title="Buka pratinjau dokumen di layar">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span>Lihat Pratinjau</span>
+                        </a>
+
+                        <a href="{{ route('laporan.pdf', array_merge($pdfQuery, ['mode' => 'download'])) }}"
+                           class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition cursor-pointer"
+                           title="Unduh langsung file berkas PDF">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>Unduh File PDF</span>
+                        </a>
                     </div>
                 </div>
 
@@ -277,53 +303,28 @@
                                 Baris per Halaman
                             </label>
                             <select name="per_page" id="per_page" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
-                                <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 Data</option>
-                                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 Data</option>
-                                <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100 Data</option>
+                                <option value="5" {{ (string)($perPageRaw ?? $perPage) == '5' ? 'selected' : '' }}>5 Data</option>
+                                <option value="10" {{ (string)($perPageRaw ?? $perPage) == '10' ? 'selected' : '' }}>10 Data</option>
+                                <option value="25" {{ (string)($perPageRaw ?? $perPage) == '25' ? 'selected' : '' }}>25 Data</option>
+                                <option value="50" {{ (string)($perPageRaw ?? $perPage) == '50' ? 'selected' : '' }}>50 Data</option>
+                                <option value="100" {{ (string)($perPageRaw ?? $perPage) == '100' ? 'selected' : '' }}>100 Data</option>
+                                <option value="all" {{ (string)($perPageRaw ?? $perPage) == 'all' ? 'selected' : '' }}>Semua Data</option>
                             </select>
                         </div>
                     </div>
 
                     {{-- TOMBOL AKSI FILTER --}}
-                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-                        <div class="flex items-center gap-2.5">
-                            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                                </svg>
-                                <span>Terapkan Filter</span>
-                            </button>
+                    <div class="flex items-center gap-2.5 pt-2">
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            <span>Terapkan Filter</span>
+                        </button>
 
-                            <a href="{{ route('laporan.index') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-2xs transition cursor-pointer">
-                                <span>Reset Filter</span>
-                            </a>
-                        </div>
-
-                        {{-- TOMBOL ACTION DENGAN FILTER AKTIF --}}
-                        @php
-                            $pdfQuery = request()->query();
-                        @endphp
-                        <div class="flex items-center gap-2.5">
-                            <a href="{{ route('laporan.preview', $pdfQuery) }}"
-                               target="_blank"
-                               class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer"
-                               title="Buka pratinjau dokumen di layar">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <span>Lihat Pratinjau</span>
-                            </a>
-
-                            <a href="{{ route('laporan.pdf', array_merge($pdfQuery, ['mode' => 'download'])) }}"
-                               class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer"
-                               title="Unduh langsung file berkas PDF">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                                <span>Unduh File PDF</span>
-                            </a>
-                        </div>
+                        <a href="{{ route('laporan.index') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-2xs transition cursor-pointer">
+                            <span>Reset Filter</span>
+                        </a>
                     </div>
 
                 </form>
@@ -339,106 +340,140 @@
                         </p>
                     </div>
 
-                    {{-- LIVE SEARCH TABLE --}}
-                    <div class="relative w-64">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </span>
-                        <input type="text"
-                               id="tableSearchInput"
-                               placeholder="Cari cepat di tabel..."
-                               onkeyup="filterTableLive(this.value)"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        {{-- LIVE SEARCH TABLE --}}
+                        <div class="relative w-56 sm:w-64">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input type="text"
+                                   id="tableSearchInput"
+                                   placeholder="Cari cepat di tabel..."
+                                   onkeyup="filterTableLive(this.value)"
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
+                        </div>
+
+                        {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR) --}}
+                        <div class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-1 shadow-2xs">
+                            <label for="tablePageSizeSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap flex items-center gap-1">
+                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                <span>Tampil:</span>
+                            </label>
+                            <select id="tablePageSizeSelect" 
+                                    onchange="changeTablePageSize(this.value)" 
+                                    class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer">
+                                <option value="5" {{ (string)($perPageRaw ?? $perPage) === '5' ? 'selected' : '' }}>5 data</option>
+                                <option value="10" {{ (string)($perPageRaw ?? $perPage) === '10' ? 'selected' : '' }}>10 data</option>
+                                <option value="25" {{ (string)($perPageRaw ?? $perPage) === '25' ? 'selected' : '' }}>25 data</option>
+                                <option value="50" {{ (string)($perPageRaw ?? $perPage) === '50' ? 'selected' : '' }}>50 data</option>
+                                <option value="100" {{ (string)($perPageRaw ?? $perPage) === '100' ? 'selected' : '' }}>100 data</option>
+                                <option value="all" {{ (string)($perPageRaw ?? $perPage) === 'all' ? 'selected' : '' }}>Semua data</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 {{-- TABEL DATA --}}
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left text-xs border-collapse" id="laporanTable">
+                <div class="overflow-x-auto bg-slate-50">
+                    <table class="w-full text-left text-xs table-fixed border-collapse" id="laporanTable">
                         <thead>
                             <tr class="bg-slate-900 text-white font-bold uppercase tracking-wider text-[11px] border-b border-slate-800">
-                                <th class="px-3.5 py-3 text-center w-12">No</th>
-                                <th class="px-3.5 py-3">Periode</th>
-                                <th class="px-3.5 py-3">Wilayah</th>
-                                <th class="px-3.5 py-3">Desa / Alamat</th>
-                                <th class="px-3.5 py-3">Vektor (Nyamuk)</th>
-                                <th class="px-3.5 py-3">Insektisida</th>
-                                <th class="px-3.5 py-3 text-center">Metode</th>
-                                <th class="px-3.5 py-3 text-right">Sampel</th>
-                                <th class="px-3.5 py-3 text-center">Status</th>
-                                <th class="px-3.5 py-3 text-center">Mutasi</th>
-                                <th class="px-3.5 py-3 text-center">Publikasi</th>
+                                <th class="w-[3.5%] px-1.5 py-2.5 text-center">No</th>
+                                <th class="w-[11.5%] px-2.5 py-2.5 whitespace-nowrap">Kab/Prov</th>
+                                <th class="w-[16%] px-2.5 py-2.5">Alamat / Lokasi</th>
+                                <th class="w-[12%] px-2 py-2.5">Jenis Nyamuk</th>
+                                <th class="w-[16%] px-2.5 py-2.5">Insektisida / Metode</th>
+                                <th class="w-[7%] px-2 py-2.5 text-center whitespace-nowrap">Sampel</th>
+                                <th class="w-[8.5%] px-2 py-2.5 text-center whitespace-nowrap">Status</th>
+                                <th class="w-[7.5%] px-2 py-2.5 text-center whitespace-nowrap">Periode</th>
+                                <th class="w-[5%] px-1.5 py-2.5 text-center whitespace-nowrap">Mutasi</th>
+                                <th class="w-[13%] px-2.5 py-2.5 text-left">Publikasi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100" id="laporanTableBody">
+                        <tbody class="divide-y divide-slate-100 bg-white" id="laporanTableBody">
                             @forelse($dataUji as $idx => $row)
                                 @php
-                                    $st = strtolower((string)$row->status);
+                                     $st = strtolower((string)$row->status);
                                 @endphp
-                                <tr class="hover:bg-blue-50/40 transition">
-                                    <td class="px-3.5 py-2.5 text-center text-slate-500 font-semibold">
+                                <tr class="hover:bg-blue-50/40 transition align-top">
+                                    <td class="px-1.5 py-2.5 text-center text-slate-400 font-bold text-xs whitespace-nowrap">
                                         {{ $dataUji->firstItem() + $idx }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 whitespace-nowrap">
-                                        <span class="font-bold text-slate-800">{{ $row->bulan ?: '-' }}</span>
-                                        <span class="text-slate-500 text-[11px] block">{{ $row->tahun }}</span>
+                                    <td class="px-2.5 py-2.5 text-xs">
+                                        <div class="font-bold text-slate-800 dark:text-slate-100 leading-snug break-words">{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</div>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words">{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</div>
                                     </td>
-                                    <td class="px-3.5 py-2.5">
-                                        <div class="font-bold text-slate-800">{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</div>
-                                        <div class="text-[11px] text-slate-500">{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</div>
+                                    <td class="px-2.5 py-2.5 text-xs text-slate-700 dark:text-slate-200 leading-snug break-words">
+                                        @if(!empty($row->alamat))
+                                            <div class="flex items-start gap-1 font-medium">
+                                                <span class="text-blue-500 shrink-0 text-xs mt-0.5">📍</span>
+                                                <span class="break-words leading-snug">{{ $row->alamat }}</span>
+                                            </div>
+                                        @else
+                                            <span class="italic text-slate-400">Belum diisi</span>
+                                        @endif
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-slate-700 max-w-xs truncate" title="{{ $row->alamat }}">
-                                        {{ $row->alamat ?: '-' }}
+                                    <td class="px-2 py-2.5">
+                                        <span class="inline-block rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/60 px-2 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 break-words leading-tight">
+                                            {{ $row->jenis_nyamuk ?: '-' }}
+                                        </span>
                                     </td>
-                                    <td class="px-3.5 py-2.5 font-medium italic text-slate-800">
-                                        {{ $row->jenis_nyamuk ?: '-' }}
+                                    <td class="px-2.5 py-2.5 text-xs">
+                                        <div class="font-semibold text-slate-800 dark:text-slate-100 leading-snug break-words">
+                                            {{ $row->insektisida ?: '-' }}
+                                        </div>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words mt-0.5">
+                                            {{ $row->metode ?: '-' }}
+                                        </div>
                                     </td>
-                                    <td class="px-3.5 py-2.5 font-medium text-slate-800">
-                                        {{ $row->insektisida ?: '-' }}
-                                    </td>
-                                    <td class="px-3.5 py-2.5 text-center text-slate-600">
-                                        {{ $row->metode ?: '-' }}
-                                    </td>
-                                    <td class="px-3.5 py-2.5 text-right font-bold text-slate-900">
+                                    <td class="px-2 py-2.5 text-center font-bold text-slate-900 dark:text-slate-100 text-xs whitespace-nowrap">
                                         {{ $row->sampel_diperiksa ? number_format($row->sampel_diperiksa, 0, ',', '.') : '0' }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-center">
+                                    <td class="px-2 py-2.5 text-center whitespace-nowrap">
                                         @if($st === 'resisten')
-                                            <span class="inline-flex items-center gap-1 rounded-full bg-rose-100 border border-rose-200 px-2 py-0.5 text-[10px] font-bold text-rose-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
                                             </span>
-                                        @elseif($st === 'toleran')
-                                            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 border border-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                                        @elseif(in_array($st, ['toleran', 'terduga resisten', 'toleran/terduga resisten']))
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
                                             </span>
                                         @elseif($st === 'rentan')
-                                            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">
+                                            <span class="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-600">
                                                 {{ ucfirst($st ?: '-') }}
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-center text-slate-600 font-mono text-[11px]">
+                                    <td class="px-2 py-2.5 text-center whitespace-nowrap text-[11px]">
+                                        <span class="font-bold text-slate-800 dark:text-slate-100 block">{{ $row->bulan ?: '-' }}</span>
+                                        <span class="text-slate-500 dark:text-slate-400 text-[11px] block">{{ $row->tahun }}</span>
+                                    </td>
+                                    <td class="px-1.5 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
                                         {{ $row->mutasi ?: '-' }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-left text-slate-700 max-w-[200px] break-all text-[11px]">
+                                    <td class="px-2.5 py-2.5 text-left text-[11px] leading-snug">
                                         @if($row->publikasi && str_starts_with($row->publikasi, 'http'))
-                                            <a href="{{ $row->publikasi }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline break-all" title="{{ $row->publikasi }}">
+                                            <a href="{{ $row->publikasi }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline break-all block" title="{{ $row->publikasi }}">
                                                 {{ $row->publikasi }}
                                             </a>
+                                        @elseif($row->publikasi)
+                                            <span class="text-slate-700 dark:text-slate-300 break-words block">{{ $row->publikasi }}</span>
                                         @else
-                                            <span class="break-words">{{ $row->publikasi ?: '-' }}</span>
+                                            <span class="text-slate-400">-</span>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="11" class="px-6 py-12 text-center text-slate-400">
+                                    <td colspan="10" class="px-6 py-12 text-center text-slate-400">
                                         <div class="flex flex-col items-center justify-center">
                                             <span class="text-3xl mb-2">📋</span>
                                             <p class="font-bold text-slate-600 text-sm">Tidak ada data hasil uji resistensi yang ditemukan</p>
@@ -453,7 +488,7 @@
 
                 {{-- PAGINATION FOOTER --}}
                 @if($dataUji->hasPages())
-                    <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <div class="border-t border-slate-100 bg-white px-4 py-2.5">
                         {{ $dataUji->links() }}
                     </div>
                 @endif
@@ -505,6 +540,14 @@
                     row.style.display = 'none';
                 }
             });
+        }
+
+        // Kontrol Page Size (Tampil X Data) Tabel Data Laporan
+        function changeTablePageSize(val) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', val);
+            url.searchParams.delete('page');
+            window.location.href = url.toString();
         }
     </script>
 

@@ -8,6 +8,12 @@ use App\Models\Provinsi;
 use App\Models\Kabupaten;
 use App\Models\KategoriUji;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class ExportImportController extends Controller
 {
@@ -20,8 +26,14 @@ class ExportImportController extends Controller
         $tahunFilter = $request->get('tahun', 'Semua');
         $nyamukFilter = $request->get('jenis_nyamuk', '');
         $provinsiFilter = $request->get('provinsi_id', '');
-        $perPage = (int)$request->get('per_page', 25);
-        if ($perPage <= 0 || $perPage > 200) $perPage = 25;
+        $perPageRaw = $request->get('per_page', 25);
+        if ($perPageRaw === 'all' || (int)$perPageRaw >= 999999) {
+            $perPage = 999999;
+        } elseif (in_array((int)$perPageRaw, [5, 10, 25, 50, 100])) {
+            $perPage = (int)$perPageRaw;
+        } else {
+            $perPage = 25;
+        }
 
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'desc');
 
@@ -97,7 +109,8 @@ class ExportImportController extends Controller
             'tahunFilter',
             'nyamukFilter',
             'provinsiFilter',
-            'perPage'
+            'perPage',
+            'perPageRaw'
         ));
     }
 
@@ -106,7 +119,7 @@ class ExportImportController extends Controller
      */
     public function exportDownload(Request $request)
     {
-        $format = $request->get('format', 'csv');
+        $format = strtolower($request->get('format', 'xlsx'));
         $bulanFilter = $request->get('bulan', 'Semua');
         $tahunFilter = $request->get('tahun', 'Semua');
         $nyamukFilter = $request->get('jenis_nyamuk', '');
@@ -128,7 +141,6 @@ class ExportImportController extends Controller
         }
 
         $items = $query->get();
-
         $timestamp = date('Ymd_His');
 
         // Export JSON
@@ -169,13 +181,148 @@ class ExportImportController extends Controller
             ]);
         }
 
+        // Export Excel Native (.xlsx) dengan kolom rapi, lebar auto, border & warna header
+        if ($format === 'xlsx' || $format === 'excel') {
+            $fileName = "export_uji_resistensi_{$timestamp}.xlsx";
+
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('Data Resistensi');
+
+            // Header kolom
+            $headers = [
+                'No', 'Provinsi', 'Kabupaten', 'Alamat', 'Jenis Nyamuk',
+                'Insektisida', 'Metode', 'Sampel Diperiksa', 'Bulan', 'Tahun',
+                'Resisten', 'Rentan', 'Toleran', 'Mutasi', 'Publikasi'
+            ];
+
+            foreach ($headers as $hIdx => $h) {
+                $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
+                $sheet->setCellValue($colLetter . '1', $h);
+            }
+
+            // Data baris
+            $rowIdx = 2;
+            foreach ($items as $index => $item) {
+                $st = strtolower(trim((string)$item->status));
+                $isResisten = ($st === 'resisten');
+                $isRentan = ($st === 'rentan');
+                $isToleran = str_contains($st, 'toleran') || str_contains($st, 'terduga');
+
+                $sheet->setCellValue('A' . $rowIdx, $index + 1);
+                $sheet->setCellValue('B' . $rowIdx, $item->provinsi ? $item->provinsi->nama_provinsi : '-');
+                $sheet->setCellValue('C' . $rowIdx, $item->kabupaten ? $item->kabupaten->nama_kabupaten : '-');
+                $sheet->setCellValue('D' . $rowIdx, $item->alamat ?: '-');
+                $sheet->setCellValue('E' . $rowIdx, $item->jenis_nyamuk ?: '-');
+                $sheet->setCellValue('F' . $rowIdx, $item->insektisida ?: '-');
+                $sheet->setCellValue('G' . $rowIdx, $item->metode ?: '-');
+                $sheet->setCellValue('H' . $rowIdx, (int)($item->sampel_diperiksa ?? 0));
+                $sheet->setCellValue('I' . $rowIdx, $item->bulan ?: '-');
+                $sheet->setCellValue('J' . $rowIdx, (int)($item->tahun ?? 0));
+                $sheet->setCellValue('K' . $rowIdx, $isResisten ? 'v' : '');
+                $sheet->setCellValue('L' . $rowIdx, $isRentan ? 'v' : '');
+                $sheet->setCellValue('M' . $rowIdx, $isToleran ? 'v' : '');
+                $sheet->setCellValue('N' . $rowIdx, $item->mutasi ?: '-');
+                $sheet->setCellValue('O' . $rowIdx, $item->publikasi ?: '-');
+
+                $sheet->getRowDimension($rowIdx)->setRowHeight(21);
+                $rowIdx++;
+            }
+
+            $lastRow = max(2, $rowIdx - 1);
+
+            // Style Header Row (1)
+            $sheet->getStyle('A1:O1')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => 'FFFFFF'],
+                    'size' => 11,
+                    'name' => 'Calibri',
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '0F766E'], // Teal Gelap Kemenkes
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+            ]);
+            $sheet->getRowDimension(1)->setRowHeight(28);
+
+            // Style Data Rows
+            if ($lastRow >= 2) {
+                $sheet->getStyle("A2:O{$lastRow}")->applyFromArray([
+                    'font' => ['size' => 10, 'name' => 'Calibri'],
+                    'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+                ]);
+
+                // Alignment Center untuk Kolom Angka dan Flag
+                $sheet->getStyle("A2:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("H2:N{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Zebra striping untuk baris genap
+                for ($r = 2; $r <= $lastRow; $r++) {
+                    if ($r % 2 === 0) {
+                        $sheet->getStyle("A{$r}:O{$r}")->getFill()->applyFromArray([
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => ['rgb' => 'F8FAFC'],
+                        ]);
+                    }
+                }
+            }
+
+            // Border seluruh tabel
+            $sheet->getStyle("A1:O{$lastRow}")->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => 'CBD5E1'],
+                    ],
+                ],
+            ]);
+
+            // Set Lebar Kolom Proporsional & Rapi
+            $colWidths = [
+                'A' => 8,  // No
+                'B' => 20, // Provinsi
+                'C' => 20, // Kabupaten
+                'D' => 30, // Alamat
+                'E' => 18, // Jenis Nyamuk
+                'F' => 20, // Insektisida
+                'G' => 24, // Metode
+                'H' => 18, // Sampel
+                'I' => 14, // Bulan
+                'J' => 12, // Tahun
+                'K' => 12, // Resisten
+                'L' => 12, // Rentan
+                'M' => 12, // Toleran
+                'N' => 15, // Mutasi
+                'O' => 26, // Publikasi
+            ];
+            foreach ($colWidths as $colLetter => $width) {
+                $sheet->getColumnDimension($colLetter)->setWidth($width);
+            }
+
+            // Freeze Pane agar header tetap terlihat saat scroll
+            $sheet->freezePane('A2');
+
+            return response()->streamDownload(function () use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            }, $fileName, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Cache-Control' => 'max-age=0',
+            ]);
+        }
+
         // Export CSV / Excel Compatible
         $fileName = "export_uji_resistensi_{$timestamp}.csv";
 
         return new StreamedResponse(function () use ($items) {
             $handle = fopen('php://output', 'w');
 
-            // UTF-8 BOM agar terbaca sempurna di Microsoft Excel (huruf tidak berantakan)
+            // UTF-8 BOM agar terbaca sempurna di Microsoft Excel
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
             // Header kolom sesuai format data resistensi lengkap
@@ -200,7 +347,6 @@ class ExportImportController extends Controller
             $sanitizeCsv = function ($val) {
                 if (is_null($val)) return '-';
                 $str = (string)$val;
-                // Cegah CSV Formula Injection jika nilai dimulai dengan karakter formula
                 if (strlen($str) > 0 && in_array($str[0], ['=', '+', '-', '@', "\t", "\r"])) {
                     return "'" . $str;
                 }
@@ -255,89 +401,141 @@ class ExportImportController extends Controller
     }
 
     /**
-     * Download Template CSV untuk Import
+     * Download Template (Excel .XLSX atau .CSV) untuk Import
      */
-    public function downloadTemplate()
+    public function downloadTemplate(Request $request)
     {
-        $fileName = 'template_import_simpel_bblk.csv';
+        $format = strtolower($request->get('format', 'xlsx'));
 
-        return new StreamedResponse(function () {
-            $handle = fopen('php://output', 'w');
-            // UTF-8 BOM
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        if ($format === 'csv') {
+            $fileName = 'template_import_simpel_bblk.csv';
 
-            // Header kolom template sesuai format data resistensi (termasuk publikasi setelah toleran)
-            fputcsv($handle, [
-                'provinsi',
-                'kabupaten',
-                'alamat',
-                'jenis_nyamuk',
-                'insektisida',
-                'metode',
-                'sampel_diperiksa',
-                'bulan',
-                'tahun',
-                'resisten',
-                'rentan',
-                'toleran',
-                'publikasi'
+            return new StreamedResponse(function () {
+                $handle = fopen('php://output', 'w');
+                // UTF-8 BOM
+                fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+                // Header kolom template (14 kolom lengkap tanpa data dummy)
+                fputcsv($handle, [
+                    'provinsi',
+                    'kabupaten',
+                    'alamat',
+                    'jenis_nyamuk',
+                    'insektisida',
+                    'metode',
+                    'sampel_diperiksa',
+                    'bulan',
+                    'tahun',
+                    'resisten',
+                    'rentan',
+                    'toleran',
+                    'mutasi',
+                    'publikasi'
+                ]);
+
+                fclose($handle);
+            }, 200, [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
             ]);
+        }
 
-            // Baris contoh 1 (Resisten)
-            fputcsv($handle, [
-                'Jawa Tengah',
-                'Kudus',
-                'Desa Mejobo, RT 02/RW 01',
-                'Ae. aegypti',
-                'Deltamethrin',
-                'WHO Tube Bioassay',
-                '90',
-                'Oktober',
-                '2026',
-                'v',
-                '',
-                '',
-                'Publikasi BBLK 2026'
-            ]);
+        // Default: Format Excel (.xlsx) dengan kolom rapi, warna header, dan auto-width (tanpa data dummy)
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Template Data Resistensi');
 
-            // Baris contoh 2 (Rentan)
-            fputcsv($handle, [
-                'Bali',
-                'Bangli',
-                'Kintamani, Dusun Batur Utara',
-                'Ae. aegypti',
-                'Cypermethrin',
-                'CDC bottle bioassay',
-                '25',
-                'Oktober',
-                '2026',
-                '',
-                'v',
-                '',
-                'Jurnal Vektor Penyakit'
-            ]);
+        // Headers
+        $headers = [
+            'provinsi', 'kabupaten', 'alamat', 'jenis_nyamuk', 'insektisida',
+            'metode', 'sampel_diperiksa', 'bulan', 'tahun',
+            'resisten', 'rentan', 'toleran', 'mutasi', 'publikasi'
+        ];
 
-            // Baris contoh 3 (Toleran - gabungan toleran & terduga resisten)
-            fputcsv($handle, [
-                'Gorontalo',
-                'Boalemo',
-                'Puskesmas Tilamuta',
-                'Culex sp',
-                'Malathion',
-                'WHO Tube Bioassay',
-                '50',
-                'Oktober',
-                '2026',
-                '',
-                '',
-                'v',
-                'Laporan Surveilans Dinkes'
-            ]);
+        foreach ($headers as $hIdx => $header) {
+            $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
+            $sheet->setCellValue($colLetter . '1', $header);
+        }
 
-            fclose($handle);
-        }, 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+        // Style Header Row (1)
+        $sheet->getStyle('A1:N1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 11,
+                'name' => 'Calibri',
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '1E40AF'], // Royal Blue Kemenkes
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(28);
+
+        // Siapkan grid tabel kosong yang rapi untuk 50 baris isian pertama
+        $maxEmptyRows = 50;
+        $sheet->getStyle("A2:N{$maxEmptyRows}")->applyFromArray([
+            'font' => [
+                'size' => 10,
+                'name' => 'Calibri',
+            ],
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+
+        for ($r = 2; $r <= $maxEmptyRows; $r++) {
+            $sheet->getRowDimension($r)->setRowHeight(22);
+            // Center align kolom sampel (G), bulan (H), tahun (I), resisten (J), rentan (K), toleran (L), mutasi (M)
+            $sheet->getStyle("G{$r}:M{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        // Border Thin untuk Seluruh Tabel (Header + Grid Kosong)
+        $sheet->getStyle("A1:N{$maxEmptyRows}")->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => 'CBD5E1'],
+                ],
+            ],
+        ]);
+
+        // Set Lebar Kolom Proporsional & Rapi
+        $minWidths = [
+            'A' => 18, // provinsi
+            'B' => 18, // kabupaten
+            'C' => 30, // alamat
+            'D' => 18, // jenis_nyamuk
+            'E' => 20, // insektisida
+            'F' => 24, // metode
+            'G' => 18, // sampel_diperiksa
+            'H' => 14, // bulan
+            'I' => 12, // tahun
+            'J' => 12, // resisten
+            'K' => 12, // rentan
+            'L' => 12, // toleran
+            'M' => 14, // mutasi
+            'N' => 26  // publikasi
+        ];
+        foreach ($minWidths as $col => $w) {
+            $sheet->getColumnDimension($col)->setWidth($w);
+        }
+
+        // Freeze Panes A2
+        $sheet->freezePane('A2');
+
+        $fileName = 'template_import_simpel_bblk.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
         ]);
     }
 

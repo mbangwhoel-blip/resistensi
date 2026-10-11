@@ -107,9 +107,9 @@
 
         /* Card Informasi Detail di Kanan Atas Peta (Transparan agar wilayah peta tetap terlihat) */
         .map-detail-panel {
-            width: 295px;
-            max-width: calc(100vw - 36px);
-            max-height: 480px;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            max-height: 490px;
             overflow-y: auto;
             background: rgba(255, 255, 255, 0.62) !important;
             backdrop-filter: blur(4px) !important;
@@ -430,57 +430,112 @@
         }
 
         /* Badges & Pills Contrast di Mode Gelap */
-        html.dark main .bg-emerald-50 {
-            background-color: rgba(16, 185, 129, 0.15) !important;
+        html.dark main .bg-emerald-50,
+        html.dark main .bg-emerald-100 {
+            background-color: rgba(16, 185, 129, 0.16) !important;
         }
         html.dark main .text-emerald-700,
         html.dark main .text-emerald-600 {
-            color: #34d399 !important;
+            color: #4ade80 !important;
         }
         html.dark main .border-emerald-200 {
-            border-color: rgba(16, 185, 129, 0.35) !important;
+            border-color: rgba(16, 185, 129, 0.4) !important;
         }
 
-        html.dark main .bg-blue-50 {
-            background-color: rgba(59, 130, 246, 0.15) !important;
+        html.dark main .bg-blue-50,
+        html.dark main .bg-blue-100 {
+            background-color: rgba(59, 130, 246, 0.18) !important;
         }
-        html.dark main .text-blue-700,
+        html.dark main .text-blue-700 {
+            color: #93c5fd !important;
+        }
         html.dark main .text-blue-600 {
             color: #60a5fa !important;
         }
         html.dark main .border-blue-200,
         html.dark main .border-blue-100 {
-            border-color: rgba(59, 130, 246, 0.35) !important;
+            border-color: rgba(59, 130, 246, 0.4) !important;
         }
 
-        html.dark main .bg-indigo-50 {
-            background-color: rgba(99, 102, 241, 0.15) !important;
+        html.dark main .bg-indigo-50,
+        html.dark main .bg-indigo-100 {
+            background-color: rgba(99, 102, 241, 0.18) !important;
         }
-        html.dark main .text-indigo-700,
+        html.dark main .text-indigo-700 {
+            color: #c7d2fe !important;
+        }
         html.dark main .text-indigo-600 {
-            color: #818cf8 !important;
+            color: #a5b4fc !important;
         }
 
-        html.dark main .bg-amber-50 {
-            background-color: rgba(245, 158, 11, 0.15) !important;
+        html.dark main .bg-amber-50,
+        html.dark main .bg-amber-100 {
+            background-color: rgba(245, 158, 11, 0.18) !important;
         }
         html.dark main .text-amber-700,
         html.dark main .text-amber-600 {
-            color: #fbbf24 !important;
+            color: #fde047 !important;
         }
         html.dark main .border-amber-200 {
-            border-color: rgba(245, 158, 11, 0.35) !important;
+            border-color: rgba(245, 158, 11, 0.4) !important;
         }
 
-        html.dark main .bg-rose-50 {
-            background-color: rgba(244, 63, 94, 0.15) !important;
+        html.dark main .bg-rose-50,
+        html.dark main .bg-rose-100 {
+            background-color: rgba(244, 63, 94, 0.18) !important;
         }
-        html.dark main .text-rose-700,
+        html.dark main .text-rose-700 {
+            color: #fda4af !important;
+        }
         html.dark main .text-rose-600 {
             color: #fb7185 !important;
         }
         html.dark main .border-rose-200 {
-            border-color: rgba(244, 63, 94, 0.35) !important;
+            border-color: rgba(244, 63, 94, 0.4) !important;
+        }
+
+        /* Stat Cards Utama di Dashboard */
+        html.dark main .grid .text-2xl,
+        html.dark main .grid h3.text-2xl {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+        }
+        html.dark main .grid p.text-slate-500 {
+            color: #f1f5f9 !important;
+            font-weight: 600 !important;
+        }
+        html.dark main .grid p.text-emerald-600 {
+            color: #4ade80 !important;
+            font-weight: 600 !important;
+        }
+        html.dark main .grid p.text-indigo-600 {
+            color: #a5b4fc !important;
+            font-weight: 600 !important;
+        }
+        html.dark main .grid p.text-amber-600 {
+            color: #fde047 !important;
+            font-weight: 600 !important;
+        }
+        html.dark main .grid .bg-blue-100.text-blue-600 {
+            background-color: rgba(59, 130, 246, 0.24) !important;
+            border: 1px solid rgba(96, 165, 250, 0.45) !important;
+            color: #93c5fd !important;
+        }
+        html.dark main .grid .bg-indigo-100.text-indigo-600 {
+            background-color: rgba(99, 102, 241, 0.24) !important;
+            border: 1px solid rgba(165, 180, 252, 0.45) !important;
+            color: #c7d2fe !important;
+        }
+        html.dark main .grid .bg-emerald-100.text-emerald-600 {
+            background-color: rgba(16, 185, 129, 0.24) !important;
+            border: 1px solid rgba(110, 231, 183, 0.45) !important;
+            color: #86efac !important;
+        }
+        html.dark main .grid .bg-amber-100.text-amber-600 {
+            background-color: rgba(245, 158, 11, 0.24) !important;
+            border: 1px solid rgba(253, 224, 71, 0.45) !important;
+            color: #fde047 !important;
         }
 
         /* Kotak Pencarian */
@@ -591,13 +646,25 @@
         html.dark #tablePemeriksaanSection .border-b {
             border-color: #1e293b !important;
         }
-        html.dark #tablePemeriksaanSection thead {
+        html.dark #tablePemeriksaanSection .overflow-x-auto {
+            background-color: #1e293b !important;
+        }
+        html.dark #tablePemeriksaanSection thead,
+        html.dark #tablePemeriksaanSection thead tr,
+        html.dark #tablePemeriksaanSection thead th {
             background-color: #1e293b !important;
             border-color: #334155 !important;
             color: #94a3b8 !important;
         }
         html.dark #tablePemeriksaanSection thead th {
             color: #94a3b8 !important;
+        }
+        html.dark #tablePemeriksaanSection table {
+            border-color: #1e293b !important;
+            background-color: #0f172a !important;
+        }
+        html.dark #tableDataBody {
+            background-color: #0f172a !important;
         }
         html.dark #tableDataBody tr {
             border-color: #1e293b !important;
@@ -704,23 +771,75 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
         }
         html.dark .map-detail-panel {
-            background: rgba(15, 23, 42, 0.88) !important;
-            border: 1px solid rgba(51, 65, 85, 0.9) !important;
+            background: rgba(15, 23, 42, 0.94) !important;
+            border: 1px solid rgba(51, 65, 85, 0.95) !important;
             color: #f1f5f9 !important;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
         }
         html.dark .map-detail-panel.is-pinned,
         html.dark .map-detail-panel:hover {
-            background: rgba(15, 23, 42, 0.95) !important;
+            background: rgba(15, 23, 42, 0.98) !important;
         }
         html.dark .map-detail-panel .text-slate-800 {
             color: #f8fafc !important;
         }
-        html.dark .map-detail-panel .border-slate-100 {
+        html.dark .map-detail-panel .text-slate-700 {
+            color: #e2e8f0 !important;
+        }
+        html.dark .map-detail-panel .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+        html.dark .map-detail-panel .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark .map-detail-panel .text-slate-400 {
+            color: #94a3b8 !important;
+        }
+        html.dark .map-detail-panel .border-slate-100,
+        html.dark .map-detail-panel .border-slate-200,
+        html.dark .map-detail-panel .border-slate-200\/60 {
             border-color: #334155 !important;
         }
         html.dark .map-detail-panel .bg-slate-50 {
             background-color: #1e293b !important;
+        }
+        /* Badge Provinsi pada Detail Peta (Mode Gelap) */
+        html.dark .map-detail-panel .panel-provinsi-badge,
+        html.dark .map-detail-panel .bg-blue-100\/80 {
+            background-color: #1e3a8a !important;
+            color: #93c5fd !important;
+            border: 1px solid #3b82f6 !important;
+            font-weight: 800 !important;
+        }
+        /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
+        html.dark .map-detail-panel .panel-stat-box,
+        html.dark .map-detail-panel .grid .bg-white\/45 {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        html.dark .map-detail-panel .panel-stat-box .text-slate-800 {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
+        html.dark .map-detail-panel .panel-stat-box .text-slate-500 {
+            color: #cbd5e1 !important;
+            font-weight: 600 !important;
+        }
+        /* Kotak Hasil Pemeriksaan (Mode Gelap) */
+        html.dark .map-detail-panel .panel-results-box,
+        html.dark .map-detail-panel .bg-white\/45 {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        html.dark .map-detail-panel .panel-results-box .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark .map-detail-panel .panel-results-box .text-slate-500,
+        html.dark .map-detail-panel .panel-results-box div.text-slate-500 {
+            color: #cbd5e1 !important;
+        }
+        html.dark .map-detail-panel .panel-results-box .text-slate-600 {
+            color: #94a3b8 !important;
         }
         html.dark .map-legend-control {
             background: rgba(15, 23, 42, 0.88) !important;
@@ -1174,83 +1293,87 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
+                <div class="overflow-x-auto bg-slate-50">
+                    <table class="w-full text-left text-xs table-fixed">
                         <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
                             <tr>
-                                <th class="px-3 py-2 text-center w-10 text-slate-500">No</th>
-                                <th class="px-3 py-2 whitespace-nowrap">Kab/Prov</th>
-                                <th class="px-3 py-2 whitespace-nowrap">Alamat / Lokasi</th>
-                                <th class="px-3 py-2 whitespace-nowrap">Jenis Nyamuk</th>
-                                <th class="px-3 py-2 whitespace-nowrap">Insektisida</th>
-                                <th class="px-3 py-2 whitespace-nowrap">Metode</th>
-                                <th class="px-3 py-2 text-center whitespace-nowrap">Sampel</th>
-                                <th class="px-3 py-2 text-center whitespace-nowrap">Status</th>
-                                <th class="px-3 py-2 text-center whitespace-nowrap">Aksi</th>
-                                <th class="px-3 py-2 text-center whitespace-nowrap">Periode</th>
+                                <th class="w-[4%] px-1.5 py-2.5 text-center text-slate-500">No</th>
+                                <th class="w-[13%] px-2 py-2.5 whitespace-nowrap">Kab/Prov</th>
+                                <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Alamat / Lokasi</th>
+                                <th class="w-[11%] px-1.5 py-2.5 whitespace-nowrap">Jenis Nyamuk</th>
+                                <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Insektisida / Metode</th>
+                                <th class="w-[6%] px-1 py-2.5 text-center whitespace-nowrap">Sampel</th>
+                                <th class="w-[10%] px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
+                                <th class="w-[9%] px-1 py-2.5 text-center whitespace-nowrap">Periode</th>
+                                <th class="w-[15%] px-1.5 py-2.5 text-center whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y divide-slate-100" id="tableDataBody">
+                        <tbody class="divide-y divide-slate-100 bg-white" id="tableDataBody">
                             @forelse ($dataTerbaru as $index => $item)
                                 <tr class="hover:bg-blue-50/40 transition" id="row-data-{{ $item->id }}">
-                                    <td class="px-3 py-2 text-center font-bold text-slate-400 text-xs">
+                                    <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">
                                         {{ $index + 1 }}
                                     </td>
-                                    <td class="px-3 py-2 whitespace-nowrap text-xs">
-                                        <div class="font-semibold text-slate-800 leading-tight">
+                                    <td class="px-2 py-2 text-xs truncate">
+                                        <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                             {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                         </div>
-                                        <div class="text-[11px] text-slate-500 font-normal leading-tight">
+                                        <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
                                             {{ $item->provinsi->nama_provinsi ?? '-' }}
                                         </div>
                                     </td>
-                                    <td class="px-3 py-2 text-xs text-slate-700 leading-snug">
+                                    <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">
                                         @if (!empty($item->alamat))
-                                            <span class="inline-flex items-start gap-1 font-medium text-slate-700">
-                                                <span class="text-blue-500 shrink-0 mt-0.5">📍</span>
-                                                <span>{{ $item->alamat }}</span>
+                                            <span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="{{ $item->alamat }}">
+                                                <span class="text-blue-500 shrink-0">📍</span>
+                                                <span class="truncate">{{ $item->alamat }}</span>
                                             </span>
                                         @else
                                             <span class="italic text-slate-400">Belum diisi</span>
                                         @endif
                                     </td>
-                                    <td class="px-3 py-2 whitespace-nowrap">
-                                        <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap">
+                                    <td class="px-1.5 py-2 whitespace-nowrap truncate">
+                                        <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full">
                                             {{ $item->jenis_nyamuk }}
                                         </span>
                                     </td>
-                                    <td class="px-3 py-2 text-xs text-slate-700 whitespace-nowrap font-medium">
-                                        {{ $item->insektisida }}
+                                    <td class="px-2 py-2 text-xs truncate">
+                                        <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->insektisida ?? '-' }}">
+                                            {{ $item->insektisida ?? '-' }}
+                                        </div>
+                                        <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->metode ?? '-' }}">
+                                            {{ $item->metode ?? '-' }}
+                                        </div>
                                     </td>
-                                    <td class="px-3 py-2 text-xs text-slate-600 whitespace-nowrap">
-                                        {{ $item->metode }}
-                                    </td>
-                                    <td class="px-3 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap">
+                                    <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">
                                         {{ number_format($item->sampel_diperiksa) }}
                                     </td>
-                                    <td class="px-3 py-2 text-center whitespace-nowrap">
+                                    <td class="px-1.5 py-2 text-center whitespace-nowrap">
                                         @if ($item->status === 'Resisten')
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2 py-0.5 text-[11px] font-bold text-rose-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
                                             </span>
                                         @elseif (in_array($item->status, ['Toleran/Terduga Resisten', 'Toleran', 'Terduga Resisten']))
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-[11px] font-bold text-amber-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
                                             </span>
                                         @elseif ($item->status === 'Rentan')
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
                                             </span>
                                         @else
                                             <span class="text-xs text-slate-400 italic">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-3 py-2 text-center whitespace-nowrap">
+                                    <td class="px-1 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap truncate">
+                                        {{ $item->bulan }} {{ $item->tahun }}
+                                    </td>
+                                    <td class="px-1.5 py-2 text-center whitespace-nowrap">
                                         <div class="inline-flex items-center justify-center gap-1">
                                             <button type="button"
                                                     onclick="showRowDetailModal({{ $item->id }})"
-                                                    class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                                    class="inline-flex items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
                                                     title="Tampilkan rincian data pemeriksaan ini">
                                                 <span>👁️</span>
                                                 <span>Detail</span>
@@ -1258,7 +1381,7 @@
                                             @if ($item->kabupaten && $item->kabupaten->latitude && $item->kabupaten->longitude)
                                                 <button type="button"
                                                         onclick="focusOnMap({{ $item->kabupaten->latitude }}, {{ $item->kabupaten->longitude }}, {{ $item->kabupaten->id }})"
-                                                        class="inline-flex items-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                                        class="inline-flex items-center gap-0.5 rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
                                                         title="Lihat titik lokasi ini di peta">
                                                     <span>📍</span>
                                                     <span>Peta</span>
@@ -1266,13 +1389,10 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-3 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap">
-                                        {{ $item->bulan }} {{ $item->tahun }}
-                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="px-4 py-8 text-center text-xs text-slate-400">
+                                    <td colspan="9" class="px-4 py-8 text-center text-xs text-slate-400">
                                         Belum ada data pemeriksaan tersimpan.
                                     </td>
                                 </tr>
@@ -1533,11 +1653,13 @@
                                     ${itemStatusConf.badgeText}
                                 </span>
                             </div>
-                            <div class="flex items-center justify-between text-[10px] text-slate-500">
-                                <span class="truncate max-w-[155px]" title="${escapeHtml(item.insektisida || '-')} • ${escapeHtml(item.metode || '-')}">
-                                    ${escapeHtml(item.insektisida || '-')} • ${escapeHtml(item.metode || '-')}
-                                </span>
-                                <span class="font-medium text-slate-600 shrink-0">${Number(item.sampel_diperiksa || 0).toLocaleString()} sampel</span>
+                            <div class="flex items-start justify-between gap-1.5 text-[10px] text-slate-500">
+                                <div class="min-w-0 flex-1 leading-snug break-words">
+                                    <span class="font-medium">${escapeHtml(item.insektisida || '-')}</span>
+                                    <span class="text-slate-400 mx-0.5">•</span>
+                                    <span>${escapeHtml(item.metode || '-')}</span>
+                                </div>
+                                <span class="font-medium text-slate-600 shrink-0 whitespace-nowrap">${Number(item.sampel_diperiksa || 0).toLocaleString()} sampel</span>
                             </div>
                         </div>
                     `;
@@ -1559,7 +1681,7 @@
                     <div>
                         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100/80 text-blue-800 uppercase tracking-wide">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100/80 text-blue-800 uppercase tracking-wide panel-provinsi-badge">
                                     PROVINSI ${escapeHtml(provinsi ? provinsi.nama_provinsi : 'INDONESIA')}
                                 </span>
                                 ${isPinned ? '<span class="text-[9.5px] font-bold text-teal-700 bg-teal-50/80 border border-teal-200/80 px-1.5 py-0.5 rounded-full">📌 Terpilih</span>' : ''}
@@ -1591,11 +1713,11 @@
                             </div>
 
                             <div class="grid grid-cols-2 gap-1.5 pt-1">
-                                <div class="rounded-lg border border-slate-200/60 bg-white/45 p-1.5 text-center">
+                                <div class="rounded-lg border border-slate-200/60 bg-white/45 p-1.5 text-center panel-stat-box">
                                     <div class="text-sm font-bold text-slate-800">${totalEntri}</div>
                                     <div class="text-[9.5px] text-slate-500 font-medium">Total Uji</div>
                                 </div>
-                                <div class="rounded-lg border border-slate-200/60 bg-white/45 p-1.5 text-center">
+                                <div class="rounded-lg border border-slate-200/60 bg-white/45 p-1.5 text-center panel-stat-box">
                                     <div class="text-sm font-bold text-slate-800">${totalSampel.toLocaleString()}</div>
                                     <div class="text-[9.5px] text-slate-500 font-medium">Sampel Diuji</div>
                                 </div>
@@ -1605,7 +1727,7 @@
                                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                                     HASIL PEMERIKSAAN (${totalEntri} DATA):
                                 </div>
-                                <div class="bg-white/45 border border-slate-200/60 rounded-lg p-2 max-h-32 overflow-y-auto">
+                                <div class="bg-white/45 border border-slate-200/60 rounded-lg p-2 max-h-36 overflow-y-auto panel-results-box">
                                     ${entriesListHtml}
                                     ${moreEntriesHtml}
                                 </div>
@@ -2272,7 +2394,7 @@
                 if (totalItems === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="10" class="px-6 py-12 text-center text-sm text-slate-400">
+                            <td colspan="9" class="px-6 py-12 text-center text-sm text-slate-400">
                                 <div class="flex flex-col items-center justify-center gap-2">
                                     <span class="text-3xl">🔍</span>
                                     <p class="font-semibold text-slate-600">Tidak ada data yang cocok dengan kriteria pencarian.</p>
@@ -2299,7 +2421,7 @@
                     const kab = escapeHtml(item.kabupaten ? item.kabupaten.nama_kabupaten : '-');
                     const rawAlamat = item.alamat || '';
                     const alamat = rawAlamat
-                        ? `<span class="inline-flex items-start gap-1 font-medium text-slate-700"><span class="text-blue-500 shrink-0 mt-0.5">📍</span><span>${escapeHtml(rawAlamat)}</span></span>`
+                        ? `<span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="${escapeHtml(rawAlamat)}"><span class="text-blue-500 shrink-0">📍</span><span class="truncate">${escapeHtml(rawAlamat)}</span></span>`
                         : `<span class="italic text-slate-400">Belum diisi</span>`;
                     const sampel = Number(item.sampel_diperiksa || 0).toLocaleString();
                     const periode = escapeHtml(`${item.bulan || ''} ${item.tahun || ''}`);
@@ -2309,11 +2431,11 @@
 
                     let statusBadge = '<span class="text-xs text-slate-400 italic">-</span>';
                     if (item.status === 'Resisten') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2 py-0.5 text-[11px] font-bold text-rose-700"><span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700"><span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten</span>';
                     } else if (item.status === 'Toleran' || item.status === 'Toleran/Terduga Resisten' || item.status === 'Terduga Resisten') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-[11px] font-bold text-amber-700"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran</span>';
                     } else if (item.status === 'Rentan') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan</span>';
                     }
 
                     const hasCoords = item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude;
@@ -2321,7 +2443,7 @@
                         <div class="inline-flex items-center justify-center gap-1">
                             <button type="button"
                                     onclick="showRowDetailModal(${item.id})"
-                                    class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                    class="inline-flex items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
                                     title="Tampilkan rincian data pemeriksaan ini">
                                 <span>👁️</span>
                                 <span>Detail</span>
@@ -2329,7 +2451,7 @@
                             ${hasCoords ? `
                                 <button type="button"
                                         onclick="focusOnMap(${Number(item.kabupaten.latitude)}, ${Number(item.kabupaten.longitude)}, ${Number(item.kabupaten.id)})"
-                                        class="inline-flex items-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                        class="inline-flex items-center gap-0.5 rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
                                         title="Lihat titik lokasi ini di peta">
                                     <span>📍</span>
                                     <span>Peta</span>
@@ -2340,23 +2462,25 @@
 
                     return `
                         <tr class="hover:bg-blue-50/40 transition" id="row-data-${item.id}">
-                            <td class="px-3 py-2 text-center font-bold text-slate-400 text-xs">${rowNumber}</td>
-                            <td class="px-3 py-2 whitespace-nowrap text-xs">
-                                <div class="font-semibold text-slate-800 leading-tight">${kab}</div>
-                                <div class="text-[11px] text-slate-500 font-normal leading-tight">${prov}</div>
+                            <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">${rowNumber}</td>
+                            <td class="px-2 py-2 text-xs truncate">
+                                <div class="font-semibold text-slate-800 leading-tight truncate" title="${kab}">${kab}</div>
+                                <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="${prov}">${prov}</div>
                             </td>
-                            <td class="px-3 py-2 text-xs text-slate-700 leading-snug">${alamat}</td>
-                            <td class="px-3 py-2 whitespace-nowrap">
-                                <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap">
+                            <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">${alamat}</td>
+                            <td class="px-1.5 py-2 whitespace-nowrap truncate">
+                                <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full">
                                     ${nyamuk}
                                 </span>
                             </td>
-                            <td class="px-3 py-2 text-xs text-slate-700 whitespace-nowrap font-medium">${insek}</td>
-                            <td class="px-3 py-2 text-xs text-slate-600 whitespace-nowrap">${metode}</td>
-                            <td class="px-3 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap">${sampel}</td>
-                            <td class="px-3 py-2 text-center whitespace-nowrap">${statusBadge}</td>
-                            <td class="px-3 py-2 text-center whitespace-nowrap">${aksiBtn}</td>
-                            <td class="px-3 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap">${periode}</td>
+                            <td class="px-2 py-2 text-xs truncate">
+                                <div class="font-semibold text-slate-800 leading-tight truncate" title="${insek}">${insek}</div>
+                                <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="${metode}">${metode}</div>
+                            </td>
+                            <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">${sampel}</td>
+                            <td class="px-1.5 py-2 text-center whitespace-nowrap">${statusBadge}</td>
+                            <td class="px-1 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap truncate">${periode}</td>
+                            <td class="px-1.5 py-2 text-center whitespace-nowrap">${aksiBtn}</td>
                         </tr>
                     `;
                 }).join('');
@@ -2368,18 +2492,6 @@
                             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                                 <div class="flex flex-wrap items-center gap-2 text-slate-500 font-medium text-xs">
                                     <span>Menampilkan seluruh <strong class="text-slate-800 font-bold">${totalItems}</strong> data</span>
-                                    <span class="text-slate-300">|</span>
-                                    <label class="inline-flex items-center gap-1.5 text-slate-600 font-medium">
-                                        <span>Tampil per hal:</span>
-                                        <select onchange="changeTablePageSize(this.value)" class="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs cursor-pointer focus:border-blue-500 focus:outline-none">
-                                            <option value="5" ${tablePageSize === 5 ? 'selected' : ''}>5</option>
-                                            <option value="10" ${tablePageSize === 10 ? 'selected' : ''}>10</option>
-                                            <option value="25" ${tablePageSize === 25 ? 'selected' : ''}>25</option>
-                                            <option value="50" ${tablePageSize === 50 ? 'selected' : ''}>50</option>
-                                            <option value="100" ${tablePageSize === 100 ? 'selected' : ''}>100</option>
-                                            <option value="all" ${tablePageSize >= 999999 ? 'selected' : ''}>Semua</option>
-                                        </select>
-                                    </label>
                                 </div>
                             </div>
                         `;
@@ -2439,18 +2551,6 @@
                         <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                             <div class="flex flex-wrap items-center gap-2 text-slate-500 font-medium text-xs">
                                 <span>Menampilkan data <strong class="text-slate-800 font-bold">${startIndex + 1}</strong> - <strong class="text-slate-800 font-bold">${endIndex}</strong> dari total <strong class="text-slate-900 font-extrabold">${totalItems}</strong> data</span>
-                                <span class="text-slate-300">|</span>
-                                <label class="inline-flex items-center gap-1.5 text-slate-600 font-medium">
-                                    <span>Tampil per hal:</span>
-                                    <select onchange="changeTablePageSize(this.value)" class="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs cursor-pointer focus:border-blue-500 focus:outline-none">
-                                        <option value="5" ${tablePageSize === 5 ? 'selected' : ''}>5</option>
-                                        <option value="10" ${tablePageSize === 10 ? 'selected' : ''}>10</option>
-                                        <option value="25" ${tablePageSize === 25 ? 'selected' : ''}>25</option>
-                                        <option value="50" ${tablePageSize === 50 ? 'selected' : ''}>50</option>
-                                        <option value="100" ${tablePageSize === 100 ? 'selected' : ''}>100</option>
-                                        <option value="all" ${tablePageSize >= 999999 ? 'selected' : ''}>Semua</option>
-                                    </select>
-                                </label>
                             </div>
                             <div class="inline-flex items-center gap-1">
                                 ${prevButton}

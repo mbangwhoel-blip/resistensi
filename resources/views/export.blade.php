@@ -259,14 +259,21 @@
 
                         {{-- TOMBOL UNDUH HASIL EXPORT --}}
                         <div id="actionButtons" class="flex flex-wrap items-center gap-2.5">
-                            {{-- EXCEL / CSV --}}
-                            <a href="{{ route('export.download', array_merge(request()->query(), ['format' => 'csv'])) }}"
+                            {{-- EXCEL (.XLSX) --}}
+                            <a href="{{ route('export.download', array_merge(request()->query(), ['format' => 'xlsx'])) }}"
                                class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition cursor-pointer"
-                               title="Download file CSV kompatibel Excel dengan format lengkap">
+                               title="Download file Excel (.xlsx) dengan kolom rapi, warna header, dan garis tabel">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <span>Download Excel / CSV</span>
+                                <span>Download Excel (.xlsx)</span>
+                            </a>
+
+                            {{-- CSV --}}
+                            <a href="{{ route('export.download', array_merge(request()->query(), ['format' => 'csv'])) }}"
+                               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2.5 text-xs font-semibold transition shadow-2xs cursor-pointer"
+                               title="Download file format CSV dengan UTF-8 BOM">
+                                <span>CSV</span>
                             </a>
 
                             {{-- JSON --}}
@@ -303,128 +310,139 @@
                         </p>
                     </div>
 
-                    {{-- PENCARIAN CEPAT DI TABEL --}}
-                    <div class="relative w-64 no-print">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </span>
-                        <input type="text"
-                               placeholder="Cari di tabel..."
-                               onkeyup="filterExportTableLive(this.value)"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
+                    <div class="flex flex-wrap items-center gap-2.5 no-print">
+                        {{-- PENCARIAN CEPAT DI TABEL --}}
+                        <div class="relative w-56 sm:w-64">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input type="text"
+                                   id="exportTableSearchInput"
+                                   placeholder="Cari cepat di tabel..."
+                                   onkeyup="filterExportTableLive(this.value)"
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
+                        </div>
+
+                        {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR) --}}
+                        <div class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-1 shadow-2xs">
+                            <label for="exportPageSizeSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap flex items-center gap-1">
+                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                <span>Tampil:</span>
+                            </label>
+                            <select id="exportPageSizeSelect" 
+                                    onchange="changeExportPageSize(this.value)" 
+                                    class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer">
+                                <option value="5" {{ (string)($perPageRaw ?? $perPage) === '5' ? 'selected' : '' }}>5 data</option>
+                                <option value="10" {{ (string)($perPageRaw ?? $perPage) === '10' ? 'selected' : '' }}>10 data</option>
+                                <option value="25" {{ (string)($perPageRaw ?? $perPage) === '25' ? 'selected' : '' }}>25 data</option>
+                                <option value="50" {{ (string)($perPageRaw ?? $perPage) === '50' ? 'selected' : '' }}>50 data</option>
+                                <option value="100" {{ (string)($perPageRaw ?? $perPage) === '100' ? 'selected' : '' }}>100 data</option>
+                                <option value="all" {{ (string)($perPageRaw ?? $perPage) === 'all' ? 'selected' : '' }}>Semua data</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left text-xs border-collapse" id="exportPreviewTable">
+                <div class="overflow-x-auto bg-slate-50">
+                    <table class="w-full text-left text-xs table-fixed border-collapse" id="exportPreviewTable">
                         <thead class="bg-slate-900 text-white uppercase text-[11px] font-bold tracking-wider border-b border-slate-800">
                             <tr>
-                                <th class="px-3.5 py-3 text-center w-12">No</th>
-                                <th class="px-3.5 py-3">Provinsi</th>
-                                <th class="px-3.5 py-3">Kabupaten</th>
-                                <th class="px-3.5 py-3">Alamat / Lokasi</th>
-                                <th class="px-3.5 py-3">Jenis Nyamuk</th>
-                                <th class="px-3.5 py-3">Insektisida</th>
-                                <th class="px-3.5 py-3 text-center">Metode</th>
-                                <th class="px-3 py-3 text-right">Sampel</th>
-                                <th class="px-3 py-3 text-center">Bulan</th>
-                                <th class="px-3 py-3 text-center">Tahun</th>
-                                <th class="px-3 py-3 text-center text-rose-300 bg-rose-950/60 border-x border-rose-900/50">Resisten</th>
-                                <th class="px-3 py-3 text-center text-emerald-300 bg-emerald-950/60 border-r border-emerald-900/50">Rentan</th>
-                                <th class="px-3 py-3 text-center text-amber-300 bg-amber-950/60 border-r border-amber-900/50">Toleran</th>
-                                <th class="px-3 py-3 text-center">Mutasi</th>
-                                <th class="px-3.5 py-3">Publikasi</th>
+                                <th class="w-[3.5%] px-1.5 py-2.5 text-center">No</th>
+                                <th class="w-[11.5%] px-2.5 py-2.5 whitespace-nowrap">Kab/Prov</th>
+                                <th class="w-[16%] px-2.5 py-2.5">Alamat / Lokasi</th>
+                                <th class="w-[12%] px-2 py-2.5">Jenis Nyamuk</th>
+                                <th class="w-[16%] px-2.5 py-2.5">Insektisida / Metode</th>
+                                <th class="w-[7%] px-2 py-2.5 text-center whitespace-nowrap">Sampel</th>
+                                <th class="w-[8.5%] px-2 py-2.5 text-center whitespace-nowrap">Status</th>
+                                <th class="w-[7.5%] px-2 py-2.5 text-center whitespace-nowrap">Periode</th>
+                                <th class="w-[5%] px-1.5 py-2.5 text-center whitespace-nowrap">Mutasi</th>
+                                <th class="w-[13%] px-2.5 py-2.5 text-left">Publikasi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100" id="exportTableBody">
+                        <tbody class="divide-y divide-slate-100 bg-white" id="exportTableBody">
                             @forelse ($dataPreview as $index => $item)
                                 @php
                                     $st = strtolower(trim((string)$item->status));
-                                    $isResisten = ($st === 'resisten');
-                                    $isRentan = ($st === 'rentan');
-                                    $isToleran = str_contains($st, 'toleran') || str_contains($st, 'terduga');
                                 @endphp
-                                <tr class="hover:bg-blue-50/40 transition">
-                                    <td class="px-3.5 py-2.5 text-center font-bold text-slate-400">
+                                <tr class="hover:bg-blue-50/40 transition align-top">
+                                    <td class="px-1.5 py-2.5 text-center text-slate-400 font-bold text-xs whitespace-nowrap">
                                         {{ $dataPreview->firstItem() + $index }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 font-bold text-slate-800 whitespace-nowrap">
-                                        {{ $item->provinsi->nama_provinsi ?? '-' }}
+                                    <td class="px-2.5 py-2.5 text-xs">
+                                        <div class="font-bold text-slate-800 dark:text-slate-100 leading-snug break-words">{{ $item->kabupaten ? $item->kabupaten->nama_kabupaten : '-' }}</div>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words">{{ $item->provinsi ? $item->provinsi->nama_provinsi : '-' }}</div>
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-slate-700 whitespace-nowrap">
-                                        {{ $item->kabupaten->nama_kabupaten ?? '-' }}
+                                    <td class="px-2.5 py-2.5 text-xs text-slate-700 dark:text-slate-200 leading-snug break-words">
+                                        @if(!empty($item->alamat))
+                                            <div class="flex items-start gap-1 font-medium">
+                                                <span class="text-blue-500 shrink-0 text-xs mt-0.5">📍</span>
+                                                <span class="break-words leading-snug">{{ $item->alamat }}</span>
+                                            </div>
+                                        @else
+                                            <span class="italic text-slate-400">Belum diisi</span>
+                                        @endif
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-slate-600 max-w-[180px] truncate" title="{{ $item->alamat }}">
-                                        {{ $item->alamat ?? '-' }}
-                                    </td>
-                                    <td class="px-3.5 py-2.5">
-                                        <span class="rounded-md bg-blue-50 px-2 py-0.5 font-bold italic text-blue-700 text-[11px] border border-blue-200/60">
-                                             {{ $item->jenis_nyamuk ?: '-' }}
+                                    <td class="px-2 py-2.5">
+                                        <span class="inline-block rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/60 px-2 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 break-words leading-tight">
+                                            {{ $item->jenis_nyamuk ?: '-' }}
                                         </span>
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-slate-800 font-medium whitespace-nowrap">
-                                        {{ $item->insektisida ?: '-' }}
+                                    <td class="px-2.5 py-2.5 text-xs">
+                                        <div class="font-semibold text-slate-800 dark:text-slate-100 leading-snug break-words">
+                                            {{ $item->insektisida ?: '-' }}
+                                        </div>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words mt-0.5">
+                                            {{ $item->metode ?: '-' }}
+                                        </div>
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-slate-600 text-center whitespace-nowrap">
-                                        {{ $item->metode ?: '-' }}
-                                    </td>
-                                    <td class="px-3 py-2.5 text-right font-black text-slate-900">
+                                    <td class="px-2 py-2.5 text-center font-bold text-slate-900 dark:text-slate-100 text-xs whitespace-nowrap">
                                         {{ $item->sampel_diperiksa ? number_format($item->sampel_diperiksa, 0, ',', '.') : '0' }}
                                     </td>
-                                    <td class="px-3 py-2.5 text-center text-slate-600 whitespace-nowrap font-medium">
-                                        {{ $item->bulan ?? '-' }}
-                                    </td>
-                                    <td class="px-3 py-2.5 text-center text-slate-700 whitespace-nowrap font-bold">
-                                        {{ $item->tahun ?? '-' }}
-                                    </td>
-                                    {{-- KOLOM STATUS RESISTEN --}}
-                                    <td class="px-3 py-2.5 text-center bg-rose-50/40 border-x border-rose-100">
-                                        @if ($isResisten)
-                                            <span class="inline-flex items-center justify-center font-black text-rose-700 bg-rose-100 rounded-md px-2 py-0.5 text-xs shadow-2xs border border-rose-200">v</span>
+                                    <td class="px-2 py-2.5 text-center whitespace-nowrap">
+                                        @if ($st === 'resisten')
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
+                                            </span>
+                                        @elseif (in_array($st, ['toleran', 'terduga resisten', 'toleran/terduga resisten']))
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
+                                            </span>
+                                        @elseif ($st === 'rentan')
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
+                                            </span>
                                         @else
-                                            <span class="text-slate-300">-</span>
+                                            <span class="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-600">
+                                                {{ ucfirst($st ?: '-') }}
+                                            </span>
                                         @endif
                                     </td>
-                                    {{-- KOLOM STATUS RENTAN --}}
-                                    <td class="px-3 py-2.5 text-center bg-emerald-50/40 border-r border-emerald-100">
-                                        @if ($isRentan)
-                                            <span class="inline-flex items-center justify-center font-black text-emerald-700 bg-emerald-100 rounded-md px-2 py-0.5 text-xs shadow-2xs border border-emerald-200">v</span>
-                                        @else
-                                            <span class="text-slate-300">-</span>
-                                        @endif
+                                    <td class="px-2 py-2.5 text-center whitespace-nowrap text-[11px]">
+                                        <span class="font-bold text-slate-800 dark:text-slate-100 block">{{ $item->bulan ?: '-' }}</span>
+                                        <span class="text-slate-500 dark:text-slate-400 text-[11px] block">{{ $item->tahun }}</span>
                                     </td>
-                                    {{-- KOLOM STATUS TOLERAN --}}
-                                    <td class="px-3 py-2.5 text-center bg-amber-50/40 border-r border-amber-100">
-                                        @if ($isToleran)
-                                            <span class="inline-flex items-center justify-center font-black text-amber-800 bg-amber-100 rounded-md px-2 py-0.5 text-xs shadow-2xs border border-amber-200" title="Toleran (termasuk terduga resisten)">v</span>
-                                        @else
-                                            <span class="text-slate-300">-</span>
-                                        @endif
-                                    </td>
-                                    {{-- KOLOM MUTASI --}}
-                                    <td class="px-3 py-2.5 text-center font-mono text-[11px] text-slate-600">
+                                    <td class="px-1.5 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
                                         {{ $item->mutasi ?: '-' }}
                                     </td>
-                                    {{-- KOLOM PUBLIKASI --}}
-                                    <td class="px-3.5 py-2.5 text-slate-700 max-w-[200px] break-all text-[11px]">
+                                    <td class="px-2.5 py-2.5 text-left text-[11px] leading-snug">
                                         @if ($item->publikasi && str_starts_with($item->publikasi, 'http'))
-                                            <a href="{{ $item->publikasi }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline break-all" title="{{ $item->publikasi }}">
+                                            <a href="{{ $item->publikasi }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline break-all block" title="{{ $item->publikasi }}">
                                                 {{ $item->publikasi }}
                                             </a>
                                         @elseif ($item->publikasi)
-                                            <span class="break-words font-medium text-slate-800">
-                                                {{ $item->publikasi }}
-                                            </span>
+                                            <span class="text-slate-700 dark:text-slate-300 break-words block">{{ $item->publikasi }}</span>
                                         @else
-                                            <span class="text-slate-300">-</span>
+                                            <span class="text-slate-400">-</span>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="15" class="px-6 py-12 text-center text-slate-400">
+                                    <td colspan="10" class="px-6 py-12 text-center text-slate-400">
                                         <div class="flex flex-col items-center justify-center">
                                             <span class="text-3xl mb-2">📋</span>
                                             <p class="font-bold text-slate-600 text-sm">Tidak ada data hasil uji yang cocok dengan filter yang dipilih</p>
@@ -463,6 +481,14 @@
                     row.style.display = 'none';
                 }
             });
+        }
+
+        // Kontrol Page Size (Tampil X Data) Tabel Data Preview Export
+        function changeExportPageSize(val) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', val);
+            url.searchParams.delete('page');
+            window.location.href = url.toString();
         }
     </script>
 

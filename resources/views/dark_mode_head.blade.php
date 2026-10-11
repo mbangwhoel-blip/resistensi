@@ -172,7 +172,9 @@
     html.dark table {
         border-color: #1e293b !important;
     }
-    html.dark table thead {
+    html.dark table thead,
+    html.dark table thead tr,
+    html.dark table thead th {
         background-color: #1e293b !important;
         border-color: #334155 !important;
         color: #94a3b8 !important;
@@ -198,28 +200,60 @@
     /* 10. Badges, Pills & Status Cards */
     /* Emerald / Rentan */
     html.dark .bg-emerald-50,
-    html.dark .bg-emerald-100 {
-        background-color: rgba(16, 185, 129, 0.15) !important;
+    html.dark .bg-emerald-100,
+    html.dark .bg-emerald-50\/90,
+    html.dark .bg-emerald-50\/80,
+    html.dark .bg-emerald-50\/70,
+    html.dark .bg-emerald-50\/40 {
+        background-color: rgba(16, 185, 129, 0.16) !important;
+    }
+    html.dark .bg-emerald-200,
+    html.dark .bg-emerald-200\/80 {
+        background-color: rgba(5, 150, 105, 0.32) !important;
+        border: 1px solid rgba(52, 211, 153, 0.55) !important;
+    }
+    html.dark .text-emerald-900 {
+        color: #d1fae5 !important;
+    }
+    html.dark .text-emerald-800 {
+        color: #a7f3d0 !important;
     }
     html.dark .text-emerald-700,
-    html.dark .text-emerald-600 {
-        color: #34d399 !important;
+    html.dark .text-emerald-600,
+    html.dark .text-emerald-500 {
+        color: #4ade80 !important;
+    }
+    html.dark .text-emerald-600\/80 {
+        color: #86efac !important;
     }
     html.dark .border-emerald-200,
-    html.dark .border-emerald-300 {
-        border-color: rgba(16, 185, 129, 0.35) !important;
+    html.dark .border-emerald-300,
+    html.dark .border-emerald-200\/80 {
+        border-color: rgba(16, 185, 129, 0.4) !important;
     }
 
     /* Blue / Info */
     html.dark .bg-blue-50,
     html.dark .bg-blue-100,
     html.dark .bg-blue-50\/40,
+    html.dark .bg-blue-50\/50,
     html.dark .bg-blue-50\/70 {
-        background-color: rgba(59, 130, 246, 0.15) !important;
+        background-color: rgba(59, 130, 246, 0.18) !important;
     }
-    html.dark .text-blue-900,
-    html.dark .text-blue-800,
-    html.dark .text-blue-700,
+    html.dark .bg-blue-200,
+    html.dark .bg-blue-200\/80 {
+        background-color: rgba(29, 78, 216, 0.32) !important;
+        border: 1px solid rgba(96, 165, 250, 0.55) !important;
+    }
+    html.dark .text-blue-900 {
+        color: #ffffff !important;
+    }
+    html.dark .text-blue-800 {
+        color: #dbeafe !important;
+    }
+    html.dark .text-blue-700 {
+        color: #93c5fd !important;
+    }
     html.dark .text-blue-600 {
         color: #60a5fa !important;
     }
@@ -227,50 +261,94 @@
     html.dark .border-blue-100,
     html.dark .border-blue-300,
     html.dark .border-blue-200\/60 {
-        border-color: rgba(59, 130, 246, 0.35) !important;
+        border-color: rgba(59, 130, 246, 0.4) !important;
     }
 
     /* Amber / Toleran */
     html.dark .bg-amber-50,
     html.dark .bg-amber-100,
     html.dark .bg-amber-50\/50,
-    html.dark .bg-amber-50\/40 {
-        background-color: rgba(245, 158, 11, 0.15) !important;
+    html.dark .bg-amber-50\/40,
+    html.dark .bg-amber-50\/70 {
+        background-color: rgba(245, 158, 11, 0.18) !important;
     }
-    html.dark .text-amber-800,
+    html.dark .bg-amber-200,
+    html.dark .bg-amber-200\/80 {
+        background-color: rgba(217, 119, 6, 0.32) !important;
+        border: 1px solid rgba(251, 191, 36, 0.55) !important;
+    }
+    html.dark .text-amber-900 {
+        color: #fef3c7 !important;
+    }
+    html.dark .text-amber-800 {
+        color: #fde68a !important;
+    }
     html.dark .text-amber-700,
-    html.dark .text-amber-600 {
-        color: #fbbf24 !important;
+    html.dark .text-amber-600,
+    html.dark .text-amber-500 {
+        color: #fde047 !important;
+    }
+    html.dark .text-amber-600\/80 {
+        color: #fde047 !important;
     }
     html.dark .border-amber-200,
-    html.dark .border-amber-300 {
-        border-color: rgba(245, 158, 11, 0.35) !important;
+    html.dark .border-amber-300,
+    html.dark .border-amber-200\/80 {
+        border-color: rgba(245, 158, 11, 0.4) !important;
     }
 
     /* Rose / Resisten */
     html.dark .bg-rose-50,
     html.dark .bg-rose-100,
     html.dark .bg-rose-50\/50,
-    html.dark .bg-rose-50\/40 {
-        background-color: rgba(244, 63, 94, 0.15) !important;
+    html.dark .bg-rose-50\/40,
+    html.dark .bg-rose-50\/70 {
+        background-color: rgba(244, 63, 94, 0.18) !important;
     }
-    html.dark .text-rose-800,
-    html.dark .text-rose-700,
-    html.dark .text-rose-600 {
+    html.dark .bg-rose-200,
+    html.dark .bg-rose-200\/80 {
+        background-color: rgba(225, 29, 72, 0.32) !important;
+        border: 1px solid rgba(251, 113, 133, 0.55) !important;
+    }
+    html.dark .text-rose-900 {
+        color: #ffe4e6 !important;
+    }
+    html.dark .text-rose-800 {
+        color: #fecdd3 !important;
+    }
+    html.dark .text-rose-700 {
+        color: #fda4af !important;
+    }
+    html.dark .text-rose-600,
+    html.dark .text-rose-500 {
         color: #fb7185 !important;
     }
+    html.dark .text-rose-600\/80 {
+        color: #fca5a5 !important;
+    }
     html.dark .border-rose-200,
-    html.dark .border-rose-300 {
-        border-color: rgba(244, 63, 94, 0.35) !important;
+    html.dark .border-rose-300,
+    html.dark .border-rose-200\/80 {
+        border-color: rgba(244, 63, 94, 0.4) !important;
     }
 
     /* Indigo & Purple */
     html.dark .bg-indigo-50,
+    html.dark .bg-indigo-100,
     html.dark .bg-purple-50 {
-        background-color: rgba(129, 140, 248, 0.15) !important;
+        background-color: rgba(129, 140, 248, 0.18) !important;
     }
-    html.dark .text-indigo-700,
+    html.dark .text-indigo-900 {
+        color: #ffffff !important;
+    }
+    html.dark .text-indigo-800 {
+        color: #e0e7ff !important;
+    }
+    html.dark .text-indigo-700 {
+        color: #c7d2fe !important;
+    }
     html.dark .text-indigo-600,
+    html.dark .text-indigo-600\/80,
     html.dark .text-purple-600,
     html.dark .text-purple-700 {
         color: #a5b4fc !important;
@@ -278,7 +356,211 @@
     html.dark .border-indigo-100,
     html.dark .border-indigo-200,
     html.dark .border-purple-200 {
-        border-color: rgba(129, 140, 248, 0.35) !important;
+        border-color: rgba(129, 140, 248, 0.4) !important;
+    }
+
+    /* ======================================================== */
+    /* 10-A. KARTU STATISTIK & KPI (STAT CARDS) - HIGH CONTRAST */
+    /* ======================================================== */
+
+    /* Container Kotak Stat Card Utama */
+    html.dark .grid > .rounded-xl.border,
+    html.dark .grid > .rounded-2xl.border,
+    html.dark #kpiSection > div,
+    html.dark .stat-card,
+    html.dark .kpi-card {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    html.dark .grid > .rounded-xl.border:hover,
+    html.dark .grid > .rounded-2xl.border:hover,
+    html.dark #kpiSection > div:hover {
+        border-color: #475569 !important;
+        box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Wadah Warna Lembut Stat Card di Mode Gelap */
+    html.dark .grid > div.bg-blue-50\/40,
+    html.dark .grid > div.bg-blue-50\/50,
+    html.dark #kpiSection > div.bg-blue-50\/40,
+    html.dark #kpiSection > div.bg-blue-50\/50 {
+        background-color: rgba(30, 58, 138, 0.28) !important;
+        border-color: rgba(96, 165, 250, 0.45) !important;
+    }
+    html.dark .grid > div.bg-rose-50\/50,
+    html.dark #kpiSection > div.bg-rose-50\/50 {
+        background-color: rgba(159, 18, 57, 0.26) !important;
+        border-color: rgba(251, 113, 133, 0.45) !important;
+    }
+    html.dark .grid > div.bg-amber-50\/50,
+    html.dark #kpiSection > div.bg-amber-50\/50 {
+        background-color: rgba(146, 64, 14, 0.26) !important;
+        border-color: rgba(251, 191, 36, 0.45) !important;
+    }
+    html.dark .grid > div.bg-emerald-50\/50,
+    html.dark #kpiSection > div.bg-emerald-50\/50 {
+        background-color: rgba(6, 95, 70, 0.26) !important;
+        border-color: rgba(52, 211, 153, 0.45) !important;
+    }
+    html.dark .grid > div.bg-indigo-50\/50,
+    html.dark #kpiSection > div.bg-indigo-50\/50 {
+        background-color: rgba(49, 46, 129, 0.28) !important;
+        border-color: rgba(129, 140, 248, 0.45) !important;
+    }
+
+    /* Nilai / Angka Besar Stat Card (Crisp Pure White / Sangat Jelas) */
+    html.dark .grid .text-2xl,
+    html.dark .grid .text-2xl.font-bold,
+    html.dark .grid .text-2xl.font-black,
+    html.dark .grid .text-2xl.font-extrabold,
+    html.dark .grid h3.text-xl,
+    html.dark #kpiSection .text-2xl,
+    html.dark #kpiSection .text-2xl.font-black {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Judul Kategori / Label Stat Card (Terang & Mudah Dibaca) */
+    html.dark .grid p.text-slate-500,
+    html.dark .grid span.text-slate-500,
+    html.dark .grid p.text-xs.font-medium,
+    html.dark #kpiSection span.text-slate-500 {
+        color: #f1f5f9 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Label Kartu Halaman Input (Item | Filter Periode / Tahun) */
+    html.dark .grid p.uppercase.text-slate-400 {
+        color: #f1f5f9 !important;
+        font-weight: 700 !important;
+    }
+    html.dark .grid p.uppercase.text-slate-400 span.text-slate-300 {
+        color: #64748b !important;
+    }
+    html.dark .grid p.uppercase.text-slate-400 span.text-slate-500 {
+        color: #93c5fd !important;
+        font-weight: 600 !important;
+    }
+
+    /* Label Berwarna Khusus Stat Card */
+    html.dark .grid span.text-blue-700,
+    html.dark #kpiSection span.text-blue-700 {
+        color: #93c5fd !important;
+        font-weight: 800 !important;
+    }
+    html.dark .grid span.text-rose-700,
+    html.dark #kpiSection span.text-rose-700 {
+        color: #fda4af !important;
+        font-weight: 800 !important;
+    }
+    html.dark .grid span.text-amber-700,
+    html.dark #kpiSection span.text-amber-700 {
+        color: #fde047 !important;
+        font-weight: 800 !important;
+    }
+    html.dark .grid span.text-emerald-700,
+    html.dark #kpiSection span.text-emerald-700 {
+        color: #86efac !important;
+        font-weight: 800 !important;
+    }
+    html.dark .grid span.text-indigo-700,
+    html.dark #kpiSection span.text-indigo-700 {
+        color: #c7d2fe !important;
+        font-weight: 800 !important;
+    }
+
+    /* Sub-keterangan / Deskripsi di Bawah Angka Stat Card */
+    html.dark .grid div.text-\[11px\].text-slate-400,
+    html.dark .grid span.text-\[11px\].text-slate-400,
+    html.dark .grid p.text-\[11px\].text-slate-400,
+    html.dark #kpiSection div.text-\[11px\].text-slate-400 {
+        color: #cbd5e1 !important;
+        font-weight: 500 !important;
+    }
+    html.dark .grid .text-rose-600\/80,
+    html.dark #kpiSection .text-rose-600\/80 {
+        color: #fca5a5 !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid .text-amber-600\/80,
+    html.dark #kpiSection .text-amber-600\/80 {
+        color: #fde047 !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid .text-emerald-600\/80,
+    html.dark #kpiSection .text-emerald-600\/80 {
+        color: #86efac !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid p.text-emerald-600,
+    html.dark .grid div.text-emerald-600,
+    html.dark #kpiSection .text-emerald-600 {
+        color: #4ade80 !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid p.text-indigo-600,
+    html.dark .grid div.text-indigo-600,
+    html.dark #kpiSection .text-indigo-600 {
+        color: #a5b4fc !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid p.text-amber-600,
+    html.dark .grid div.text-amber-600,
+    html.dark #kpiSection .text-amber-600 {
+        color: #fde047 !important;
+        font-weight: 600 !important;
+    }
+    html.dark .grid p.text-blue-600,
+    html.dark .grid div.text-blue-600,
+    html.dark #kpiSection .text-blue-600 {
+        color: #93c5fd !important;
+        font-weight: 600 !important;
+    }
+
+    /* Kotak Ikon / Icon Badges pada Stat Card */
+    html.dark .grid .bg-blue-100.text-blue-600,
+    html.dark .grid .bg-blue-50.text-blue-600,
+    html.dark .grid .bg-blue-100.text-blue-700 {
+        background-color: rgba(59, 130, 246, 0.24) !important;
+        border: 1px solid rgba(96, 165, 250, 0.45) !important;
+        color: #93c5fd !important;
+    }
+    html.dark .grid .bg-indigo-100.text-indigo-600,
+    html.dark .grid .bg-indigo-50.text-indigo-600,
+    html.dark .grid .bg-indigo-100.text-indigo-700 {
+        background-color: rgba(99, 102, 241, 0.24) !important;
+        border: 1px solid rgba(165, 180, 252, 0.45) !important;
+        color: #c7d2fe !important;
+    }
+    html.dark .grid .bg-emerald-100.text-emerald-600,
+    html.dark .grid .bg-emerald-50.text-emerald-600,
+    html.dark .grid .bg-emerald-100.text-emerald-700 {
+        background-color: rgba(16, 185, 129, 0.24) !important;
+        border: 1px solid rgba(110, 231, 183, 0.45) !important;
+        color: #86efac !important;
+    }
+    html.dark .grid .bg-amber-100.text-amber-600,
+    html.dark .grid .bg-amber-50.text-amber-600,
+    html.dark .grid .bg-amber-100.text-amber-700 {
+        background-color: rgba(245, 158, 11, 0.24) !important;
+        border: 1px solid rgba(253, 224, 71, 0.45) !important;
+        color: #fde047 !important;
+    }
+    html.dark .grid .bg-rose-100.text-rose-600,
+    html.dark .grid .bg-rose-50.text-rose-600 {
+        background-color: rgba(244, 63, 94, 0.24) !important;
+        border: 1px solid rgba(253, 164, 175, 0.45) !important;
+        color: #fca5a5 !important;
+    }
+    html.dark .grid .bg-slate-100.text-slate-600 {
+        background-color: rgba(51, 65, 85, 0.5) !important;
+        border: 1px solid rgba(148, 163, 184, 0.35) !important;
+        color: #e2e8f0 !important;
     }
 
     /* 11. Tombol Netral & Secondary */
@@ -321,24 +603,21 @@
         color: #60a5fa !important;
         border-color: #3b82f6 !important;
     }
-    html.dark .bg-gradient-to-br.from-blue-50.to-indigo-50 {
-        background: linear-gradient(to bottom right, rgba(30, 58, 138, 0.3), rgba(49, 46, 129, 0.3)) !important;
+    html.dark .bg-gradient-to-br.from-blue-50.to-indigo-50,
+    html.dark .bg-gradient-to-r.from-blue-50\/80.to-indigo-50\/80,
+    html.dark [class*="from-blue-50"][class*="to-indigo-50"],
+    html.dark [class*="from-blue-50/80"][class*="to-indigo-50/80"] {
+        background: linear-gradient(to right, rgba(30, 58, 138, 0.4), rgba(49, 46, 129, 0.4)) !important;
+        background-color: #0f172a !important;
         border-color: #1e3a8a !important;
     }
-
-    /* 14. Pagination */
-    html.dark nav[role="navigation"] button,
-    html.dark nav[role="navigation"] a,
-    html.dark nav[role="navigation"] span,
-    html.dark #dashboardTablePagination {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
-        color: #cbd5e1 !important;
+    html.dark [class*="from-blue-50"] h4,
+    html.dark [class*="from-blue-50/80"] h4 {
+        color: #f8fafc !important;
     }
-    html.dark nav[role="navigation"] a:hover,
-    html.dark nav[role="navigation"] button:hover:not(:disabled) {
-        background-color: #334155 !important;
-        color: #ffffff !important;
+    html.dark [class*="from-blue-50"] p,
+    html.dark [class*="from-blue-50/80"] p {
+        color: #cbd5e1 !important;
     }
 
     /* 15. Header User & Theme Toggle Buttons */
@@ -429,23 +708,75 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
     }
     html.dark .map-detail-panel {
-        background: rgba(15, 23, 42, 0.88) !important;
-        border: 1px solid rgba(51, 65, 85, 0.9) !important;
+        background: rgba(15, 23, 42, 0.94) !important;
+        border: 1px solid rgba(51, 65, 85, 0.95) !important;
         color: #f1f5f9 !important;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
     }
     html.dark .map-detail-panel.is-pinned,
     html.dark .map-detail-panel:hover {
-        background: rgba(15, 23, 42, 0.95) !important;
+        background: rgba(15, 23, 42, 0.98) !important;
     }
     html.dark .map-detail-panel .text-slate-800 {
         color: #f8fafc !important;
     }
-    html.dark .map-detail-panel .border-slate-100 {
+    html.dark .map-detail-panel .text-slate-700 {
+        color: #e2e8f0 !important;
+    }
+    html.dark .map-detail-panel .text-slate-600 {
+        color: #cbd5e1 !important;
+    }
+    html.dark .map-detail-panel .text-slate-500 {
+        color: #94a3b8 !important;
+    }
+    html.dark .map-detail-panel .text-slate-400 {
+        color: #94a3b8 !important;
+    }
+    html.dark .map-detail-panel .border-slate-100,
+    html.dark .map-detail-panel .border-slate-200,
+    html.dark .map-detail-panel .border-slate-200\/60 {
         border-color: #334155 !important;
     }
     html.dark .map-detail-panel .bg-slate-50 {
         background-color: #1e293b !important;
+    }
+    /* Badge Provinsi pada Detail Peta (Mode Gelap) */
+    html.dark .map-detail-panel .panel-provinsi-badge,
+    html.dark .map-detail-panel .bg-blue-100\/80 {
+        background-color: #1e3a8a !important;
+        color: #93c5fd !important;
+        border: 1px solid #3b82f6 !important;
+        font-weight: 800 !important;
+    }
+    /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
+    html.dark .map-detail-panel .panel-stat-box,
+    html.dark .map-detail-panel .grid .bg-white\/45 {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    html.dark .map-detail-panel .panel-stat-box .text-slate-800 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    html.dark .map-detail-panel .panel-stat-box .text-slate-500 {
+        color: #cbd5e1 !important;
+        font-weight: 600 !important;
+    }
+    /* Kotak Hasil Pemeriksaan (Mode Gelap) */
+    html.dark .map-detail-panel .panel-results-box,
+    html.dark .map-detail-panel .bg-white\/45 {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    html.dark .map-detail-panel .panel-results-box .text-slate-800 {
+        color: #f8fafc !important;
+    }
+    html.dark .map-detail-panel .panel-results-box .text-slate-500,
+    html.dark .map-detail-panel .panel-results-box div.text-slate-500 {
+        color: #cbd5e1 !important;
+    }
+    html.dark .map-detail-panel .panel-results-box .text-slate-600 {
+        color: #94a3b8 !important;
     }
     html.dark .map-legend-control {
         background: rgba(15, 23, 42, 0.88) !important;
@@ -493,7 +824,118 @@
         background: #475569;
     }
 
-    /* 19. Tetap Cetak Terang saat Print */
+    /* 20. Navigasi Paginasi Terpadu (Sesuai Desain Dashboard di Mode Gelap) */
+    html.dark nav[role="navigation"],
+    html.dark #dashboardTablePagination {
+        color: #94a3b8 !important;
+    }
+
+    /* Container pembungkus bar paginasi */
+    html.dark div:has(> nav[role="navigation"]),
+    html.dark .pagination-nav,
+    html.dark #dashboardTablePagination {
+        background-color: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+
+    /* Teks ringkasan informasi data */
+    html.dark nav[role="navigation"] .text-slate-500,
+    html.dark #dashboardTablePagination .text-slate-500 {
+        color: #94a3b8 !important;
+    }
+    html.dark nav[role="navigation"] strong,
+    html.dark #dashboardTablePagination strong {
+        color: #f8fafc !important;
+    }
+
+    /* Tombol Paginasi Biasa (Sebelumnya, Selanjutnya, Nomor Halaman Inaktif) */
+    html.dark nav[role="navigation"] a,
+    html.dark #dashboardTablePagination button {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
+    }
+    html.dark nav[role="navigation"] a:hover,
+    html.dark #dashboardTablePagination button:hover {
+        background-color: #334155 !important;
+        border-color: #3b82f6 !important;
+        color: #60a5fa !important;
+    }
+
+    /* Tombol Paginasi Disabled (Sebelumnya / Selanjutnya di Halaman Pertama / Terakhir) */
+    html.dark nav[role="navigation"] span.cursor-not-allowed,
+    html.dark #dashboardTablePagination span.cursor-not-allowed {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: #334155 !important;
+        color: #64748b !important;
+    }
+
+    /* Nomor Halaman Aktif (Biru Menonjol) */
+    html.dark nav[role="navigation"] span.bg-blue-600,
+    html.dark #dashboardTablePagination span.bg-blue-600 {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 2px 8px -1px rgba(37, 99, 235, 0.5) !important;
+    }
+
+    /* Titik-titik Pemisah (...) */
+    html.dark nav[role="navigation"] span:not(.cursor-not-allowed):not(.bg-blue-600),
+    html.dark #dashboardTablePagination span:not(.cursor-not-allowed):not(.bg-blue-600) {
+        color: #64748b !important;
+    }
+
+    /* Dropdown "Tampil per hal" pada Dashboard */
+    html.dark #dashboardTablePagination select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+
+    /* 21. Logo & Icon Import Data Selalu Putih pada Mode Gelap */
+    html.dark button[onclick*="modalImportExcel"],
+    html.dark a[href*="modalImportExcel"] {
+        background-color: rgba(6, 78, 59, 0.6) !important;
+        border-color: rgba(16, 185, 129, 0.5) !important;
+        color: #ffffff !important;
+    }
+    html.dark button[onclick*="modalImportExcel"] svg,
+    html.dark button[onclick*="modalImportExcel"] span,
+    html.dark button[onclick*="modalImportExcel"]:hover svg,
+    html.dark #modalImportExcel .flex.h-10.w-10 svg,
+    html.dark #modalImportExcel .w-11.h-11 svg,
+    html.dark #modalImportExcel .h-11.w-11 svg,
+    html.dark #modalImportExcel svg[stroke="currentColor"],
+    html.dark #modalImportExcel svg path {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+    }
+    html.dark #modalImportExcel .flex.h-10.w-10 {
+        background-color: #064e3b !important;
+        border-color: #059669 !important;
+        color: #ffffff !important;
+    }
+
+    /* 23. Dropdown Tampil X Data pada Header Tabel (Dashboard & Input) */
+    html.dark #tablePageSizeSelect,
+    html.dark #tablePageSizeSelect option {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    html.dark div:has(> label[for="tablePageSizeSelect"]) {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    html.dark label[for="tablePageSizeSelect"] {
+        color: #cbd5e1 !important;
+    }
+    html.dark label[for="tablePageSizeSelect"] svg {
+        color: #94a3b8 !important;
+    }
+
+    /* 24. Tetap Cetak Terang saat Print */
     @media print {
         html.dark,
         html.dark body,

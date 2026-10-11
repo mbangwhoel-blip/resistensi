@@ -58,8 +58,14 @@ class LaporanController extends Controller
         $insektisida = $request->get('insektisida', 'Semua');
         $status = $request->get('status', 'Semua');
         $search = trim($request->get('search', ''));
-        $perPage = (int)$request->get('per_page', 25);
-        if ($perPage <= 0 || $perPage > 200) $perPage = 25;
+        $perPageRaw = $request->get('per_page', 25);
+        if ($perPageRaw === 'all' || (int)$perPageRaw >= 999999) {
+            $perPage = 999999;
+        } elseif (in_array((int)$perPageRaw, [5, 10, 25, 50, 100])) {
+            $perPage = (int)$perPageRaw;
+        } else {
+            $perPage = 25;
+        }
 
         // Kabupaten list jika provinsi dipilih
         $kabupatens = collect([]);
@@ -119,7 +125,8 @@ class LaporanController extends Controller
             'insektisida',
             'status',
             'search',
-            'perPage'
+            'perPage',
+            'perPageRaw'
         ));
     }
 
