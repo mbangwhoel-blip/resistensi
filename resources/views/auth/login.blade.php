@@ -68,7 +68,7 @@
             </div>
 
             <p class="text-xs text-slate-400 mt-1 font-medium leading-tight">
-                Sistem Informasi Manajemen Pengujian & Uji Resistensi Vektor
+                Sistem Informasi Resistensi Insektisida Indonesia
             </p>
         </div>
 
@@ -204,31 +204,6 @@
                     </p>
                 </div>
 
-                {{-- PETUNJUK AKUN DEMO / PENGUJIAN ROLE --}}
-                <div class="mt-3 p-3 rounded-xl bg-slate-950/70 border border-slate-800/90 text-left">
-                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-300 mb-1.5">
-                        <span class="flex items-center gap-1.5">
-                            <span>🔑</span> Akun Pengujian Role:
-                        </span>
-                        <span class="text-[10px] text-slate-500 font-normal">Klik untuk isi otomatis</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-[11px]">
-                        <button type="button"
-                                onclick="document.getElementById('login').value='admin'; document.getElementById('password').value='admin123';"
-                                class="p-2 rounded-lg bg-blue-950/40 hover:bg-blue-900/50 border border-blue-800/50 text-left transition cursor-pointer group">
-                            <span class="font-bold text-blue-400 group-hover:text-blue-300 block text-[11px]">🛡️ Administrator</span>
-                            <span class="text-[10px] text-slate-400">User: <strong class="text-white">admin</strong></span><br>
-                            <span class="text-[10px] text-slate-400">Pass: <strong class="text-white">admin123</strong></span>
-                        </button>
-                        <button type="button"
-                                onclick="document.getElementById('login').value='petugas'; document.getElementById('password').value='petugas123';"
-                                class="p-2 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-800/50 text-left transition cursor-pointer group">
-                            <span class="font-bold text-emerald-400 group-hover:text-emerald-300 block text-[11px]">🔬 Petugas Lab</span>
-                            <span class="text-[10px] text-slate-400">User: <strong class="text-white">petugas</strong></span><br>
-                            <span class="text-[10px] text-slate-400">Pass: <strong class="text-white">petugas123</strong></span>
-                        </button>
-                    </div>
-                </div>
 
             </form>
 
