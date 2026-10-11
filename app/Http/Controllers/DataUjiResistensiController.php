@@ -14,7 +14,7 @@ class DataUjiResistensiController extends Controller
 {
     public function index(Request $request)
     {
-        $provinsis = Provinsi::orderBy('nama_provinsi', 'asc')->get();
+        $provinsis = Provinsi::orderBy('name', 'asc')->get();
 
         $daftarBulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -22,10 +22,10 @@ class DataUjiResistensiController extends Controller
         ];
 
         // Ambil daftar tahun dinamis dari database + rentang tahun sistem
-        $tahunDb = DataUjiResistensi::select('tahun')
+        $tahunDb = DataUjiResistensi::select('year')
             ->distinct()
-            ->whereNotNull('tahun')
-            ->pluck('tahun')
+            ->whereNotNull('year')
+            ->pluck('year')
             ->map(fn($y) => (int)$y)
             ->filter(fn($y) => $y > 2000 && $y < 2100)
             ->toArray();
@@ -58,34 +58,34 @@ class DataUjiResistensiController extends Controller
         ]);
 
         if ($bulan !== 'Semua' && !empty($bulan)) {
-            $query->where('bulan', $bulan);
+            $query->where('month', $bulan);
         }
 
         if ($tahun !== 'Semua' && !empty($tahun)) {
-            $query->where('tahun', (int)$tahun);
+            $query->where('year', (int)$tahun);
         }
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('alamat', 'LIKE', "%{$search}%")
-                  ->orWhere('jenis_nyamuk', 'LIKE', "%{$search}%")
-                  ->orWhere('insektisida', 'LIKE', "%{$search}%")
-                  ->orWhere('metode', 'LIKE', "%{$search}%")
+                $q->where('address', 'LIKE', "%{$search}%")
+                  ->orWhere('mosquito_type', 'LIKE', "%{$search}%")
+                  ->orWhere('insecticide', 'LIKE', "%{$search}%")
+                  ->orWhere('method', 'LIKE', "%{$search}%")
                   ->orWhere('status', 'LIKE', "%{$search}%")
-                  ->orWhere('bulan', 'LIKE', "%{$search}%")
-                  ->orWhere('tahun', 'LIKE', "%{$search}%")
+                  ->orWhere('month', 'LIKE', "%{$search}%")
+                  ->orWhere('year', 'LIKE', "%{$search}%")
                   ->orWhereHas('provinsi', function ($p) use ($search) {
-                      $p->where('nama_provinsi', 'LIKE', "%{$search}%");
+                      $p->where('name', 'LIKE', "%{$search}%");
                   })
                   ->orWhereHas('kabupaten', function ($k) use ($search) {
-                      $k->where('nama_kabupaten', 'LIKE', "%{$search}%");
+                      $k->where('name', 'LIKE', "%{$search}%");
                   });
             });
         }
 
         // Hitung total item & sampel yang difilter sebelum pagination
         $totalFilteredItem = (clone $query)->count();
-        $totalFilteredSampel = (clone $query)->sum('sampel_diperiksa');
+        $totalFilteredSampel = (clone $query)->sum('sample_count');
 
         $perPageRaw = $request->input('per_page', 10);
         if ($perPageRaw === 'all' || (int)$perPageRaw >= 999999) {
@@ -100,7 +100,7 @@ class DataUjiResistensiController extends Controller
 
         // Data untuk statistik tahun berjalan / semua tahun
         if ($tahun !== 'Semua' && !empty($tahun)) {
-            $dataTahunBerjalan = DataUjiResistensi::where('tahun', (int)$tahun)->get();
+            $dataTahunBerjalan = DataUjiResistensi::where('year', (int)$tahun)->get();
         } else {
             $dataTahunBerjalan = DataUjiResistensi::all();
         }
@@ -108,9 +108,9 @@ class DataUjiResistensiController extends Controller
         $totalSemuaData = DataUjiResistensi::count();
 
         // Ambil daftar parameter dari Master Data Kategori
-        $daftarNyamuk = KategoriUji::nyamuk()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
-        $daftarInsektisida = KategoriUji::insektisida()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
-        $daftarMetode = KategoriUji::metode()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
+        $daftarNyamuk = KategoriUji::nyamuk()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
+        $daftarInsektisida = KategoriUji::insektisida()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
+        $daftarMetode = KategoriUji::metode()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
 
         return view('input', compact(
             'provinsis',
@@ -166,24 +166,24 @@ class DataUjiResistensiController extends Controller
             $bulan = $validated['bulan'];
             $tahun = (int)$validated['tahun'];
 
-            $lastCount = DataUjiResistensi::where('bulan', $bulan)
-                ->where('tahun', $tahun)
+            $lastCount = DataUjiResistensi::where('month', $bulan)
+                ->where('year', $tahun)
                 ->count();
 
             DataUjiResistensi::create([
                 'no' => (string)($lastCount + 1),
-                'bulan' => $bulan,
-                'tahun' => $tahun,
+                'month' => $bulan,
+                'year' => $tahun,
                 'provinsi_id' => $validated['provinsi_id'],
                 'kabupaten_id' => $validated['kabupaten_id'],
-                'alamat' => $validated['alamat'] ?? null,
-                'jenis_nyamuk' => $validated['jenis_nyamuk'],
-                'insektisida' => $validated['insektisida'],
-                'metode' => $validated['metode'],
-                'sampel_diperiksa' => $validated['sampel_diperiksa'],
+                'address' => $validated['alamat'] ?? null,
+                'mosquito_type' => $validated['jenis_nyamuk'],
+                'insecticide' => $validated['insektisida'],
+                'method' => $validated['metode'],
+                'sample_count' => $validated['sampel_diperiksa'],
                 'status' => $validated['status'] ?? null,
-                'mutasi' => $validated['mutasi'] ?? null,
-                'publikasi' => $validated['publikasi'] ?? null,
+                'mutation' => $validated['mutasi'] ?? null,
+                'publication' => $validated['publikasi'] ?? null,
             ]);
 
             return redirect()
@@ -211,8 +211,8 @@ class DataUjiResistensiController extends Controller
         $tahun = (int)$request->input('tahun');
 
         DB::transaction(function () use ($request, $bulan, $tahun) {
-            $lastNo = DataUjiResistensi::where('bulan', $bulan)
-                ->where('tahun', $tahun)
+            $lastNo = DataUjiResistensi::where('month', $bulan)
+                ->where('year', $tahun)
                 ->count();
 
             $i = 0;
@@ -224,18 +224,18 @@ class DataUjiResistensiController extends Controller
 
                 DataUjiResistensi::create([
                     'no' => (string)($lastNo + $i),
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
+                    'month' => $bulan,
+                    'year' => $tahun,
                     'provinsi_id' => $row['provinsi_id'],
                     'kabupaten_id' => $row['kabupaten_id'],
-                    'alamat' => $row['alamat'] ?? null,
-                    'jenis_nyamuk' => $row['jenis_nyamuk'],
-                    'insektisida' => $row['insektisida'],
-                    'metode' => $row['metode'],
-                    'sampel_diperiksa' => $row['sampel_diperiksa'],
+                    'address' => $row['alamat'] ?? null,
+                    'mosquito_type' => $row['jenis_nyamuk'],
+                    'insecticide' => $row['insektisida'],
+                    'method' => $row['metode'],
+                    'sample_count' => $row['sampel_diperiksa'],
                     'status' => $row['status'] ?? null,
-                    'mutasi' => $row['mutasi'] ?? null,
-                    'publikasi' => $row['publikasi'] ?? null,
+                    'mutation' => $row['mutasi'] ?? null,
+                    'publication' => $row['publikasi'] ?? null,
                 ]);
             }
         });
@@ -276,18 +276,18 @@ class DataUjiResistensiController extends Controller
             ->firstOrFail();
 
         $data->update([
-            'bulan' => $validated['bulan'],
-            'tahun' => (int)$validated['tahun'],
+            'month' => $validated['bulan'],
+            'year' => (int)$validated['tahun'],
             'provinsi_id' => $validated['provinsi_id'],
             'kabupaten_id' => $validated['kabupaten_id'],
-            'alamat' => $validated['alamat'] ?? null,
-            'jenis_nyamuk' => $validated['jenis_nyamuk'],
-            'insektisida' => $validated['insektisida'],
-            'metode' => $validated['metode'],
-            'sampel_diperiksa' => $validated['sampel_diperiksa'],
+            'address' => $validated['alamat'] ?? null,
+            'mosquito_type' => $validated['jenis_nyamuk'],
+            'insecticide' => $validated['insektisida'],
+            'method' => $validated['metode'],
+            'sample_count' => $validated['sampel_diperiksa'],
             'status' => $validated['status'] ?? null,
-            'mutasi' => $validated['mutasi'] ?? null,
-            'publikasi' => $validated['publikasi'] ?? null,
+            'mutation' => $validated['mutasi'] ?? null,
+            'publication' => $validated['publikasi'] ?? null,
         ]);
 
         return redirect()
@@ -299,7 +299,7 @@ class DataUjiResistensiController extends Controller
     public function getKabupaten($provinsi_id)
     {
         $kabupatens = Kabupaten::where('provinsi_id', $provinsi_id)
-            ->orderBy('nama_kabupaten', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
 
         return response()->json($kabupatens);
@@ -307,16 +307,32 @@ class DataUjiResistensiController extends Controller
 
     public function dashboard()
     {
-        $data = DataUjiResistensi::with([
-            'provinsi',
-            'kabupaten'
+        // 1. Agregasi ringkasan langsung di tingkat MySQL (Cepat, hemat memori RAM PHP)
+        $totalPemeriksaan = DataUjiResistensi::count();
+        $totalSampel = (int) DataUjiResistensi::sum('sample_count');
+        $totalProvinsi = DataUjiResistensi::whereNotNull('provinsi_id')->distinct()->count('provinsi_id');
+        $totalKabupaten = DataUjiResistensi::whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id');
+
+        // 2. Ambil data dengan memilih hanya kolom yang diperlukan untuk rendering peta & tabel
+        $data = DataUjiResistensi::select([
+            'id', 'no', 'month', 'year', 'provinsi_id', 'kabupaten_id',
+            'address', 'mosquito_type', 'insecticide', 'method',
+            'sample_count', 'status', 'mutation', 'publication', 'created_at'
         ])
-        ->latest()
+        ->with([
+            'provinsi:id,name',
+            'kabupaten:id,provinsi_id,name,latitude,longitude'
+        ])
+        ->latest('id')
         ->get();
 
-        $provinsis = Provinsi::orderBy('nama_provinsi', 'asc')->get();
+        $dataTerbaru = $data->take(10);
 
-        $daftarNyamuk = KategoriUji::nyamuk()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
+        $provinsis = Provinsi::select('id', 'name')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $daftarNyamuk = KategoriUji::nyamuk()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
         if (empty($daftarNyamuk)) {
             $daftarNyamuk = [
                 'Ae. aegypti', 'Culex sp', 'Anhopheles', 'Aedes sp', 'An. Farauti', 'An. Vagus',
@@ -326,7 +342,7 @@ class DataUjiResistensiController extends Controller
             ];
         }
 
-        $daftarInsektisida = KategoriUji::insektisida()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
+        $daftarInsektisida = KategoriUji::insektisida()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
         if (empty($daftarInsektisida)) {
             $daftarInsektisida = [
                 'Cypermethrin', 'Lamdacyhalothrin', 'Deltamethrin', 'Alphacypermethrin',
@@ -335,7 +351,7 @@ class DataUjiResistensiController extends Controller
             ];
         }
 
-        $daftarMetode = KategoriUji::metode()->where('is_active', true)->orderBy('nama')->pluck('nama')->toArray();
+        $daftarMetode = KategoriUji::metode()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
         if (empty($daftarMetode)) {
             $daftarMetode = [
                 'Sequencing', 'WHO Tube Bioassay', 'WHO larval bioassay',
@@ -344,7 +360,7 @@ class DataUjiResistensiController extends Controller
             ];
         }
 
-        $daftarTahun = DataUjiResistensi::select('tahun')->distinct()->pluck('tahun')->toArray();
+        $daftarTahun = DataUjiResistensi::select('year')->distinct()->pluck('year')->toArray();
         if (empty($daftarTahun)) {
             $daftarTahun = [(int)date('Y')];
         }
@@ -355,11 +371,6 @@ class DataUjiResistensiController extends Controller
         }
         rsort($daftarTahun);
 
-        $totalPemeriksaan = $data->count();
-        $totalSampel = $data->sum('sampel_diperiksa');
-        $totalProvinsi = $data->pluck('provinsi_id')->filter()->unique()->count();
-        $totalKabupaten = $data->pluck('kabupaten_id')->filter()->unique()->count();
-        $dataTerbaru = $data->take(10);
 
         return view('dashboard', compact(
             'data',

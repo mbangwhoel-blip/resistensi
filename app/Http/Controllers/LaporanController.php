@@ -16,7 +16,7 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         // 1. Ambil opsi filter master
-        $provinsis = Provinsi::orderBy('nama_provinsi', 'asc')->get();
+        $provinsis = Provinsi::orderBy('name', 'asc')->get();
 
         $daftarBulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -24,10 +24,10 @@ class LaporanController extends Controller
         ];
 
         // Daftar tahun dari database + rentang tahun sistem
-        $tahunDb = DataUjiResistensi::select('tahun')
+        $tahunDb = DataUjiResistensi::select('year')
             ->distinct()
-            ->whereNotNull('tahun')
-            ->pluck('tahun')
+            ->whereNotNull('year')
+            ->pluck('year')
             ->map(fn($y) => (int)$y)
             ->filter(fn($y) => $y > 2000 && $y < 2100)
             ->toArray();
@@ -35,19 +35,19 @@ class LaporanController extends Controller
         rsort($daftarTahun);
 
         // Daftar jenis nyamuk & insektisida
-        $daftarNyamuk = DataUjiResistensi::select('jenis_nyamuk')
+        $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
             ->distinct()
-            ->whereNotNull('jenis_nyamuk')
-            ->where('jenis_nyamuk', '!=', '')
-            ->orderBy('jenis_nyamuk', 'asc')
-            ->pluck('jenis_nyamuk');
+            ->whereNotNull('mosquito_type')
+            ->where('mosquito_type', '!=', '')
+            ->orderBy('mosquito_type', 'asc')
+            ->pluck('mosquito_type');
 
-        $daftarInsektisida = DataUjiResistensi::select('insektisida')
+        $daftarInsektisida = DataUjiResistensi::select('insecticide')
             ->distinct()
-            ->whereNotNull('insektisida')
-            ->where('insektisida', '!=', '')
-            ->orderBy('insektisida', 'asc')
-            ->pluck('insektisida');
+            ->whereNotNull('insecticide')
+            ->where('insecticide', '!=', '')
+            ->orderBy('insecticide', 'asc')
+            ->pluck('insecticide');
 
         // 2. Baca parameter filter
         $provinsiId = $request->get('provinsi_id');
@@ -71,7 +71,7 @@ class LaporanController extends Controller
         $kabupatens = collect([]);
         if ($provinsiId && $provinsiId !== 'Semua') {
             $kabupatens = Kabupaten::where('provinsi_id', $provinsiId)
-                ->orderBy('nama_kabupaten', 'asc')
+                ->orderBy('name', 'asc')
                 ->get();
         }
 
@@ -81,7 +81,7 @@ class LaporanController extends Controller
         // 4. Hitung ringkasan statistik (KPI) dari keseluruhan data terfilter
         $statsQuery = clone $baseQuery;
         $totalPemeriksaan = (clone $statsQuery)->count();
-        $totalSampel = (int)(clone $statsQuery)->sum('sampel_diperiksa');
+        $totalSampel = (int)(clone $statsQuery)->sum('sample_count');
         
         $totalResisten = (clone $statsQuery)->where('status', 'resisten')->count();
         $totalToleran = (clone $statsQuery)->where('status', 'toleran')->count();
@@ -103,7 +103,7 @@ class LaporanController extends Controller
         ];
 
         // 5. Ambil data dengan pagination
-        $dataUji = $baseQuery->orderBy('tahun', 'desc')
+        $dataUji = $baseQuery->orderBy('year', 'desc')
             ->orderBy('id', 'desc')
             ->paginate($perPage)
             ->withQueryString();
@@ -138,14 +138,14 @@ class LaporanController extends Controller
         // 1. Bangun query terfilter
         $query = $this->buildFilteredQuery($request);
 
-        $dataUji = $query->orderBy('tahun', 'desc')
+        $dataUji = $query->orderBy('year', 'desc')
             ->orderBy('id', 'desc')
             ->limit(2000)
             ->get();
 
         // 2. Hitung statistik ringkasan
         $totalPemeriksaan = $dataUji->count();
-        $totalSampel = $dataUji->sum('sampel_diperiksa');
+        $totalSampel = $dataUji->sum('sample_count');
         $totalResisten = $dataUji->where('status', 'Resisten')->count();
         $totalToleran = $dataUji->where('status', 'Toleran')->count();
         $totalRentan = $dataUji->where('status', 'Rentan')->count();
@@ -165,13 +165,13 @@ class LaporanController extends Controller
         $provinsiNama = 'Semua Provinsi';
         if ($request->filled('provinsi_id') && $request->provinsi_id !== 'Semua') {
             $p = Provinsi::find($request->provinsi_id);
-            if ($p) $provinsiNama = $p->nama_provinsi;
+            if ($p) $provinsiNama = $p->name ?? $p->nama_provinsi;
         }
 
         $kabupatenNama = 'Semua Kabupaten / Kota';
         if ($request->filled('kabupaten_id') && $request->kabupaten_id !== 'Semua') {
             $k = Kabupaten::find($request->kabupaten_id);
-            if ($k) $kabupatenNama = $k->nama_kabupaten;
+            if ($k) $kabupatenNama = $k->name ?? $k->nama_kabupaten;
         }
 
         $filterInfo = [
@@ -198,14 +198,14 @@ class LaporanController extends Controller
         $query = $this->buildFilteredQuery($request);
 
         // Ambil data untuk laporan (maksimal 2.000 baris untuk efisiensi render PDF)
-        $dataUji = $query->orderBy('tahun', 'desc')
+        $dataUji = $query->orderBy('year', 'desc')
             ->orderBy('id', 'desc')
             ->limit(2000)
             ->get();
 
         // 2. Hitung statistik ringkasan
         $totalPemeriksaan = $dataUji->count();
-        $totalSampel = $dataUji->sum('sampel_diperiksa');
+        $totalSampel = $dataUji->sum('sample_count');
         $totalResisten = $dataUji->where('status', 'Resisten')->count();
         $totalToleran = $dataUji->where('status', 'Toleran')->count();
         $totalRentan = $dataUji->where('status', 'Rentan')->count();
@@ -225,13 +225,13 @@ class LaporanController extends Controller
         $provinsiNama = 'Semua Provinsi';
         if ($request->filled('provinsi_id') && $request->provinsi_id !== 'Semua') {
             $p = Provinsi::find($request->provinsi_id);
-            if ($p) $provinsiNama = $p->nama_provinsi;
+            if ($p) $provinsiNama = $p->name ?? $p->nama_provinsi;
         }
 
         $kabupatenNama = 'Semua Kabupaten / Kota';
         if ($request->filled('kabupaten_id') && $request->kabupaten_id !== 'Semua') {
             $k = Kabupaten::find($request->kabupaten_id);
-            if ($k) $kabupatenNama = $k->nama_kabupaten;
+            if ($k) $kabupatenNama = $k->name ?? $k->nama_kabupaten;
         }
 
         $filterInfo = [
@@ -291,22 +291,22 @@ class LaporanController extends Controller
 
         // Filter Tahun
         if ($request->filled('tahun') && $request->tahun !== 'Semua') {
-            $query->where('tahun', (int)$request->tahun);
+            $query->where('year', (int)$request->tahun);
         }
 
         // Filter Bulan
         if ($request->filled('bulan') && $request->bulan !== 'Semua') {
-            $query->where('bulan', $request->bulan);
+            $query->where('month', $request->bulan);
         }
 
         // Filter Jenis Nyamuk
         if ($request->filled('jenis_nyamuk') && $request->jenis_nyamuk !== 'Semua') {
-            $query->where('jenis_nyamuk', $request->jenis_nyamuk);
+            $query->where('mosquito_type', $request->jenis_nyamuk);
         }
 
         // Filter Insektisida
         if ($request->filled('insektisida') && $request->insektisida !== 'Semua') {
-            $query->where('insektisida', $request->insektisida);
+            $query->where('insecticide', $request->insektisida);
         }
 
         // Filter Status
@@ -319,17 +319,17 @@ class LaporanController extends Controller
         if ($request->filled('search')) {
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
-                $q->where('jenis_nyamuk', 'like', "%{$search}%")
-                    ->orWhere('insektisida', 'like', "%{$search}%")
-                    ->orWhere('metode', 'like', "%{$search}%")
-                    ->orWhere('alamat', 'like', "%{$search}%")
-                    ->orWhere('mutasi', 'like', "%{$search}%")
-                    ->orWhere('publikasi', 'like', "%{$search}%")
+                $q->where('mosquito_type', 'like', "%{$search}%")
+                    ->orWhere('insecticide', 'like', "%{$search}%")
+                    ->orWhere('method', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('mutation', 'like', "%{$search}%")
+                    ->orWhere('publication', 'like', "%{$search}%")
                     ->orWhereHas('provinsi', function ($qp) use ($search) {
-                        $qp->where('nama_provinsi', 'like', "%{$search}%");
+                        $qp->where('name', 'like', "%{$search}%");
                     })
                     ->orWhereHas('kabupaten', function ($qk) use ($search) {
-                        $qk->where('nama_kabupaten', 'like', "%{$search}%");
+                        $qk->where('name', 'like', "%{$search}%");
                     });
             });
         }

@@ -39,6 +39,95 @@ Route::get('/', function () {
 });
 
 // =========================================================================
+// RUTE SINKRONISASI DATABASE 1-KLIK (AMAN & OTOMATIS)
+// =========================================================================
+Route::get('/sync-db', function () {
+    $actions = [];
+
+    // 1. provinsis
+    if (\Illuminate\Support\Facades\Schema::hasColumn('provinsis', 'nama_provinsi')) {
+        \Illuminate\Support\Facades\Schema::table('provinsis', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn('nama_provinsi', 'name'));
+        $actions[] = 'Tabel provinsis: nama_provinsi -> name';
+    }
+
+    // 2. kabupatens
+    if (\Illuminate\Support\Facades\Schema::hasColumn('kabupatens', 'nama_kabupaten')) {
+        \Illuminate\Support\Facades\Schema::table('kabupatens', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn('nama_kabupaten', 'name'));
+        $actions[] = 'Tabel kabupatens: nama_kabupaten -> name';
+    }
+
+    // 3. data_uji_resistensis
+    $duCols = [
+        'bulan' => 'month',
+        'tahun' => 'year',
+        'alamat' => 'address',
+        'jenis_nyamuk' => 'mosquito_type',
+        'insektisida' => 'insecticide',
+        'metode' => 'method',
+        'sampel_diperiksa' => 'sample_count',
+        'mutasi' => 'mutation',
+        'publikasi' => 'publication',
+    ];
+    foreach ($duCols as $old => $new) {
+        if (\Illuminate\Support\Facades\Schema::hasColumn('data_uji_resistensis', $old)) {
+            \Illuminate\Support\Facades\Schema::table('data_uji_resistensis', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn($old, $new));
+            $actions[] = "Tabel data_uji_resistensis: $old -> $new";
+        }
+    }
+
+    // 4. instansis
+    $instCols = [
+        'nama_instansi' => 'name',
+        'kode_unit' => 'unit_code',
+        'kategori' => 'category',
+        'alamat' => 'address',
+        'telepon' => 'phone',
+        'penanggung_jawab' => 'person_in_charge',
+    ];
+    foreach ($instCols as $old => $new) {
+        if (\Illuminate\Support\Facades\Schema::hasColumn('instansis', $old)) {
+            \Illuminate\Support\Facades\Schema::table('instansis', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn($old, $new));
+            $actions[] = "Tabel instansis: $old -> $new";
+        }
+    }
+
+    // 5. kategori_ujis
+    $katCols = [
+        'kategori' => 'category',
+        'nama' => 'name',
+        'keterangan' => 'description',
+    ];
+    foreach ($katCols as $old => $new) {
+        if (\Illuminate\Support\Facades\Schema::hasColumn('kategori_ujis', $old)) {
+            \Illuminate\Support\Facades\Schema::table('kategori_ujis', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn($old, $new));
+            $actions[] = "Tabel kategori_ujis: $old -> $new";
+        }
+    }
+
+    // 6. users
+    if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'telepon')) {
+        \Illuminate\Support\Facades\Schema::table('users', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn('telepon', 'phone'));
+        $actions[] = 'Tabel users: telepon -> phone';
+    }
+
+    // 7. delete_requests
+    if (\Illuminate\Support\Facades\Schema::hasTable('delete_requests') && \Illuminate\Support\Facades\Schema::hasColumn('delete_requests', 'alasan')) {
+        \Illuminate\Support\Facades\Schema::table('delete_requests', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn('alasan', 'reason'));
+        $actions[] = 'Tabel delete_requests: alasan -> reason';
+    }
+
+    $msg = count($actions) > 0 
+        ? "Berhasil menyinkronkan " . count($actions) . " kolom:<br>- " . implode("<br>- ", $actions)
+        : "Semua kolom database sudah berada dalam standar Bahasa Inggris! Tidak ada perubahan yang diperlukan.";
+
+    return "<div style='font-family:sans-serif;padding:30px;max-width:700px;margin:50px auto;border:1px solid #10b981;border-radius:12px;background:#f0fdf4;color:#065f46;'>
+        <h2 style='margin-top:0;'>✅ Sinkronisasi Database Selesai</h2>
+        <p>{$msg}</p>
+        <p><a href='" . url('/') . "' style='display:inline-block;padding:10px 20px;background:#10b981;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;'>Buka Aplikasi</a></p>
+    </div>";
+});
+
+// =========================================================================
 // RUTE SISTEM INTERNAL (WAJIB LOGIN / AUTH MIDDLEWARE)
 // =========================================================================
 Route::middleware('auth')->group(function () {

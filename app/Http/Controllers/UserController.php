@@ -34,7 +34,7 @@ class UserController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('username', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('telepon', 'like', "%{$search}%");
+                  ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -98,7 +98,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
             'status' => $validated['status'],
-            'telepon' => $validated['telepon'] ?? null,
+            'phone' => $validated['telepon'] ?? null,
         ]);
 
         return redirect()->route('users.index')->with('success', "Akun pengguna '{$validated['name']}' berhasil ditambahkan.");
@@ -149,7 +149,7 @@ class UserController extends Controller
             'email' => strtolower($validated['email']),
             'role' => $validated['role'],
             'status' => $validated['status'],
-            'telepon' => $validated['telepon'] ?? null,
+            'phone' => $validated['telepon'] ?? null,
         ];
 
         // Ganti password hanya jika diisi

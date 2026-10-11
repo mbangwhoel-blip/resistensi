@@ -11,24 +11,37 @@ class Kabupaten extends Model
 
     protected $fillable = [
         'provinsi_id',
+        'province_id',
+        'name',
         'nama_kabupaten',
         'latitude',
         'longitude',
     ];
 
-    public function setNamaKabupatenAttribute($value)
+    protected $appends = [
+        'nama_kabupaten',
+        'province_id',
+    ];
+
+    /**
+     * Mutator untuk kolom 'name' (standar Laravel)
+     */
+    public function setNameAttribute($value)
     {
         $val = trim($value ?? '');
         $val = ucwords(strtolower($val));
         $val = preg_replace_callback('/-([a-z])/', function ($matches) {
             return '-' . strtoupper($matches[1]);
         }, $val);
-        $this->attributes['nama_kabupaten'] = $val;
+        $this->attributes['name'] = $val;
     }
 
-    public function getNamaKabupatenAttribute($value)
+    /**
+     * Accessor untuk kolom 'name'
+     */
+    public function getNameAttribute($value)
     {
-        $val = trim($value ?? '');
+        $val = trim($value ?? ($this->attributes['name'] ?? ''));
         $val = ucwords(strtolower($val));
         $val = preg_replace_callback('/-([a-z])/', function ($matches) {
             return '-' . strtoupper($matches[1]);
@@ -36,9 +49,37 @@ class Kabupaten extends Model
         return $val;
     }
 
+    /**
+     * Kompatibilitas alias 'nama_kabupaten'
+     */
+    public function getNamaKabupatenAttribute()
+    {
+        return $this->name;
+    }
+
+    public function setNamaKabupatenAttribute($value)
+    {
+        $this->setNameAttribute($value);
+    }
+
+    public function getProvinceIdAttribute()
+    {
+        return $this->attributes['provinsi_id'] ?? null;
+    }
+
+    public function setProvinceIdAttribute($value)
+    {
+        $this->attributes['provinsi_id'] = $value;
+    }
+
     public function provinsi()
     {
-        return $this->belongsTo(Provinsi::class);
+        return $this->belongsTo(Provinsi::class, 'provinsi_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Provinsi::class, 'provinsi_id');
     }
 
     public function dataUjiResistensi()

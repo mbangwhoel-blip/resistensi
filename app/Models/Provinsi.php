@@ -10,10 +10,18 @@ class Provinsi extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'nama_provinsi',
     ];
 
-    public function setNamaProvinsiAttribute($value)
+    protected $appends = [
+        'nama_provinsi',
+    ];
+
+    /**
+     * Mutator untuk kolom 'name' (standar Laravel)
+     */
+    public function setNameAttribute($value)
     {
         $val = trim($value ?? '');
         $lower = strtolower($val);
@@ -24,12 +32,15 @@ class Provinsi extends Model
         } else {
             $val = ucwords($lower);
         }
-        $this->attributes['nama_provinsi'] = $val;
+        $this->attributes['name'] = $val;
     }
 
-    public function getNamaProvinsiAttribute($value)
+    /**
+     * Accessor untuk kolom 'name'
+     */
+    public function getNameAttribute($value)
     {
-        $val = trim($value ?? '');
+        $val = trim($value ?? ($this->attributes['name'] ?? ''));
         $lower = strtolower($val);
         if (str_starts_with($lower, 'dki ')) {
             return 'DKI ' . ucwords(substr($lower, 4));
@@ -37,6 +48,19 @@ class Provinsi extends Model
             return 'DI ' . ucwords(substr($lower, 3));
         }
         return ucwords($lower);
+    }
+
+    /**
+     * Kompatibilitas alias 'nama_provinsi'
+     */
+    public function getNamaProvinsiAttribute()
+    {
+        return $this->name;
+    }
+
+    public function setNamaProvinsiAttribute($value)
+    {
+        $this->setNameAttribute($value);
     }
 
     public function kabupatens()

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,9 +23,14 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'phone',
         'telepon',
         'last_login_at',
         'last_login_ip',
+    ];
+
+    protected $appends = [
+        'telepon',
     ];
 
     /**
@@ -49,6 +53,16 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getTeleponAttribute()
+    {
+        return $this->attributes['phone'] ?? ($this->attributes['telepon'] ?? null);
+    }
+
+    public function setTeleponAttribute($value)
+    {
+        $this->attributes['phone'] = $value;
+    }
 
     public function isAdmin(): bool
     {

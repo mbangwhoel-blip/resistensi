@@ -17,16 +17,16 @@ class KategoriUjiController extends Controller
 
         $search = $request->get('search');
 
-        $query = KategoriUji::where('kategori', $tab);
+        $query = KategoriUji::where('category', $tab);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('keterangan', 'like', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
-        $items = $query->orderBy('nama', 'asc')
+        $items = $query->orderBy('name', 'asc')
             ->paginate(15)
             ->withQueryString();
 
@@ -58,8 +58,8 @@ class KategoriUjiController extends Controller
         ]);
 
         // Cek duplikasi dalam kategori yang sama
-        $exists = KategoriUji::where('kategori', $validated['kategori'])
-            ->where('nama', trim($validated['nama']))
+        $exists = KategoriUji::where('category', $validated['kategori'])
+            ->where('name', trim($validated['nama']))
             ->exists();
 
         if ($exists) {
@@ -69,9 +69,9 @@ class KategoriUjiController extends Controller
         }
 
         KategoriUji::create([
-            'kategori' => $validated['kategori'],
-            'nama' => trim($validated['nama']),
-            'keterangan' => $validated['keterangan'] ? trim($validated['keterangan']) : null,
+            'category' => $validated['kategori'],
+            'name' => trim($validated['nama']),
+            'description' => $validated['keterangan'] ? trim($validated['keterangan']) : null,
             'is_active' => true,
         ]);
 
@@ -100,8 +100,8 @@ class KategoriUjiController extends Controller
         ]);
 
         // Cek duplikasi dengan ID lain
-        $exists = KategoriUji::where('kategori', $validated['kategori'])
-            ->where('nama', trim($validated['nama']))
+        $exists = KategoriUji::where('category', $validated['kategori'])
+            ->where('name', trim($validated['nama']))
             ->where('id', '!=', $id)
             ->exists();
 
@@ -111,12 +111,12 @@ class KategoriUjiController extends Controller
                 ->with('error', "Data '{$validated['nama']}' sudah terdaftar dalam kategori ini.");
         }
 
-        $oldName = $item->nama;
+        $oldName = $item->name ?? $item->nama;
 
         $item->update([
-            'kategori' => $validated['kategori'],
-            'nama' => trim($validated['nama']),
-            'keterangan' => $validated['keterangan'] ? trim($validated['keterangan']) : null,
+            'category' => $validated['kategori'],
+            'name' => trim($validated['nama']),
+            'description' => $validated['keterangan'] ? trim($validated['keterangan']) : null,
             'is_active' => $request->has('is_active') ? (bool)$request->is_active : true,
         ]);
 
@@ -128,17 +128,17 @@ class KategoriUjiController extends Controller
     public function destroy($id)
     {
         $item = KategoriUji::findOrFail($id);
-        $tab = $item->kategori;
-        $nama = $item->nama;
+        $tab = $item->category ?? $item->kategori;
+        $nama = $item->name ?? $item->nama;
 
         // Cek apakah parameter ini sedang dipakai dalam data uji resistensi
         $inUse = false;
         if ($tab === 'nyamuk') {
-            $inUse = DataUjiResistensi::where('jenis_nyamuk', $nama)->exists();
+            $inUse = DataUjiResistensi::where('mosquito_type', $nama)->exists();
         } elseif ($tab === 'insektisida') {
-            $inUse = DataUjiResistensi::where('insektisida', $nama)->exists();
+            $inUse = DataUjiResistensi::where('insecticide', $nama)->exists();
         } elseif ($tab === 'metode') {
-            $inUse = DataUjiResistensi::where('metode', $nama)->exists();
+            $inUse = DataUjiResistensi::where('method', $nama)->exists();
         }
 
         if ($inUse) {

@@ -19,37 +19,37 @@ class InstansiController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('nama_instansi', 'like', "%{$search}%")
-                  ->orWhere('kode_unit', 'like', "%{$search}%")
-                  ->orWhere('penanggung_jawab', 'like', "%{$search}%")
-                  ->orWhere('alamat', 'like', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('unit_code', 'like', "%{$search}%")
+                  ->orWhere('person_in_charge', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
             });
         }
 
         if ($kategori) {
-            $query->where('kategori', $kategori);
+            $query->where('category', $kategori);
         }
 
         if ($provinsiId) {
             $query->where('provinsi_id', $provinsiId);
         }
 
-        $instansis = $query->orderBy('nama_instansi', 'asc')
+        $instansis = $query->orderBy('name', 'asc')
             ->paginate(15)
             ->withQueryString();
 
-        $provinsis = Provinsi::orderBy('nama_provinsi', 'asc')->get();
+        $provinsis = Provinsi::orderBy('name', 'asc')->get();
 
         $totalInstansi = Instansi::count();
-        $totalBkk = Instansi::where('kategori', 'like', '%BKK%')->orWhere('kategori', 'like', '%Kekarantinaan%')->count();
+        $totalBkk = Instansi::where('category', 'like', '%BKK%')->orWhere('category', 'like', '%Kekarantinaan%')->count();
         $totalBalai = Instansi::where(function ($q) {
-            $q->where('kategori', 'like', '%Balai%')
-              ->orWhere('kategori', 'like', '%Lab%');
-        })->where('kategori', 'not like', '%BKK%')->count();
-        $totalDinkes = Instansi::where('kategori', 'like', '%Dinas%')->count();
+            $q->where('category', 'like', '%Balai%')
+              ->orWhere('category', 'like', '%Lab%');
+        })->where('category', 'not like', '%BKK%')->count();
+        $totalDinkes = Instansi::where('category', 'like', '%Dinas%')->count();
         $totalFaskes = Instansi::where(function ($q) {
-            $q->where('kategori', 'like', '%Rumah Sakit%')
-              ->orWhere('kategori', 'like', '%Puskesmas%');
+            $q->where('category', 'like', '%Rumah Sakit%')
+              ->orWhere('category', 'like', '%Puskesmas%');
         })->count();
 
         $kategoriList = [

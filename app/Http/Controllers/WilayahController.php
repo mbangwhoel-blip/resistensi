@@ -10,16 +10,16 @@ class WilayahController extends Controller
 {
     public function index(Request $request)
     {
-        $allProvinsis = Provinsi::orderBy('nama_provinsi', 'asc')->get();
+        $allProvinsis = Provinsi::orderBy('name', 'asc')->get();
 
         $selectedProvinsiId = $request->get('provinsi_id');
         $search = $request->get('search');
         $tab = $request->get('tab', 'kabupaten');
 
         // Query Provinsi untuk Tab Provinsi (dipaginate 10 data per halaman)
-        $provinsisQuery = Provinsi::withCount('kabupatens')->orderBy('nama_provinsi', 'asc');
+        $provinsisQuery = Provinsi::withCount('kabupatens')->orderBy('name', 'asc');
         if ($tab === 'provinsi' && $search) {
-            $provinsisQuery->where('nama_provinsi', 'like', "%{$search}%");
+            $provinsisQuery->where('name', 'like', "%{$search}%");
         }
         $provinsis = $provinsisQuery->paginate(10, ['*'], 'prov_page')->withQueryString();
 
@@ -32,14 +32,14 @@ class WilayahController extends Controller
 
         if ($tab === 'kabupaten' && $search) {
             $kabupatensQuery->where(function ($q) use ($search) {
-                $q->where('nama_kabupaten', 'like', "%{$search}%")
+                $q->where('name', 'like', "%{$search}%")
                   ->orWhereHas('provinsi', function ($p) use ($search) {
-                      $p->where('nama_provinsi', 'like', "%{$search}%");
+                      $p->where('name', 'like', "%{$search}%");
                   });
             });
         }
 
-        $kabupatens = $kabupatensQuery->orderBy('nama_kabupaten', 'asc')
+        $kabupatens = $kabupatensQuery->orderBy('name', 'asc')
             ->paginate(15)
             ->withQueryString();
 
@@ -61,14 +61,14 @@ class WilayahController extends Controller
     public function storeProvinsi(Request $request)
     {
         $request->validate([
-            'nama_provinsi' => 'required|string|max:255|unique:provinsis,nama_provinsi',
+            'nama_provinsi' => 'required|string|max:255|unique:provinsis,name',
         ], [
             'nama_provinsi.required' => 'Nama provinsi wajib diisi.',
             'nama_provinsi.unique' => 'Nama provinsi sudah ada dalam database.',
         ]);
 
         Provinsi::create([
-            'nama_provinsi' => ucwords(strtolower(trim($request->nama_provinsi))),
+            'name' => ucwords(strtolower(trim($request->nama_provinsi))),
         ]);
 
         return redirect()
@@ -81,14 +81,14 @@ class WilayahController extends Controller
         $provinsi = Provinsi::findOrFail($id);
 
         $request->validate([
-            'nama_provinsi' => 'required|string|max:255|unique:provinsis,nama_provinsi,' . $id,
+            'nama_provinsi' => 'required|string|max:255|unique:provinsis,name,' . $id,
         ], [
             'nama_provinsi.required' => 'Nama provinsi wajib diisi.',
             'nama_provinsi.unique' => 'Nama provinsi sudah digunakan.',
         ]);
 
         $provinsi->update([
-            'nama_provinsi' => ucwords(strtolower(trim($request->nama_provinsi))),
+            'name' => ucwords(strtolower(trim($request->nama_provinsi))),
         ]);
 
         return redirect()
@@ -135,7 +135,7 @@ class WilayahController extends Controller
 
         Kabupaten::create([
             'provinsi_id' => $request->provinsi_id,
-            'nama_kabupaten' => ucwords(strtolower(trim($request->nama_kabupaten))),
+            'name' => ucwords(strtolower(trim($request->nama_kabupaten))),
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
         ]);
@@ -161,7 +161,7 @@ class WilayahController extends Controller
 
         $kabupaten->update([
             'provinsi_id' => $request->provinsi_id,
-            'nama_kabupaten' => ucwords(strtolower(trim($request->nama_kabupaten))),
+            'name' => ucwords(strtolower(trim($request->nama_kabupaten))),
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
         ]);

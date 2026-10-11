@@ -782,6 +782,33 @@
                             <input type="text" name="publikasi" autocomplete="off" placeholder="Contoh: Publikasi BBLKL 2026, Jurnal Vektor / Link URL" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
                         </div>
 
+                        {{-- KALKULATOR CEPAT MORTALITAS WHO (OPSIONAL) --}}
+                        <div class="md:col-span-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 p-3.5 shadow-2xs">
+                            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
+                                <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                                    <span>🔬</span> Kalkulator Cepat Mortalitas Bioassay (Standar WHO)
+                                </span>
+                                <span id="calcHasilTambah" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white text-blue-700 border border-blue-200 shadow-2xs">
+                                    Bantu tentukan status otomatis
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nyamuk Diuji (Ekor)</label>
+                                    <input type="number" id="calcUjiTambah" min="1" placeholder="Contoh: 100" class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nyamuk Mati (Ekor)</label>
+                                    <input type="number" id="calcMatiTambah" min="0" placeholder="Contoh: 85" class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div class="col-span-2 sm:col-span-1 flex flex-col justify-end">
+                                    <button type="button" onclick="hitungMortalitasOtomatis('tambah')" class="w-full py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1">
+                                        ⚡ Hitung & Terapkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
                         <div class="md:col-span-2 rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
                             <div class="flex items-center justify-between mb-1.5">
@@ -943,6 +970,33 @@
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Publikasi / Jurnal</label>
                             <input type="text" id="editPublikasi" name="publikasi" autocomplete="off" placeholder="Contoh: Publikasi BBLKL 2026, Jurnal Vektor / Link URL" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                        </div>
+
+                        {{-- KALKULATOR CEPAT MORTALITAS WHO (OPSIONAL) --}}
+                        <div class="md:col-span-2 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 p-3.5 shadow-2xs">
+                            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
+                                <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                                    <span>🔬</span> Kalkulator Cepat Mortalitas Bioassay (Standar WHO)
+                                </span>
+                                <span id="calcHasilEdit" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white text-blue-700 border border-blue-200 shadow-2xs">
+                                    Bantu tentukan status otomatis
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nyamuk Diuji (Ekor)</label>
+                                    <input type="number" id="calcUjiEdit" min="1" placeholder="Contoh: 100" class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nyamuk Mati (Ekor)</label>
+                                    <input type="number" id="calcMatiEdit" min="0" placeholder="Contoh: 85" class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div class="col-span-2 sm:col-span-1 flex flex-col justify-end">
+                                    <button type="button" onclick="hitungMortalitasOtomatis('edit')" class="w-full py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1">
+                                        ⚡ Hitung & Terapkan
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {{-- STATUS KERENTANAN (3 KATEGORI: RESISTEN, RENTAN, TOLERAN/TERDUGA RESISTEN) --}}
@@ -1118,6 +1172,7 @@
             document.getElementById('editJenisNyamuk').value = item.jenis_nyamuk || '';
             document.getElementById('editInsektisida').value = item.insektisida || '';
             document.getElementById('editMetode').value = item.metode || '';
+            document.getElementById('editSampelDiperiksa').value = item.sampel_diperiksa || '';
             document.getElementById('editMutasi').value = item.mutasi || '';
             document.getElementById('editPublikasi').value = item.publikasi || '';
             let currentStatus = item.status || '';
@@ -1152,6 +1207,61 @@
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
             }
+        };
+
+        // Fungsi Hitung Mortalitas Cepat Standar WHO
+        window.hitungMortalitasOtomatis = function(mode) {
+            const isTambah = mode === 'tambah';
+            const ujiInput = document.getElementById(isTambah ? 'calcUjiTambah' : 'calcUjiEdit');
+            const matiInput = document.getElementById(isTambah ? 'calcMatiTambah' : 'calcMatiEdit');
+            const hasilBadge = document.getElementById(isTambah ? 'calcHasilTambah' : 'calcHasilEdit');
+            const sampelTarget = isTambah 
+                ? document.querySelector('#modalTambahData [name="sampel_diperiksa"]')
+                : document.getElementById('editSampelDiperiksa');
+            const statusSelect = isTambah 
+                ? document.querySelector('#modalTambahData [name="status"]')
+                : document.getElementById('editStatus');
+
+            const uji = parseFloat(ujiInput.value);
+            const mati = parseFloat(matiInput.value);
+
+            if (isNaN(uji) || uji <= 0) {
+                alert('Silakan masukkan Jumlah Nyamuk yang Diuji (angka lebih dari 0).');
+                ujiInput.focus();
+                return;
+            }
+            if (isNaN(mati) || mati < 0) {
+                alert('Silakan masukkan Jumlah Nyamuk yang Mati.');
+                matiInput.focus();
+                return;
+            }
+            if (mati > uji) {
+                alert('Jumlah nyamuk mati tidak boleh melebihi jumlah nyamuk yang diuji!');
+                matiInput.focus();
+                return;
+            }
+
+            const persen = (mati / uji) * 100;
+            let statusRes = 'Resisten';
+
+            // Standar Pedoman WHO:
+            // Mortalitas < 90% = Resisten
+            // Mortalitas 90% - 97% = Toleran / Terduga Resisten
+            // Mortalitas >= 98% = Rentan
+            if (persen < 90) {
+                statusRes = 'Resisten';
+            } else if (persen < 98) {
+                statusRes = 'Toleran';
+            } else {
+                statusRes = 'Rentan';
+            }
+
+            // Set ke form utama
+            if (sampelTarget) sampelTarget.value = uji;
+            if (statusSelect) statusSelect.value = statusRes;
+
+            hasilBadge.innerHTML = `Mortalitas: <strong>${persen.toFixed(1)}%</strong> → Auto: <strong>${statusRes}</strong>`;
+            hasilBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs';
         };
 
         // Kontrol Page Size (Tampil X Data) Tabel Data Uji Resistensi

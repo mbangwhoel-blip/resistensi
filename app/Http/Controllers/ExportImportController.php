@@ -38,15 +38,15 @@ class ExportImportController extends Controller
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'desc');
 
         if ($bulanFilter && $bulanFilter !== 'Semua') {
-            $query->where('bulan', $bulanFilter);
+            $query->where('month', $bulanFilter);
         }
 
         if ($tahunFilter && $tahunFilter !== 'Semua') {
-            $query->where('tahun', (int)$tahunFilter);
+            $query->where('year', (int)$tahunFilter);
         }
 
         if ($nyamukFilter && $nyamukFilter !== 'Semua') {
-            $query->where('jenis_nyamuk', $nyamukFilter);
+            $query->where('mosquito_type', $nyamukFilter);
         }
 
         if ($provinsiFilter && $provinsiFilter !== 'Semua') {
@@ -56,7 +56,7 @@ class ExportImportController extends Controller
         // Hitung statistik ringkasan dari query terfilter
         $statsQuery = clone $query;
         $totalSemua = (clone $statsQuery)->count();
-        $totalSampel = (int)(clone $statsQuery)->sum('sampel_diperiksa');
+        $totalSampel = (int)(clone $statsQuery)->sum('sample_count');
         $totalResisten = (clone $statsQuery)->whereRaw('LOWER(status) = ?', ['resisten'])->count();
         $totalToleran = (clone $statsQuery)->where(function($q) {
             $q->whereRaw('LOWER(status) LIKE ?', ['%toleran%'])
@@ -66,13 +66,13 @@ class ExportImportController extends Controller
 
         $dataPreview = $query->paginate($perPage)->withQueryString();
 
-        $provinsis = Provinsi::orderBy('nama_provinsi')->get();
+        $provinsis = Provinsi::orderBy('name')->get();
 
         // Ambil daftar tahun dinamis dari database
-        $tahunDb = DataUjiResistensi::select('tahun')
+        $tahunDb = DataUjiResistensi::select('year')
             ->distinct()
-            ->whereNotNull('tahun')
-            ->pluck('tahun')
+            ->whereNotNull('year')
+            ->pluck('year')
             ->map(fn($y) => (int)$y)
             ->filter(fn($y) => $y > 2000 && $y < 2100)
             ->toArray();
@@ -80,14 +80,14 @@ class ExportImportController extends Controller
         rsort($daftarTahun);
 
         // Ambil jenis nyamuk dinamis dari data pengujian
-        $nyamukDb = DataUjiResistensi::select('jenis_nyamuk')
+        $nyamukDb = DataUjiResistensi::select('mosquito_type')
             ->distinct()
-            ->whereNotNull('jenis_nyamuk')
-            ->where('jenis_nyamuk', '!=', '')
-            ->orderBy('jenis_nyamuk')
-            ->pluck('jenis_nyamuk')
+            ->whereNotNull('mosquito_type')
+            ->where('mosquito_type', '!=', '')
+            ->orderBy('mosquito_type')
+            ->pluck('mosquito_type')
             ->toArray();
-        $daftarNyamuk = !empty($nyamukDb) ? $nyamukDb : KategoriUji::where('kategori', 'jenis_nyamuk')->pluck('nama')->toArray();
+        $daftarNyamuk = !empty($nyamukDb) ? $nyamukDb : KategoriUji::where('category', 'nyamuk')->pluck('name')->toArray();
 
         $daftarBulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -128,13 +128,13 @@ class ExportImportController extends Controller
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'asc');
 
         if ($bulanFilter && $bulanFilter !== 'Semua') {
-            $query->where('bulan', $bulanFilter);
+            $query->where('month', $bulanFilter);
         }
         if ($tahunFilter && $tahunFilter !== 'Semua') {
-            $query->where('tahun', (int)$tahunFilter);
+            $query->where('year', (int)$tahunFilter);
         }
         if ($nyamukFilter && $nyamukFilter !== 'Semua') {
-            $query->where('jenis_nyamuk', $nyamukFilter);
+            $query->where('mosquito_type', $nyamukFilter);
         }
         if ($provinsiFilter && $provinsiFilter !== 'Semua') {
             $query->where('provinsi_id', $provinsiFilter);
@@ -841,10 +841,10 @@ class ExportImportController extends Controller
 
                 $provObj = $allProvinsi->get($provKey);
                 if (!$provObj && $provNama) {
-                    $provObj = Provinsi::where('nama_provinsi', 'LIKE', "%{$provNama}%")->first();
+                    $provObj = Provinsi::where('name', 'LIKE', "%{$provNama}%")->first();
                     if (!$provObj) {
-                        $provObj = Provinsi::create(['nama_provinsi' => ucwords(strtolower($provNama))]);
-                        $allProvinsi->put(strtolower($provObj->nama_provinsi), $provObj);
+                        $provObj = Provinsi::create(['name' => ucwords(strtolower($provNama))]);
+                        $allProvinsi->put(strtolower($provObj->name ?? $provObj->nama_provinsi), $provObj);
                     }
                 }
 
@@ -856,15 +856,15 @@ class ExportImportController extends Controller
                     if ($provObj) {
                         $kabObj = Kabupaten::where('provinsi_id', $provObj->id)
                             ->where(function ($q) use ($cleanedKab, $kabNama) {
-                                $q->whereRaw('LOWER(nama_kabupaten) = ?', [strtolower($cleanedKab)])
-                                  ->orWhereRaw('LOWER(nama_kabupaten) = ?', [strtolower($kabNama)])
-                                  ->orWhere('nama_kabupaten', 'LIKE', "%{$cleanedKab}%");
+                                $q->whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])
+                                  ->orWhereRaw('LOWER(name) = ?', [strtolower($kabNama)])
+                                  ->orWhere('name', 'LIKE', "%{$cleanedKab}%");
                             })->first();
                     }
 
                     // Jika belum ketemu di provinsinya, cari di seluruh data master kabupaten
                     if (!$kabObj && $cleanedKab) {
-                        $kabObj = Kabupaten::whereRaw('LOWER(nama_kabupaten) = ?', [strtolower($cleanedKab)])->first();
+                        $kabObj = Kabupaten::whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])->first();
                     }
 
                     if ($kabObj) {
@@ -873,7 +873,7 @@ class ExportImportController extends Controller
                         $newKabCount++;
                         $kabObj = Kabupaten::create([
                             'provinsi_id' => $provObj ? $provObj->id : null,
-                            'nama_kabupaten' => ucwords(strtolower($cleanedKab ?: $kabNama)),
+                            'name' => ucwords(strtolower($cleanedKab ?: $kabNama)),
                             'latitude' => null,
                             'longitude' => null
                         ]);
@@ -887,16 +887,16 @@ class ExportImportController extends Controller
                 DataUjiResistensi::create([
                     'provinsi_id' => $provObj ? $provObj->id : null,
                     'kabupaten_id' => $kabObj ? $kabObj->id : null,
-                    'alamat' => $alamat ?: null,
-                    'jenis_nyamuk' => $nyamuk,
-                    'insektisida' => $insektisida,
-                    'metode' => $metode,
-                    'sampel_diperiksa' => max(1, $sampel),
+                    'address' => $alamat ?: null,
+                    'mosquito_type' => $nyamuk,
+                    'insecticide' => $insektisida,
+                    'method' => $metode,
+                    'sample_count' => max(1, $sampel),
                     'status' => $status,
-                    'mutasi' => $mutasiVal ?: null,
-                    'publikasi' => $publikasiVal ?: null,
-                    'bulan' => $bulan,
-                    'tahun' => $tahun,
+                    'mutation' => $mutasiVal ?: null,
+                    'publication' => $publikasiVal ?: null,
+                    'month' => $bulan,
+                    'year' => $tahun,
                     'no' => (string)($importedCount + 1)
                 ]);
 

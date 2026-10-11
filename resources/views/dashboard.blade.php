@@ -1041,7 +1041,7 @@
             </div>
 
             @php
-                $provinsis = $provinsis ?? \App\Models\Provinsi::orderBy('nama_provinsi')->get();
+                $provinsis = $provinsis ?? \App\Models\Provinsi::orderBy('name')->get();
                 $daftarTahun = $daftarTahun ?? [2026, 2025, 2024];
             @endphp
 
@@ -1417,9 +1417,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
+            // Deteksi perangkat sentuh / mobile untuk mencegah scroll-trap
+            const isTouchMobile = window.innerWidth < 768 || ('ontouchstart' in window);
+
             // Inisialisasi Map Leaflet dengan view Indonesia
             const map = L.map('map', {
-                scrollWheelZoom: true
+                scrollWheelZoom: !isTouchMobile,
+                tap: !isTouchMobile
             }).setView([-2.5, 118], 5);
 
             // Layer Tile Bebas API Key & Tanpa Watermark (OpenStreetMap)
@@ -1452,6 +1456,44 @@
                 }
             });
             map.addControl(new ResetViewControl());
+
+            // Kontrol Tombol Layar Penuh (Fullscreen) untuk kenyamanan pengguna
+            const FullscreenControl = L.Control.extend({
+                options: { position: 'topleft' },
+                onAdd: function() {
+                    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                    const btn = L.DomUtil.create('a', 'leaflet-control-fullscreen-view', container);
+                    btn.href = '#';
+                    btn.title = 'Buka / Tutup Layar Penuh Peta';
+                    btn.role = 'button';
+                    btn.setAttribute('aria-label', 'Mode Layar Penuh');
+                    btn.style.display = 'flex';
+                    btn.style.alignItems = 'center';
+                    btn.style.justifyContent = 'center';
+                    btn.style.cursor = 'pointer';
+                    btn.innerHTML = `<svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>`;
+                    L.DomEvent.disableClickPropagation(btn);
+                    L.DomEvent.on(btn, 'click', function(e) {
+                        L.DomEvent.preventDefault(e);
+                        const mapElem = document.getElementById('map');
+                        if (!document.fullscreenElement) {
+                            if (mapElem.requestFullscreen) {
+                                mapElem.requestFullscreen();
+                            } else if (mapElem.webkitRequestFullscreen) {
+                                mapElem.webkitRequestFullscreen();
+                            }
+                        } else {
+                            if (document.exitFullscreen) document.exitFullscreen();
+                        }
+                    });
+                    return container;
+                }
+            });
+            map.addControl(new FullscreenControl());
+
+            document.addEventListener('fullscreenchange', function() {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            });
 
             window.updateMapTheme = function(isDark) {
                 // Mode gelap peta dikendalikan via CSS filter pada leaflet-tile-pane tanpa butuh API key eksternal
@@ -1492,7 +1534,7 @@
                     .replace(/'/g, '&#039;');
             }
 
-            // Konfigurasi status resistensi & palet warna (3 Kategori Standar)
+            // Konfigurasi status resistensi & palet warna (3 Kategori Standar dengan Aksesibilitas WCAG)
             function getStatusConfig(status) {
                 if (status === 'Resisten') {
                     return {
@@ -1501,7 +1543,7 @@
                         color: '#EF4444', // Merah (Rose-500)
                         pulseColor: 'rgba(239, 68, 68, 0.55)',
                         textHex: '#B91C1C',
-                        badgeClass: 'bg-rose-50 border-rose-200 text-rose-700',
+                        badgeClass: 'bg-rose-50 border-rose-200 text-rose-700 dark:bg-rose-950/60 dark:border-rose-800/60 dark:text-rose-300',
                         dotClass: 'bg-rose-500',
                         priority: 3
                     };
@@ -1512,7 +1554,7 @@
                         color: '#F59E0B', // Kuning/Amber (Amber-500)
                         pulseColor: 'rgba(245, 158, 11, 0.55)',
                         textHex: '#B45309',
-                        badgeClass: 'bg-amber-50 border-amber-200 text-amber-700',
+                        badgeClass: 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/60 dark:border-amber-800/60 dark:text-amber-300',
                         dotClass: 'bg-amber-500',
                         priority: 2
                     };
@@ -1523,7 +1565,7 @@
                         color: '#10B981', // Hijau (Emerald-500)
                         pulseColor: 'rgba(16, 185, 129, 0.55)',
                         textHex: '#047857',
-                        badgeClass: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+                        badgeClass: 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/60 dark:border-emerald-800/60 dark:text-emerald-300',
                         dotClass: 'bg-emerald-500',
                         priority: 1
                     };
@@ -1534,7 +1576,7 @@
                         color: '#64748B', // Slate
                         pulseColor: 'rgba(100, 116, 139, 0.45)',
                         textHex: '#334155',
-                        badgeClass: 'bg-slate-50 border-slate-200 text-slate-500',
+                        badgeClass: 'bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-900/60 dark:border-slate-800/60 dark:text-slate-400',
                         dotClass: 'bg-slate-400',
                         priority: 0
                     };
