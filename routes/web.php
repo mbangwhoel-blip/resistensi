@@ -109,6 +109,10 @@ Route::get('/sync-db', function () {
         \Illuminate\Support\Facades\Schema::table('users', fn(\Illuminate\Database\Schema\Blueprint $t) => $t->renameColumn('telepon', 'phone'));
         $actions[] = 'Tabel users: telepon -> phone';
     }
+    try {
+        \Illuminate\Support\Facades\DB::statement("ALTER TABLE users MODIFY role VARCHAR(50) NOT NULL DEFAULT 'petugas'");
+        $actions[] = 'Tabel users: kolom role diperluas ke VARCHAR(50)';
+    } catch (\Throwable $e) {}
 
     // 7. delete_requests
     if (\Illuminate\Support\Facades\Schema::hasTable('delete_requests') && \Illuminate\Support\Facades\Schema::hasColumn('delete_requests', 'alasan')) {
@@ -116,9 +120,66 @@ Route::get('/sync-db', function () {
         $actions[] = 'Tabel delete_requests: alasan -> reason';
     }
 
+    // 8. Sinkronisasi nama Kota Administratif (Depok, Jaktim, Surabaya, dsb.)
+    $kotaRenames = [
+        417 => 'Kota Salatiga',
+        418 => 'Kota Kendari',
+        419 => 'Kota Makassar',
+        421 => 'Kota Tanjung Pinang',
+        422 => 'Kota Pekanbaru',
+        423 => 'Kota Yogyakarta',
+        424 => 'Kota Palu',
+        425 => 'Kota Medan',
+        426 => 'Kota Banjarmasin',
+        427 => 'Kota Surabaya',
+        428 => 'Kota Jakarta Timur',
+        429 => 'Kota Manado',
+        431 => 'Kota Ambon',
+        432 => 'Kota Depok',
+    ];
+    $kotaUpdates = 0;
+    foreach ($kotaRenames as $kId => $kName) {
+        $kObj = \App\Models\Kabupaten::find($kId);
+        if ($kObj && $kObj->name !== $kName) {
+            $kObj->name = $kName;
+            $kObj->save();
+            $kotaUpdates++;
+        }
+    }
+    if ($kotaUpdates > 0) {
+        $actions[] = "Tabel kabupatens: {$kotaUpdates} nama kota administratif disinkronkan (awalan 'Kota')";
+    }
+
+    // 9. Pastikan seluruh Kota Administrasi DKI Jakarta lengkap
+    $dkiProv = \App\Models\Provinsi::where('name', 'like', '%jakarta%')->first();
+    if ($dkiProv) {
+        $dkiCities = [
+            'Kota Jakarta Pusat' => ['lat' => -6.1805, 'lng' => 106.8284],
+            'Kota Jakarta Utara' => ['lat' => -6.1384, 'lng' => 106.8640],
+            'Kota Jakarta Barat' => ['lat' => -6.1683, 'lng' => 106.7588],
+            'Kota Jakarta Selatan' => ['lat' => -6.2615, 'lng' => 106.8106],
+        ];
+        $dkiCreated = 0;
+        foreach ($dkiCities as $cName => $coords) {
+            $exists = \App\Models\Kabupaten::where('provinsi_id', $dkiProv->id)->where('name', $cName)->first();
+            if (!$exists) {
+                \App\Models\Kabupaten::create([
+                    'provinsi_id' => $dkiProv->id,
+                    'name' => $cName,
+                    'latitude' => (string)$coords['lat'],
+                    'longitude' => (string)$coords['lng'],
+                ]);
+                $dkiCreated++;
+            }
+        }
+        if ($dkiCreated > 0) {
+            $actions[] = "Tabel kabupatens: {$dkiCreated} kota administrasi DKI Jakarta ditambahkan";
+        }
+    }
+
     $msg = count($actions) > 0 
-        ? "Berhasil menyinkronkan " . count($actions) . " kolom:<br>- " . implode("<br>- ", $actions)
-        : "Semua kolom database sudah berada dalam standar Bahasa Inggris! Tidak ada perubahan yang diperlukan.";
+        ? "Berhasil menyinkronkan " . count($actions) . " perubahan:<br>- " . implode("<br>- ", $actions)
+        : "Semua struktur kolom dan data wilayah sudah 100% sinkron dan termutakhir!";
 
     return "<div style='font-family:sans-serif;padding:30px;max-width:700px;margin:50px auto;border:1px solid #10b981;border-radius:12px;background:#f0fdf4;color:#065f46;'>
         <h2 style='margin-top:0;'>✅ Sinkronisasi Database Selesai</h2>

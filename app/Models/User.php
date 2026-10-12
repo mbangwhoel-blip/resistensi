@@ -71,7 +71,16 @@ class User extends Authenticatable
 
     public function isPetugas(): bool
     {
-        return in_array($this->role, ['admin', 'petugas']);
+        return in_array($this->role, [
+            'admin',
+            'petugas',
+            'dinas_kesehatan',
+            'dinkes',
+            'balai_kekarantinaan_kesehatan',
+            'bkk',
+            'balai_karantina',
+            'labkesmas',
+        ]);
     }
 
     public function isActive(): bool

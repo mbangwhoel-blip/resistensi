@@ -494,6 +494,39 @@
                 @endif
             </div>
 
+            {{-- KOTAK KETERANGAN STATUS RESISTENSI STANDAR KEMENKES RI / WHO --}}
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+                    <span class="flex h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-blue-100"></span>
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                        Keterangan Kategori Status Resistensi Vektor (Standar Kemenkes RI / WHO)
+                    </h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="rounded-xl border border-rose-200 bg-rose-50/50 p-3">
+                        <div class="font-bold text-rose-700 flex items-center gap-1.5 mb-1">
+                            <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+                            <span>Resisten (Mortalitas &lt; 90%)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">Populasi vektor telah kebal/resisten terhadap insektisida. Pengendalian vektor dengan bahan aktif ini perlu dievaluasi atau diganti.</p>
+                    </div>
+                    <div class="rounded-xl border border-amber-200 bg-amber-50/50 p-3">
+                        <div class="font-bold text-amber-700 flex items-center gap-1.5 mb-1">
+                            <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                            <span>Toleran / Terduga (Mortalitas 90% - 97%)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">Indikasi awal toleransi atau kecurigaan resistensi vektor. Diperlukan pengujian konfirmasi dan pengawasan berkala.</p>
+                    </div>
+                    <div class="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">
+                        <div class="font-bold text-emerald-700 flex items-center gap-1.5 mb-1">
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                            <span>Rentan (Mortalitas 98% - 100%)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">Insektisida masih sangat efektif membunuh populasi vektor target dalam kegiatan pengendalian penyakit.</p>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 

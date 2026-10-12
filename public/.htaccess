@@ -5,6 +5,15 @@
 
     RewriteEngine On
 
+    # ---------------------------------------------------------------
+    # FORCE HTTPS - Redirect semua HTTP ke HTTPS
+    # Mendukung Cloudflare, LiteSpeed, dan reverse proxy lainnya
+    # ---------------------------------------------------------------
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteCond %{HTTP:CF-Visitor} !'"scheme":"https"'
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

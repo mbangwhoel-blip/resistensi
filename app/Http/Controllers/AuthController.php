@@ -116,6 +116,7 @@ class AuthController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|in:petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
             'telepon' => 'nullable|string|max:20',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
@@ -129,14 +130,20 @@ class AuthController extends Controller
             'password.required' => 'Kata sandi wajib diisi.',
             'password.min' => 'Kata sandi minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'role.required' => 'Pilih role / hak akses akun.',
+            'role.in' => 'Pilihan role tidak valid. Silakan pilih role yang tersedia.',
         ]);
+
+        $role = $validated['role'];
+        if ($role === 'dinkes') $role = 'dinas_kesehatan';
+        if ($role === 'bkk' || $role === 'balai_karantina') $role = 'balai_kekarantinaan_kesehatan';
 
         User::create([
             'name' => trim($validated['name']),
             'username' => strtolower(trim($validated['username'])),
             'email' => strtolower(trim($validated['email'])),
             'password' => Hash::make($validated['password']),
-            'role' => 'petugas',
+            'role' => $role,
             'status' => 'aktif',
             'telepon' => !empty($validated['telepon']) ? trim($validated['telepon']) : null,
         ]);

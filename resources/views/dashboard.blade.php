@@ -98,43 +98,67 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             letter-spacing: 0.02em;
         }
+        .custom-desa-popup {
+            z-index: 950 !important;
+        }
         .custom-desa-popup .leaflet-popup-content-wrapper {
             border-radius: 14px !important;
-            box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.22) !important;
+            box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.08) !important;
             border: 1px solid #cbd5e1 !important;
             padding: 2px !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+        }
+        .custom-desa-popup .leaflet-popup-content {
+            margin: 8px 10px !important;
+            line-height: 1.4 !important;
         }
 
         /* Card Informasi Detail di Kanan Atas Peta (Transparan agar wilayah peta tetap terlihat) */
         .map-detail-panel {
-            width: 320px;
+            width: 310px;
             max-width: calc(100vw - 32px);
-            max-height: 490px;
+            max-height: 480px;
             overflow-y: auto;
-            background: rgba(255, 255, 255, 0.62) !important;
-            backdrop-filter: blur(4px) !important;
-            -webkit-backdrop-filter: blur(4px) !important;
-            border: 1px solid rgba(203, 213, 225, 0.75) !important;
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+            border: 1px solid rgba(203, 213, 225, 0.8) !important;
             border-radius: 14px !important;
-            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.12), 0 2px 6px -2px rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.12), 0 2px 6px -2px rgba(0, 0, 0, 0.05) !important;
             padding: 12px !important;
             font-size: 11.5px !important;
             color: #0f172a !important;
             pointer-events: none !important;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000 !important;
         }
 
         .map-detail-panel.is-pinned {
             pointer-events: auto !important;
-            background: rgba(255, 255, 255, 0.88) !important;
-            backdrop-filter: blur(6px) !important;
-            -webkit-backdrop-filter: blur(6px) !important;
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .map-detail-panel.is-minimized {
+            width: auto !important;
+            min-width: 175px;
+            max-width: 280px;
+            padding: 6px 12px !important;
+            border-radius: 9999px !important;
+            background: rgba(255, 255, 255, 0.96) !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+            cursor: pointer;
+            overflow: hidden !important;
         }
 
         .map-detail-panel:hover {
-            background: rgba(255, 255, 255, 0.82) !important;
-            backdrop-filter: blur(6px) !important;
-            -webkit-backdrop-filter: blur(6px) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
         }
 
         .map-detail-panel::-webkit-scrollbar {
@@ -145,21 +169,38 @@
             border-radius: 4px;
         }
 
-        /* Legenda Keterangan Status Wilayah di Kiri Bawah (Bottom Left - Transparan) */
+        /* Legenda Keterangan Status Wilayah di Kiri Bawah (Bottom Left - Transparan & Responsif) */
         .map-legend-control {
-            background: rgba(255, 255, 255, 0.72) !important;
-            backdrop-filter: blur(4px) !important;
-            -webkit-backdrop-filter: blur(4px) !important;
-            border: 1px solid rgba(203, 213, 225, 0.75) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.12) !important;
+            background: rgba(255, 255, 255, 0.94) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.16) !important;
             padding: 10px 12px !important;
             pointer-events: auto !important;
-            transition: background 0.2s ease-in-out;
+            width: 295px;
+            max-width: calc(100vw - 36px) !important;
+            z-index: 1000 !important;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .map-legend-control.is-collapsed {
+            width: auto !important;
+            padding: 6px 14px !important;
+            border-radius: 9999px !important;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .map-legend-control.is-collapsed:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
         }
 
         .map-legend-control:hover {
-            background: rgba(255, 255, 255, 0.88) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.2) !important;
         }
 
         .polygon-tooltip {
@@ -672,6 +713,16 @@
         html.dark #tableDataBody tr:hover {
             background-color: rgba(30, 41, 59, 0.7) !important;
         }
+        html.dark #tableDataBody .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        html.dark #tableDataBody .text-slate-700 {
+            color: #e2e8f0 !important;
+        }
+        html.dark #tableDataBody .text-slate-600,
+        html.dark #tableDataBody .text-slate-500 {
+            color: #94a3b8 !important;
+        }
         html.dark #tablePageSizeSelect {
             background-color: #1e293b !important;
             border-color: #334155 !important;
@@ -850,11 +901,44 @@
         html.dark .map-legend-control:hover {
             background: rgba(15, 23, 42, 0.95) !important;
         }
+        html.dark .map-legend-control .text-slate-900,
         html.dark .map-legend-control .text-slate-800 {
             color: #f8fafc !important;
         }
-        html.dark .map-legend-control .text-slate-700 {
+        html.dark .map-legend-control .text-slate-700,
+        html.dark .map-legend-control .text-slate-600 {
             color: #cbd5e1 !important;
+        }
+        html.dark .map-legend-control .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        html.dark .map-legend-control .border-slate-200\/80,
+        html.dark .map-legend-control .border-slate-100 {
+            border-color: #334155 !important;
+        }
+        html.dark .map-legend-control .bg-rose-50 {
+            background-color: rgba(136, 19, 55, 0.35) !important;
+            border-color: rgba(225, 29, 72, 0.5) !important;
+            color: #fda4af !important;
+        }
+        html.dark .map-legend-control .bg-amber-50 {
+            background-color: rgba(120, 53, 15, 0.35) !important;
+            border-color: rgba(217, 119, 6, 0.5) !important;
+            color: #fde68a !important;
+        }
+        html.dark .map-legend-control .bg-emerald-50 {
+            background-color: rgba(6, 78, 59, 0.35) !important;
+            border-color: rgba(16, 185, 129, 0.5) !important;
+            color: #a7f3d0 !important;
+        }
+        html.dark .map-legend-control .bg-indigo-50 {
+            background-color: rgba(49, 46, 129, 0.35) !important;
+            border-color: rgba(99, 102, 241, 0.5) !important;
+            color: #c7d2fe !important;
+        }
+        html.dark .map-legend-control .bg-slate-50 {
+            background-color: rgba(30, 41, 59, 0.6) !important;
+            border-color: #475569 !important;
         }
         html.dark .leaflet-popup-content-wrapper {
             background: #0f172a !important;
@@ -1056,7 +1140,7 @@
                             FILTER
                         </span>
                         <span class="rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
-                            Nasional • Provinsi • Kabupaten
+                            Nasional • Provinsi • Kab / Kota
                         </span>
                     </div>
                     <button type="button" class="h-7 w-7 rounded-full border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 flex items-center justify-center shadow-2xs transition-all cursor-pointer" title="Buka/Tutup Filter">
@@ -1109,7 +1193,7 @@
                                 </label>
                                 <label class="inline-flex items-center gap-2 cursor-pointer">
                                     <input type="radio" name="levelFilter" value="kabupaten" onchange="handleLevelChange('kabupaten')" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300">
-                                    <span>Kabupaten</span>
+                                    <span>Kabupaten / Kota</span>
                                 </label>
                             </div>
 
@@ -1125,7 +1209,7 @@
                                 </div>
                                 <div class="relative">
                                     <select id="filterKabupatenSelect" disabled class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs disabled:opacity-60 disabled:cursor-not-allowed transition">
-                                        <option value="">-- Pilih Kabupaten --</option>
+                                        <option value="">-- Pilih Kabupaten / Kota --</option>
                                     </select>
                                 </div>
                             </div>
@@ -1229,6 +1313,65 @@
                 {{-- MAP CONTAINER --}}
                 <div id="map"></div>
 
+                {{-- KETERANGAN & LEGENDA PETA LENGKAP DI BAWAH PETA --}}
+                <div class="mt-3.5 rounded-xl border border-slate-200/90 bg-slate-50/70 p-3 text-xs dark:bg-slate-800/60 dark:border-slate-700/80">
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-2 mb-2 border-b border-slate-200/70 dark:border-slate-700/70">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-blue-100 dark:ring-blue-900"></span>
+                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs">Keterangan Status & Simbol Peta Resistensi</span>
+                            <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">• Standar Kemenkes RI / WHO</span>
+                        </div>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 italic">Sorot atau klik wilayah / pin untuk melihat detail pengujian</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-[11px]">
+                        {{-- RESISTEN --}}
+                        <div class="flex items-center gap-2 rounded-lg bg-white p-2 border border-rose-200 shadow-2xs dark:bg-slate-900/60 dark:border-rose-900/60">
+                            <span class="h-3.5 w-3.5 rounded-sm bg-rose-500 border border-rose-600 shrink-0 shadow-2xs"></span>
+                            <div class="leading-snug">
+                                <div class="font-bold text-rose-700 dark:text-rose-400">🔴 Resisten (&lt; 90%)</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Vektor kebal insektisida</div>
+                            </div>
+                        </div>
+
+                        {{-- TOLERAN --}}
+                        <div class="flex items-center gap-2 rounded-lg bg-white p-2 border border-amber-200 shadow-2xs dark:bg-slate-900/60 dark:border-amber-900/60">
+                            <span class="h-3.5 w-3.5 rounded-sm bg-amber-500 border border-amber-600 shrink-0 shadow-2xs"></span>
+                            <div class="leading-snug">
+                                <div class="font-bold text-amber-700 dark:text-amber-400">🟡 Toleran (90 - 97%)</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Terduga / perlu konfirmasi</div>
+                            </div>
+                        </div>
+
+                        {{-- RENTAN --}}
+                        <div class="flex items-center gap-2 rounded-lg bg-white p-2 border border-emerald-200 shadow-2xs dark:bg-slate-900/60 dark:border-emerald-900/60">
+                            <span class="h-3.5 w-3.5 rounded-sm bg-emerald-500 border border-emerald-600 shrink-0 shadow-2xs"></span>
+                            <div class="leading-snug">
+                                <div class="font-bold text-emerald-700 dark:text-emerald-400">🟢 Rentan (≥ 98%)</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Insektisida efektif</div>
+                            </div>
+                        </div>
+
+                        {{-- MULTI-STATUS --}}
+                        <div class="flex items-center gap-2 rounded-lg bg-white p-2 border border-indigo-200 shadow-2xs dark:bg-slate-900/60 dark:border-indigo-900/60">
+                            <span class="h-3.5 w-3.5 rounded-sm shrink-0 border border-indigo-400 shadow-2xs" style="background: linear-gradient(135deg, #EF4444 33%, #F59E0B 33%, #F59E0B 66%, #10B981 66%);"></span>
+                            <div class="leading-snug">
+                                <div class="font-bold text-indigo-700 dark:text-indigo-400">🌈 Multi-Status</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Kombinasi hasil uji wilayah</div>
+                            </div>
+                        </div>
+
+                        {{-- ARTI PIN & LAMPU --}}
+                        <div class="flex items-center gap-2 rounded-lg bg-white p-2 border border-slate-200 shadow-2xs dark:bg-slate-900/60 dark:border-slate-700">
+                            <span class="flex items-center justify-center h-4 w-4 rounded-full bg-amber-50 border-2 border-amber-500 font-bold text-[9px] text-slate-800 shrink-0">8</span>
+                            <div class="leading-snug">
+                                <div class="font-bold text-slate-800 dark:text-slate-200">📍 Angka di Pin</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Jumlah data/titik uji wilayah</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
 
             </div>
@@ -1294,86 +1437,86 @@
                 </div>
 
                 <div class="overflow-x-auto bg-slate-50">
-                    <table class="w-full text-left text-xs table-fixed">
-                        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-[10.5px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
                             <tr>
-                                <th class="w-[4%] px-1.5 py-2.5 text-center text-slate-500">No</th>
-                                <th class="w-[13%] px-2 py-2.5 whitespace-nowrap">Kab/Prov</th>
-                                <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Alamat / Lokasi</th>
-                                <th class="w-[11%] px-1.5 py-2.5 whitespace-nowrap">Jenis Nyamuk</th>
-                                <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Insektisida / Metode</th>
-                                <th class="w-[6%] px-1 py-2.5 text-center whitespace-nowrap">Sampel</th>
-                                <th class="w-[10%] px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
-                                <th class="w-[9%] px-1 py-2.5 text-center whitespace-nowrap">Periode</th>
-                                <th class="w-[15%] px-1.5 py-2.5 text-center whitespace-nowrap">Aksi</th>
+                                <th class="w-8 px-1.5 py-2.5 text-center text-slate-500 whitespace-nowrap">No</th>
+                                <th class="px-2 py-2.5 whitespace-nowrap">Kab/Prov</th>
+                                <th class="px-2 py-2.5 whitespace-nowrap">Alamat / Lokasi</th>
+                                <th class="px-2 py-2.5 text-center whitespace-nowrap">Jenis Nyamuk</th>
+                                <th class="px-2 py-2.5 whitespace-nowrap">Insektisida / Metode</th>
+                                <th class="w-14 px-1.5 py-2.5 text-center whitespace-nowrap">Sampel</th>
+                                <th class="w-20 px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
+                                <th class="w-24 px-1.5 py-2.5 text-center whitespace-nowrap">Periode</th>
+                                <th class="w-24 px-1.5 py-2.5 text-center whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-slate-100 bg-white" id="tableDataBody">
                             @forelse ($dataTerbaru as $index => $item)
                                 <tr class="hover:bg-blue-50/40 transition" id="row-data-{{ $item->id }}">
-                                    <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">
+                                    <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs whitespace-nowrap">
                                         {{ $index + 1 }}
                                     </td>
-                                    <td class="px-2 py-2 text-xs truncate">
-                                        <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
+                                    <td class="px-2 py-2 text-xs">
+                                        <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                             {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                         </div>
-                                        <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
+                                        <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
                                             {{ $item->provinsi->nama_provinsi ?? '-' }}
                                         </div>
                                     </td>
-                                    <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">
+                                    <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
                                         @if (!empty($item->alamat))
-                                            <span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="{{ $item->alamat }}">
-                                                <span class="text-blue-500 shrink-0">📍</span>
-                                                <span class="truncate">{{ $item->alamat }}</span>
-                                            </span>
+                                            <div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="{{ $item->alamat }}">
+                                                <span class="text-blue-500 shrink-0 mt-0.5 text-[11px]">📍</span>
+                                                <span class="break-words leading-tight">{{ $item->alamat }}</span>
+                                            </div>
                                         @else
                                             <span class="italic text-slate-400">Belum diisi</span>
                                         @endif
                                     </td>
-                                    <td class="px-1.5 py-2 whitespace-nowrap truncate">
-                                        <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full">
+                                    <td class="px-2 py-2 text-center whitespace-nowrap">
+                                        <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[10.5px] font-semibold text-blue-700 whitespace-nowrap">
                                             {{ $item->jenis_nyamuk }}
                                         </span>
                                     </td>
-                                    <td class="px-2 py-2 text-xs truncate">
-                                        <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->insektisida ?? '-' }}">
+                                    <td class="px-2 py-2 text-xs">
+                                        <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap" title="{{ $item->insektisida ?? '-' }}">
                                             {{ $item->insektisida ?? '-' }}
                                         </div>
-                                        <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->metode ?? '-' }}">
+                                        <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5" title="{{ $item->metode ?? '-' }}">
                                             {{ $item->metode ?? '-' }}
                                         </div>
                                     </td>
-                                    <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">
+                                    <td class="px-1.5 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap">
                                         {{ number_format($item->sampel_diperiksa) }}
                                     </td>
                                     <td class="px-1.5 py-2 text-center whitespace-nowrap">
                                         @if ($item->status === 'Resisten')
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
                                             </span>
                                         @elseif (in_array($item->status, ['Toleran/Terduga Resisten', 'Toleran', 'Terduga Resisten']))
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
                                             </span>
                                         @elseif ($item->status === 'Rentan')
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
                                             </span>
                                         @else
                                             <span class="text-xs text-slate-400 italic">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-1 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap truncate">
+                                    <td class="px-1.5 py-2 text-center text-[10.5px] font-medium text-slate-600 whitespace-nowrap">
                                         {{ $item->bulan }} {{ $item->tahun }}
                                     </td>
                                     <td class="px-1.5 py-2 text-center whitespace-nowrap">
                                         <div class="inline-flex items-center justify-center gap-1">
                                             <button type="button"
                                                     onclick="showRowDetailModal({{ $item->id }})"
-                                                    class="inline-flex items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
                                                     title="Tampilkan rincian data pemeriksaan ini">
                                                 <span>👁️</span>
                                                 <span>Detail</span>
@@ -1381,7 +1524,7 @@
                                             @if ($item->kabupaten && $item->kabupaten->latitude && $item->kabupaten->longitude)
                                                 <button type="button"
                                                         onclick="focusOnMap({{ $item->kabupaten->latitude }}, {{ $item->kabupaten->longitude }}, {{ $item->kabupaten->id }})"
-                                                        class="inline-flex items-center gap-0.5 rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                                        class="inline-flex items-center gap-0.5 rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
                                                         title="Lihat titik lokasi ini di peta">
                                                     <span>📍</span>
                                                     <span>Peta</span>
@@ -1505,10 +1648,200 @@
             const desaMarkerLayer = L.layerGroup().addTo(map);
             const desaCoordsCache = {};
             const geoCentroidsByNorm = {};
+            // Kamus koordinat daratan resmi kabupaten (mencegah marker jatuh ke laut atau meleset ke kabupaten lain seperti Sorong vs Tambrauw)
+            const KABUPATEN_DARATAN_COORDS = {
+                // Papua Barat & Papua
+                'sorong': { lat: -0.9577, lng: 131.3323 }, // Ibukota Aimas, Kab. Sorong (bukan di Tambrauw!)
+                'kabupatensorong': { lat: -0.9577, lng: 131.3323 },
+                'kotasorong': { lat: -0.8690, lng: 131.3274 },
+                'tambrauw': { lat: -0.7393, lng: 132.7873 }, // Wilayah resmi Tambrauw
+                'kabupatentambrauw': { lat: -0.7393, lng: 132.7873 },
+                'sorongselatan': { lat: -1.4984, lng: 132.0158 }, // Teminabuan
+                'rajaampat': { lat: -0.4300, lng: 130.8200 }, // Waisai
+                'manokwari': { lat: -0.8615, lng: 134.0620 },
+                'jayapura': { lat: -2.5897, lng: 140.5147 }, // Sentani
+                'kabupatenjayapura': { lat: -2.5897, lng: 140.5147 },
+                'kotajayapura': { lat: -2.5337, lng: 140.7181 },
+                'nabire': { lat: -3.0881, lng: 135.5239 },
+                'mimika': { lat: -4.5467, lng: 136.8837 }, // Timika
+                'biaknumfor': { lat: -1.1764, lng: 136.0820 },
+                'kepulauanyapen': { lat: -1.7667, lng: 136.2500 }, // Serui
+                'sarmi': { lat: -1.8667, lng: 138.7500 },
+                'waropen': { lat: -2.6871, lng: 136.7045 },
+                'bovendigoel': { lat: -5.7500, lng: 140.3000 },
+                'mamberamoraya': { lat: -2.2500, lng: 137.8000 },
+
+                // Wilayah Kepulauan & Daratan Jawa
+                'jepara': { lat: -6.5936, lng: 110.6778 }, // Wilayah daratan Jepara (bukan di laut antara Karimunjawa & daratan)
+                'kabupatenjepara': { lat: -6.5936, lng: 110.6778 },
+                'sumenep': { lat: -7.0167, lng: 113.8667 }, // Daratan Sumenep di Madura (bukan di laut Masalembu/Kangean)
+                'gresik': { lat: -7.1566, lng: 112.6555 }, // Daratan Gresik (bukan di laut Bawean)
+                'grobogan': { lat: -7.0833, lng: 110.9167 },
+                'klaten': { lat: -7.7056, lng: 110.6014 },
+                'purworejo': { lat: -7.7167, lng: 110.0167 },
+                'sukoharjo': { lat: -7.6833, lng: 110.8333 },
+                'kendal': { lat: -6.9200, lng: 110.2000 },
+                'rembang': { lat: -6.7167, lng: 111.3400 },
+                'boyolali': { lat: -7.5333, lng: 110.5967 },
+                // Pasangan Kota vs Kabupaten (Jawa & Daerah Lain)
+                'kotasemarang': { lat: -6.9667, lng: 110.4203 }, // Pelabuhan Tanjung Emas / Kota Semarang
+                'semarang': { lat: -7.2167, lng: 110.4333 }, // Ungaran / Kabupaten Semarang
+                'kabupatensemarang': { lat: -7.2167, lng: 110.4333 },
+                'kotamagelang': { lat: -7.4706, lng: 110.2178 },
+                'magelang': { lat: -7.5058, lng: 110.2410 },
+                'kabupatenmagelang': { lat: -7.5058, lng: 110.2410 },
+                'kotapekalongan': { lat: -6.8886, lng: 109.6753 },
+                'pekalongan': { lat: -7.0264, lng: 109.6286 },
+                'kabupatenpekalongan': { lat: -7.0264, lng: 109.6286 },
+                'kotategal': { lat: -6.8694, lng: 109.1402 },
+                'tegal': { lat: -7.0322, lng: 109.1722 },
+                'kabupatentegal': { lat: -7.0322, lng: 109.1722 },
+                'kotasurakarta': { lat: -7.5666, lng: 110.8167 },
+                'kotasalatiga': { lat: -7.3305, lng: 110.5084 },
+                'kotamalang': { lat: -7.9719, lng: 112.6245 },
+                'malang': { lat: -8.1602, lng: 112.6296 },
+                'kabupatenmalang': { lat: -8.1602, lng: 112.6296 },
+                'kotamadiun': { lat: -7.6270, lng: 111.5299 },
+                'madiun': { lat: -7.6241, lng: 111.6143 },
+                'kabupatenmadiun': { lat: -7.6241, lng: 111.6143 },
+                'kotablitar': { lat: -8.0980, lng: 112.1658 },
+                'blitar': { lat: -8.1696, lng: 112.2312 },
+                'kabupatenblitar': { lat: -8.1696, lng: 112.2312 },
+                'kotakediri': { lat: -7.8297, lng: 112.0318 },
+                'kediri': { lat: -7.8095, lng: 112.1159 },
+                'kabupatenkediri': { lat: -7.8095, lng: 112.1159 },
+                'kotapasuruan': { lat: -7.6503, lng: 112.9058 },
+                'pasuruan': { lat: -7.7234, lng: 112.8503 },
+                'kabupatenpasuruan': { lat: -7.7234, lng: 112.8503 },
+                'kotaprobolinggo': { lat: -7.7679, lng: 113.2097 },
+                'probolinggo': { lat: -7.8573, lng: 113.3011 },
+                'kabupatenprobolinggo': { lat: -7.8573, lng: 113.3011 },
+                'kotamojokerto': { lat: -7.4734, lng: 112.4368 },
+                'mojokerto': { lat: -7.5023, lng: 112.4601 },
+                'kabupatenmojokerto': { lat: -7.5023, lng: 112.4601 },
+                'kotabandung': { lat: -6.8951, lng: 107.6443 },
+                'bandung': { lat: -7.0406, lng: 107.6509 },
+                'kabupatenbandung': { lat: -7.0406, lng: 107.6509 },
+                'kotabogor': { lat: -6.5865, lng: 106.7892 },
+                'bogor': { lat: -6.4716, lng: 106.8033 },
+                'kabupatenbogor': { lat: -6.4716, lng: 106.8033 },
+                'kotabekasi': { lat: -6.3084, lng: 106.9638 },
+                'bekasi': { lat: -6.2286, lng: 107.1152 },
+                'kabupatenbekasi': { lat: -6.2286, lng: 107.1152 },
+                'kotacirebon': { lat: -6.7386, lng: 108.5542 },
+                'cirebon': { lat: -6.7783, lng: 108.5851 },
+                'kabupatencirebon': { lat: -6.7783, lng: 108.5851 },
+                'kotasukabumi': { lat: -6.9421, lng: 106.9157 },
+                'sukabumi': { lat: -7.0791, lng: 106.7031 },
+                'kabupatensukabumi': { lat: -7.0791, lng: 106.7031 },
+                'kotatasikmalaya': { lat: -7.3575, lng: 108.2336 },
+                'tasikmalaya': { lat: -7.4219, lng: 108.1976 },
+                'kabupatentasikmalaya': { lat: -7.4219, lng: 108.1976 },
+                'kotasorong': { lat: -0.8690, lng: 131.3274 },
+                'sorong': { lat: -1.1060, lng: 131.4558 },
+                'kabupatensorong': { lat: -1.1060, lng: 131.4558 },
+                'kotatangerang': { lat: -6.1934, lng: 106.6497 },
+                'kotaserang': { lat: -6.1247, lng: 106.1642 },
+                'serang': { lat: -6.1281, lng: 106.1672 },
+                'kabupatenserang': { lat: -6.1281, lng: 106.1672 },
+                'kotasolok': { lat: -0.7876, lng: 100.6268 },
+                'solok': { lat: -0.9087, lng: 100.7862 },
+                'kabupatensolok': { lat: -0.9087, lng: 100.7862 },
+                'kotagorontalo': { lat: 0.5349, lng: 123.0472 },
+                'gorontalo': { lat: 0.6938, lng: 122.6658 },
+                'kabupatengorontalo': { lat: 0.6938, lng: 122.6658 },
+                'kotakupang': { lat: -10.1985, lng: 123.6137 },
+                'kupang': { lat: -9.9361, lng: 123.8534 },
+                'kabupatenkupang': { lat: -9.9361, lng: 123.8534 },
+                'kotabima': { lat: -8.4408, lng: 118.7533 },
+                'bima': { lat: -8.6024, lng: 118.8686 },
+                'kabupatenbima': { lat: -8.6024, lng: 118.8686 },
+                'kotabanjar': { lat: -7.3765, lng: 108.5621 },
+
+                // Jabodetabek & DKI Jakarta (Seluruh wilayah daratan DKI adalah Kota Administrasi)
+                'kotadepok': { lat: -6.4025, lng: 106.7942 },
+                'depok': { lat: -6.4025, lng: 106.7942 },
+                'kotajakartatimur': { lat: -6.2250, lng: 106.9004 },
+                'jakartatimur': { lat: -6.2250, lng: 106.9004 },
+                'kotajakartapusat': { lat: -6.1805, lng: 106.8284 },
+                'jakartapusat': { lat: -6.1805, lng: 106.8284 },
+                'kotajakartautara': { lat: -6.1384, lng: 106.8640 },
+                'jakartautara': { lat: -6.1384, lng: 106.8640 },
+                'kotajakartabarat': { lat: -6.1683, lng: 106.7588 },
+                'jakartabarat': { lat: -6.1683, lng: 106.7588 },
+                'kotajakartaselatan': { lat: -6.2615, lng: 106.8106 },
+                'jakartaselatan': { lat: -6.2615, lng: 106.8106 },
+                'kepulauanseribu': { lat: -5.7975, lng: 106.4950 },
+                'kotasurabaya': { lat: -7.2575, lng: 112.7521 },
+                'surabaya': { lat: -7.2575, lng: 112.7521 },
+                'kotamedan': { lat: 3.5952, lng: 98.6722 },
+                'medan': { lat: 3.5952, lng: 98.6722 },
+                'kotayogyakarta': { lat: -7.7956, lng: 110.3695 },
+                'yogyakarta': { lat: -7.7956, lng: 110.3695 },
+                'kotapalu': { lat: -0.8917, lng: 119.8707 },
+                'palu': { lat: -0.8917, lng: 119.8707 },
+                'kotakendari': { lat: -3.9985, lng: 122.5126 },
+                'kendari': { lat: -3.9985, lng: 122.5126 },
+                'kotamanado': { lat: 1.4748, lng: 124.8428 },
+                'manado': { lat: 1.4748, lng: 124.8428 },
+                'kotaambon': { lat: -3.6554, lng: 128.1908 },
+                'ambon': { lat: -3.6554, lng: 128.1908 },
+                'kotapekanbaru': { lat: 0.5071, lng: 101.4478 },
+                'pekanbaru': { lat: 0.5071, lng: 101.4478 },
+                'kotatanjungpinang': { lat: 0.9169, lng: 104.4667 },
+                'tanjungpinang': { lat: 0.9169, lng: 104.4667 },
+
+                // Sumatera & Riau
+                'karimun': { lat: 1.0333, lng: 103.3674 }, // Tanjung Balai Karimun (bukan di Natuna)
+                'lingga': { lat: -0.1885, lng: 104.6769 }, // Daik Lingga
+                'bintan': { lat: 1.0549, lng: 104.4608 },
+                'tangerang': { lat: -6.2069, lng: 106.5079 }, // Tigaraksa
+                'kabupatentangerang': { lat: -6.2069, lng: 106.5079 },
+                'mandailingnatal': { lat: 0.8667, lng: 99.5833 },
+                'rokanhilir': { lat: 1.8919, lng: 100.6254 },
+                'lampungselatan': { lat: -5.5129, lng: 105.5148 },
+                'banyuasin': { lat: -2.5057, lng: 104.7403 },
+
+                // Nusa Tenggara
+                'lombokbarat': { lat: -8.7122, lng: 116.0552 }, // Gerung, Lombok (bukan di Sumbawa)
+                'lombokutara': { lat: -8.3724, lng: 116.2535 }, // Tanjung, Lombok (bukan di Sumbawa)
+                'sumbawa': { lat: -8.5000, lng: 117.4200 },
+                'sumbatimur': { lat: -9.6562, lng: 120.2642 },
+                'sumbabarat': { lat: -9.6420, lng: 119.3100 },
+                'sumbatengah': { lat: -9.6200, lng: 119.5900 },
+                'sumbabaratdaya': { lat: -9.4085, lng: 119.2458 },
+                'ende': { lat: -8.6398, lng: 121.7445 },
+
+                // Kalimantan
+                'paser': { lat: -1.8156, lng: 116.0237 }, // Tanah Grogot
+                'penajampaserutara': { lat: -1.1693, lng: 116.6558 },
+                'kapuas': { lat: -2.1741, lng: 114.3585 },
+                'sanggau': { lat: 0.4341, lng: 110.3693 },
+                'banjarmasinutara': { lat: -3.2950, lng: 114.5900 },
+                'banjarmasin': { lat: -3.3167, lng: 114.5900 },
+                'kutaikertanegara': { lat: -0.4387, lng: 117.0000 },
+                'kutaikartanegara': { lat: -0.4387, lng: 117.0000 },
+
+                // Sulawesi & Maluku
+                'pangkajenedankepulauan': { lat: -4.7500, lng: 119.5500 }, // Daratan Pangkep
+                'pangkajenekepulauan': { lat: -4.7500, lng: 119.5500 },
+                'pangkep': { lat: -4.7500, lng: 119.5500 },
+                'torajautara': { lat: -2.9245, lng: 119.8860 },
+                'enrekang': { lat: -3.5041, lng: 119.8831 },
+                'soppeng': { lat: -4.3006, lng: 119.9044 },
+                'minahasatenggara': { lat: 0.9793, lng: 124.7068 },
+                'tojounauna': { lat: -1.1911, lng: 121.5596 },
+                'kendari': { lat: -3.9915, lng: 122.5670 },
+                'makasar': { lat: -5.1405, lng: 119.4547 },
+                'makassar': { lat: -5.1405, lng: 119.4547 },
+                'kotamakassar': { lat: -5.1405, lng: 119.4547 },
+                'ambon': { lat: -3.6785, lng: 128.1753 },
+            };
             const markersByKabId = {};
             const kabDataById = {};
             let isDetailPinned = false;
             let pinnedKabId = null;
+            let isDetailMinimized = false;
             let activeTooltipLayer = null;
 
             let showPolygons = true;
@@ -1532,6 +1865,95 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#039;');
+            }
+
+            // Daftar daerah otonom yang murni berstatus KOTA (tidak memiliki entitas Kabupaten dengan nama yang sama)
+            const PURE_KOTA_SLUGS = new Set([
+                'depok', 'surabaya', 'yogyakarta', 'jogja', 'medan', 'makassar', 'palu',
+                'kendari', 'manado', 'ambon', 'pekanbaru', 'tanjungpinang',
+                'banjarmasin', 'salatiga', 'denpasar', 'balikpapan', 'samarinda', 'pontianak',
+                'palembang', 'batam', 'bandarlampung', 'cimahi', 'banjar',
+                'tarakan', 'banjarbaru', 'singkawang', 'bitung', 'kotamobagu', 'tomohon',
+                'baubau', 'palopo', 'parepare', 'tidore', 'ternate', 'bandaaceh',
+                'sabang', 'lhokseumawe', 'langsa', 'subulussalam', 'binjai',
+                'tebingtinggi', 'pematangsiantar', 'tanjungbalai', 'sibolga',
+                'padangsidimpuan', 'gunungsitoli', 'bukittinggi', 'padangpanjang',
+                'pariaman', 'payakumbuh', 'sawahlunto', 'dumai', 'sungaipenuh',
+                'bengkulu', 'lubuklinggau', 'pagaralam', 'prabumulih', 'pangkalpinang', 'metro'
+            ]);
+
+            // Helper untuk memformat judul wilayah Kota vs Kabupaten secara tepat
+            function formatKabKotaTitle(rawName) {
+                if (!rawName) return '';
+                const clean = String(rawName).trim();
+                const lower = clean.toLowerCase().replace(/^(kabupaten|kotamadya|kota|kab\.|adm\.|administrasi)\s+/gi, '').trim();
+                const slug = lower.replace(/[^a-z0-9]/g, '');
+
+                // Di DKI Jakarta semua wilayah daratan adalah KOTA Administrasi (bukan Kabupaten), kecuali Kepulauan Seribu
+                if (lower.includes('jakarta') && !lower.includes('seribu')) {
+                    return `KOTA ${lower.toUpperCase()}`;
+                }
+
+                // Daerah yang murni berstatus Kota
+                if (PURE_KOTA_SLUGS.has(slug)) {
+                    return `KOTA ${lower.toUpperCase()}`;
+                }
+
+                if (/^kota\s+/i.test(clean)) {
+                    return clean.toUpperCase();
+                }
+                if (/^kab(upaten|\.)?\s+/i.test(clean)) {
+                    return clean.toUpperCase();
+                }
+                return `KABUPATEN ${clean.toUpperCase()}`;
+            }
+
+            function formatKabKotaShort(rawName) {
+                if (!rawName) return '';
+                const clean = String(rawName).trim();
+                const lower = clean.toLowerCase().replace(/^(kabupaten|kotamadya|kota|kab\.|adm\.|administrasi)\s+/gi, '').trim();
+                const slug = lower.replace(/[^a-z0-9]/g, '');
+
+                // Di DKI Jakarta semua wilayah daratan adalah KOTA Administrasi (bukan Kabupaten), kecuali Kepulauan Seribu
+                if (lower.includes('jakarta') && !lower.includes('seribu')) {
+                    return `KOTA ${lower.toUpperCase()}`;
+                }
+
+                // Daerah yang murni berstatus Kota
+                if (PURE_KOTA_SLUGS.has(slug)) {
+                    return `KOTA ${lower.toUpperCase()}`;
+                }
+
+                if (/^kota\s+/i.test(clean)) {
+                    return clean.toUpperCase();
+                }
+                if (/^kab(upaten|\.)?\s+/i.test(clean)) {
+                    return clean.replace(/^kabupaten\s+/i, 'KAB. ').toUpperCase();
+                }
+                return `KAB. ${clean.toUpperCase()}`;
+            }
+
+            // Fungsi helper agar kamera peta menyorot lokasi dengan memperhitungkan card panel kanan atas (mencegah popup berhimpitan)
+            function flyToVisibleCenter(targetLatLng, zoom = 12, options = {}) {
+                const duration = options.duration !== undefined ? options.duration : 1.0;
+                const panel = document.querySelector('.map-detail-panel');
+                const isPanelVisible = panel && panel.style.display !== 'none' && !panel.classList.contains('is-minimized');
+                const mapSize = map.getSize();
+
+                // Jika card panel kanan atas aktif dan lebar peta mencukupi (desktop / tablet)
+                if (isPanelVisible && mapSize.x >= 700) {
+                    const panelWidth = panel.offsetWidth || 310;
+                    // Geser pusat pandang peta ke kanan dalam koordinat pixel, sehingga titik target dan popup berada di tengah area sisa sebelah kiri
+                    const shiftX = Math.round(panelWidth / 2) + 20;
+                    const shiftY = -25; // sedikit ke bawah agar popup di atas pin marker tidak menabrak batas atas peta
+
+                    const targetPoint = map.project(targetLatLng, zoom);
+                    const shiftedPoint = L.point(targetPoint.x + shiftX, targetPoint.y + shiftY);
+                    const newCenterLatLng = map.unproject(shiftedPoint, zoom);
+                    map.flyTo(newCenterLatLng, zoom, { duration: duration });
+                } else {
+                    map.flyTo(targetLatLng, zoom, { duration: duration });
+                }
             }
 
             // Konfigurasi status resistensi & palet warna (3 Kategori Standar dengan Aksesibilitas WCAG)
@@ -1594,7 +2016,7 @@
             };
 
             infoControl.renderDefault = function () {
-                this._div.classList.remove('is-pinned');
+                this._div.classList.remove('is-pinned', 'is-minimized');
                 this._div.style.pointerEvents = 'none';
                 this._div.style.display = 'none';
                 this._div.innerHTML = '';
@@ -1613,7 +2035,7 @@
                         <div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">KAB/KOTA:</div>
                             <div class="text-sm font-extrabold text-slate-800 leading-tight">
-                                KABUPATEN ${escapeHtml(rawName).toUpperCase()}
+                                ${formatKabKotaTitle(rawName)}
                             </div>
                         </div>
                         <div class="flex items-center gap-2 pt-1 text-slate-500 text-[11px]">
@@ -1719,6 +2141,23 @@
                     this._div.classList.remove('is-pinned');
                     this._div.style.pointerEvents = 'none';
                 }
+
+                if (isDetailMinimized) {
+                    this._div.classList.add('is-minimized');
+                    this._div.innerHTML = `
+                        <div class="flex items-center justify-between gap-2 select-none">
+                            <button type="button" onclick="window.toggleMinimizeDetailCard(event)" class="flex items-center gap-1.5 text-left flex-1 min-w-0 cursor-pointer" title="Klik untuk membuka kembali detail wilayah">
+                                <span class="h-2.5 w-2.5 rounded-full bg-blue-600 shrink-0 ring-2 ring-blue-100"></span>
+                                <span class="font-extrabold text-xs text-slate-800 truncate">${formatKabKotaShort(kabupaten ? kabupaten.nama_kabupaten : '')}</span>
+                                <span class="text-[9.5px] text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/60 shrink-0">Buka ▾</span>
+                            </button>
+                            ${isPinned ? '<button type="button" onclick="window.unpinDetailCard(event)" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full h-5 w-5 flex items-center justify-center font-bold text-xs transition cursor-pointer shrink-0" title="Tutup Detail">✕</button>' : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                this._div.classList.remove('is-minimized');
                 this._div.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60">
@@ -1728,14 +2167,17 @@
                                 </span>
                                 ${isPinned ? '<span class="text-[9.5px] font-bold text-teal-700 bg-teal-50/80 border border-teal-200/80 px-1.5 py-0.5 rounded-full">📌 Terpilih</span>' : ''}
                             </div>
-                            ${isPinned ? '<button type="button" onclick="window.unpinDetailCard()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full h-5 w-5 flex items-center justify-center font-bold text-xs transition cursor-pointer" title="Tutup Detail">✕</button>' : ''}
+                            <div class="flex items-center gap-1">
+                                <button type="button" onclick="window.toggleMinimizeDetailCard(event)" class="text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full h-5 w-5 flex items-center justify-center font-bold text-xs transition cursor-pointer" title="Perkecil Panel">−</button>
+                                ${isPinned ? '<button type="button" onclick="window.unpinDetailCard(event)" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full h-5 w-5 flex items-center justify-center font-bold text-xs transition cursor-pointer" title="Tutup Detail">✕</button>' : ''}
+                            </div>
                         </div>
 
                         <div class="space-y-2 text-xs">
                             <div>
                                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">KAB/KOTA:</div>
                                 <div class="text-sm font-extrabold text-slate-800 leading-tight">
-                                    KABUPATEN ${escapeHtml(kabupaten ? kabupaten.nama_kabupaten : '').toUpperCase()}
+                                    ${formatKabKotaTitle(kabupaten ? kabupaten.nama_kabupaten : '')}
                                 </div>
                             </div>
 
@@ -1780,43 +2222,130 @@
             };
             infoControl.addTo(map);
 
-            // Legenda Keterangan Status Resistensi di Peta Dipindahkan ke Sebelah Kiri Bawah (Bottom Left)
+            // Legenda & Keterangan Lengkap Peta Resistensi (Standar Kemenkes RI / WHO)
             const legendControl = L.control({ position: 'bottomleft' });
             legendControl.onAdd = function (map) {
-                const div = L.DomUtil.create('div', 'map-legend-control select-none');
-                L.DomEvent.disableClickPropagation(div);
-                L.DomEvent.disableScrollPropagation(div);
-                div.innerHTML = `
-                    <div class="font-bold text-slate-800 text-[11px] mb-1.5 flex items-center justify-between border-b border-slate-100 pb-1">
-                        <div class="flex items-center gap-1.5">
-                            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
-                            <span>Keterangan Status Wilayah</span>
-                        </div>
-                    </div>
-                    <div class="space-y-1 font-medium text-[10.5px]">
-                        <div class="flex items-center gap-2">
-                            <span class="h-2.5 w-4 rounded-sm bg-rose-500 shadow-2xs shrink-0 border border-rose-600"></span>
-                            <span class="text-slate-700">Resisten (Merah)</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="h-2.5 w-4 rounded-sm bg-amber-500 shadow-2xs shrink-0 border border-amber-600"></span>
-                            <span class="text-slate-700">Toleran / Terduga (Kuning)</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="h-2.5 w-4 rounded-sm bg-emerald-500 shadow-2xs shrink-0 border border-emerald-600"></span>
-                            <span class="text-slate-700">Rentan (Hijau)</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="h-2.5 w-4 rounded-sm shadow-2xs shrink-0 border border-indigo-400" style="background: linear-gradient(135deg, #EF4444 33%, #F59E0B 33%, #F59E0B 66%, #10B981 66%);"></span>
-                            <span class="text-slate-700">Multi-Status</span>
-                        </div>
-                        <div class="flex items-center gap-2 pt-0.5 border-t border-slate-100/90">
-                            <span class="h-2.5 w-4 rounded-sm bg-slate-50 border border-dashed border-slate-300 shrink-0"></span>
-                            <span class="text-slate-400 text-[10px]">Belum Ada Data</span>
-                        </div>
-                    </div>
-                `;
-                return div;
+                const container = L.DomUtil.create('div', 'map-legend-control select-none');
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
+                container.id = 'mapLegendControl';
+
+                let isCollapsed = true;
+
+                function renderLegendContent() {
+                    if (isCollapsed) {
+                        container.classList.add('is-collapsed');
+                        container.innerHTML = `
+                            <button type="button" onclick="window.toggleMapLegend(event)" class="flex items-center gap-2 text-xs font-bold text-slate-800 hover:text-blue-600 transition cursor-pointer px-1 py-0.5" title="Buka Legenda & Keterangan Peta">
+                                <span class="flex h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse"></span>
+                                <span class="tracking-tight">📋 Legenda Peta</span>
+                                <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold border border-blue-200/60">Buka ▾</span>
+                            </button>
+                        `;
+                    } else {
+                        container.classList.remove('is-collapsed');
+                        container.innerHTML = `
+                            <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-slate-200/80">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="flex h-2.5 w-2.5 rounded-full bg-teal-500 ring-2 ring-teal-200"></span>
+                                    <div class="leading-tight">
+                                        <div class="font-extrabold text-slate-900 text-[11px]">Keterangan & Legenda Peta</div>
+                                        <div class="text-[9px] font-semibold text-slate-500">Standar Kemenkes RI • WHO</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="window.toggleMapLegend(event)" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 px-1.5 py-0.5 rounded hover:bg-slate-100 transition cursor-pointer" title="Perkecil Keterangan">
+                                    − Perkecil
+                                </button>
+                            </div>
+
+                            {{-- SEKSI 1: STATUS POLIGON WILAYAH --}}
+                            <div class="mb-2">
+                                <div class="text-[9.5px] font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <span>🗺️</span>
+                                    <span>Status Wilayah (Warna Poligon):</span>
+                                </div>
+                                <div class="space-y-1 font-medium text-[10px]">
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="h-2.5 w-3.5 rounded-sm bg-rose-500 border border-rose-600 shrink-0 shadow-2xs"></span>
+                                            <span class="text-slate-800 font-semibold">Resisten</span>
+                                        </div>
+                                        <span class="text-[9px] text-rose-700 font-bold bg-rose-50 px-1 py-0.2 rounded border border-rose-200">Mortalitas &lt; 90%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="h-2.5 w-3.5 rounded-sm bg-amber-500 border border-amber-600 shrink-0 shadow-2xs"></span>
+                                            <span class="text-slate-800 font-semibold">Toleran / Terduga</span>
+                                        </div>
+                                        <span class="text-[9px] text-amber-700 font-bold bg-amber-50 px-1 py-0.2 rounded border border-amber-200">Mortalitas 90 - 97%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="h-2.5 w-3.5 rounded-sm bg-emerald-500 border border-emerald-600 shrink-0 shadow-2xs"></span>
+                                            <span class="text-slate-800 font-semibold">Rentan</span>
+                                        </div>
+                                        <span class="text-[9px] text-emerald-700 font-bold bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">Mortalitas ≥ 98%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="h-2.5 w-3.5 rounded-sm border border-indigo-400 shrink-0 shadow-2xs" style="background: linear-gradient(135deg, #EF4444 33%, #F59E0B 33%, #F59E0B 66%, #10B981 66%);"></span>
+                                            <span class="text-slate-800 font-semibold">Multi-Status</span>
+                                        </div>
+                                        <span class="text-[9px] text-indigo-700 font-bold bg-indigo-50 px-1 py-0.2 rounded border border-indigo-200">Variasi Uji</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-1.5 pt-0.5 border-t border-slate-100">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="h-2.5 w-3.5 rounded-sm bg-slate-50 border border-dashed border-slate-300 shrink-0"></span>
+                                            <span class="text-slate-400 text-[9.5px]">Belum Ada Data Uji</span>
+                                        </div>
+                                        <span class="text-[8.5px] text-slate-400 italic">Netral</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- SEKSI 2: ARTI PIN MARKER & INDIKATOR --}}
+                            <div class="pt-1.5 border-t border-slate-200/80">
+                                <div class="text-[9.5px] font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <span>📍</span>
+                                    <span>Arti Simbol & Pin Marker:</span>
+                                </div>
+                                <div class="space-y-1 text-[9.5px] text-slate-600">
+                                    <div class="flex items-start gap-1.5">
+                                        <span class="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-white border border-amber-500 font-bold text-[8.5px] text-slate-900 shrink-0 mt-0.5 shadow-2xs">8</span>
+                                        <div class="leading-tight">
+                                            <strong class="text-slate-800">Angka di Pin</strong>: Jumlah titik uji / pemeriksaan di kabupaten.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-1.5">
+                                        <span class="inline-flex items-center px-1 py-0.2 rounded bg-slate-800 text-white font-mono text-[7.5px] shrink-0 mt-0.5">
+                                            <span class="h-1 w-1 rounded-full bg-emerald-400 mr-0.5"></span>
+                                            <span class="h-1 w-1 rounded-full bg-amber-400 mr-0.5"></span>
+                                            <span class="h-1 w-1 rounded-full bg-rose-500"></span>
+                                        </span>
+                                        <div class="leading-tight">
+                                            <strong class="text-slate-800">Lampu Indikator</strong>: Status terdeteksi (🟢 Rentan, 🟡 Toleran, 🔴 Resisten).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                window.toggleMapLegend = function (e) {
+                    if (e) L.DomEvent.stopPropagation(e);
+                    isCollapsed = !isCollapsed;
+                    renderLegendContent();
+                };
+
+                container.onclick = function (e) {
+                    if (isCollapsed) {
+                        window.toggleMapLegend(e);
+                    }
+                };
+
+                renderLegendContent();
+                return container;
             };
             legendControl.addTo(map);
 
@@ -1847,17 +2376,27 @@
                 infoControl.renderDetails(foundData, isPin || isDetailPinned);
             };
 
-            window.unpinDetailCard = function () {
+            window.unpinDetailCard = function (e) {
+                if (e) L.DomEvent.stopPropagation(e);
                 isDetailPinned = false;
                 pinnedKabId = null;
+                isDetailMinimized = false;
                 if (activeTooltipLayer) {
-                    try { activeTooltipLayer.closeTooltip(); } catch (e) {}
+                    try { activeTooltipLayer.closeTooltip(); } catch (err) {}
                     activeTooltipLayer = null;
                 }
                 if (desaMarkerLayer) {
                     desaMarkerLayer.clearLayers();
                 }
                 infoControl.renderDefault();
+            };
+
+            window.toggleMinimizeDetailCard = function (e) {
+                if (e) L.DomEvent.stopPropagation(e);
+                isDetailMinimized = !isDetailMinimized;
+                if (pinnedKabId && kabDataById[pinnedKabId]) {
+                    infoControl.renderDetails(kabDataById[pinnedKabId], isDetailPinned);
+                }
             };
 
             // Klik pada area kosong peta untuk melepas pin detail card
@@ -1871,13 +2410,64 @@
             function normalizeKabName(str) {
                 if (!str) return '';
                 let s = String(str).toLowerCase().trim();
-                s = s.replace(/^(kabupaten|kota|kab\.|adm\.|administrasi)\s+/gi, '');
+
+                // Deteksi apakah entitas adalah KOTA administratif (misal: "Kota Semarang", "Kota Bandung", "Kota Sorong")
+                // Jangan tandai nama daerah gabungan seperti "kotawaringin" atau "kotabaru"
+                let isKota = /^(kota|kotamadya)\s+/i.test(s);
+
+                // Hapus awalan administratif
+                s = s.replace(/^(kabupaten|kotamadya|kota|kab\.|adm\.|administrasi)\s+/gi, '');
                 s = s.replace(/\s+(kabupaten|kota)$/gi, '');
+
+                // Di DKI Jakarta semua wilayah daratan adalah Kota Administrasi (bukan Kabupaten), kecuali Kepulauan Seribu
+                if (s.includes('jakarta') && !s.includes('seribu')) {
+                    isKota = true;
+                }
+
+                // Penanganan variasi ejaan & pemekaran wilayah agar selalu sinkron dengan poligon GeoJSON
+                if (s.includes('karta negara') || s.includes('keratanegara') || s.includes('kartanegara') || s.includes('kertanegara')) {
+                    return 'kutaikartanegara';
+                }
+                if (s.includes('makasar') || s.includes('makassar')) {
+                    return isKota ? 'kotamakassar' : 'makassar';
+                }
+                if (s.includes('pangkajene') || s.includes('pangkep')) {
+                    return 'pangkajenedankepulauan';
+                }
+                if (s.includes('siau') || s.includes('sitaro') || s.includes('biaro')) {
+                    return 'siautagulandangbiaro';
+                }
+                if (s.includes('banjarmasin')) {
+                    return isKota ? 'kotabanjarmasin' : 'banjarmasin';
+                }
+                if (s.includes('toba') && !s.includes('danau')) {
+                    return 'tobasamosir';
+                }
                 if (s.includes('mentawai')) return 'kepulauanmentawai';
                 if (s.includes('tanimbar')) return 'malukutenggarabarat';
                 if (s.includes('pasangkayu')) return 'mamujuutara';
-                if (s.includes('mahakam')) return 'kutaibarat';
-                return s.replace(/[^a-z0-9]/g, '');
+                if (s.includes('mahakam')) return 'mahakamhulu';
+                if (s.includes('selayar')) return 'kepulauanselayar';
+                if (s.includes('seribu')) return 'kepulauanseribu';
+                if (s.includes('sangihe')) return 'kepulauansangihe';
+                if (s.includes('talaud')) return 'kepulauantalaud';
+                if (s.includes('kepulauan sula') || s === 'sula') return 'kepulauansula';
+                if (s.includes('kepulauan yapen') || s === 'yapen') return 'kepulauanyapen';
+                if (s.includes('kepulauan aru') || s === 'aru') return 'kepulauanaru';
+                if (s.includes('kepulauan meranti') || s === 'meranti') return 'kepulauanmeranti';
+                if (s.includes('kepulauan anambas') || s === 'anambas') return 'kepulauananambas';
+
+                // Kotabaru di Kalsel (GeoJSON menulis "Kota Baru")
+                if (s === 'baru' && isKota) return 'kotabaru';
+
+                const cleaned = s.replace(/[^a-z0-9]/g, '');
+
+                // Daerah yang murni berstatus Kota (tanpa tandingan Kabupaten bernama sama) selalu disinkronkan ke 'kota...'
+                if (PURE_KOTA_SLUGS.has(cleaned)) {
+                    isKota = true;
+                }
+
+                return isKota ? ('kota' + cleaned) : cleaned;
             }
 
             // Fungsi Render Poligon Batas Wilayah Berwarna (Choropleth Peta seperti Gambar Contoh)
@@ -1959,7 +2549,9 @@
                         const norm = normalizeKabName(rawName);
                         const info = kabSummaryMap[norm];
 
-                        if (layer.getBounds && typeof layer.getBounds === 'function') {
+                        if (KABUPATEN_DARATAN_COORDS[norm]) {
+                            geoCentroidsByNorm[norm] = L.latLng(KABUPATEN_DARATAN_COORDS[norm].lat, KABUPATEN_DARATAN_COORDS[norm].lng);
+                        } else if (layer.getBounds && typeof layer.getBounds === 'function') {
                             try {
                                 geoCentroidsByNorm[norm] = layer.getBounds().getCenter();
                             } catch (e) {}
@@ -2002,12 +2594,57 @@
                                 } else {
                                     if (!isDetailPinned) infoControl.renderEmpty(rawName);
                                 }
-                                map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                                if (KABUPATEN_DARATAN_COORDS[norm]) {
+                                    flyToVisibleCenter([KABUPATEN_DARATAN_COORDS[norm].lat, KABUPATEN_DARATAN_COORDS[norm].lng], 10, { duration: 0.8 });
+                                } else {
+                                    map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                                }
                             }
                         });
 
-                        // Label nama kabupaten di peta (seperti Gambar 3: BANGKA BARAT)
-                        layer.bindTooltip(`KAB. ${escapeHtml(rawName).toUpperCase()}`, {
+                        // Label & Keterangan status kabupaten di peta saat disorot/diklik
+                        let tooltipContent = '';
+                        if (info && info.entries && info.entries.length > 0) {
+                            let statusText = 'Rentan';
+                            let dotBg = '#10B981';
+                            if (info.rCount > 0 && (info.tCount > 0 || info.gCount > 0)) {
+                                statusText = 'Multi-Status';
+                                dotBg = '#EF4444';
+                            } else if (info.rCount > 0) {
+                                statusText = 'Resisten (&lt; 90%)';
+                                dotBg = '#EF4444';
+                            } else if (info.tCount > 0) {
+                                statusText = 'Toleran (90-97%)';
+                                dotBg = '#F59E0B';
+                            } else if (info.gCount > 0) {
+                                statusText = 'Rentan (≥ 98%)';
+                                dotBg = '#10B981';
+                            }
+
+                            tooltipContent = `
+                                <div class="text-center font-extrabold text-[11px] leading-tight text-slate-900">
+                                    ${formatKabKotaShort(rawName)}
+                                </div>
+                                <div class="mt-1 flex items-center justify-center gap-1.5 text-[10px] font-bold">
+                                    <span class="h-2 w-2 rounded-full shrink-0" style="background-color: ${dotBg};"></span>
+                                    <span>${statusText}</span>
+                                </div>
+                                <div class="text-[9px] text-slate-500 text-center mt-0.5 font-medium">
+                                    ${info.entries.length} Catatan Pemeriksaan
+                                </div>
+                            `;
+                        } else {
+                            tooltipContent = `
+                                <div class="text-center font-bold text-[11px] leading-tight text-slate-800">
+                                    ${formatKabKotaShort(rawName)}
+                                </div>
+                                <div class="text-[9.5px] text-slate-400 text-center mt-0.5 italic">
+                                    Belum Ada Data Uji
+                                </div>
+                            `;
+                        }
+
+                        layer.bindTooltip(tooltipContent, {
                             direction: 'center',
                             className: 'region-map-label',
                             permanent: false
@@ -2173,9 +2810,11 @@
                         if (selectedKabId && kabName) {
                             levelEl.textContent = `Level: ${provName.toUpperCase()} - ${kabName.toUpperCase()}`;
                         } else if (selectedProvId && provName) {
-                            levelEl.textContent = `Level: ${provName.toUpperCase()} - SEMUA KABUPATEN`;
+                            levelEl.textContent = provName.toUpperCase().includes('JAKARTA')
+                                ? `Level: ${provName.toUpperCase()} - SEMUA KOTA ADMINISTRASI`
+                                : `Level: ${provName.toUpperCase()} - SEMUA KABUPATEN / KOTA`;
                         } else {
-                            levelEl.textContent = 'Level: KABUPATEN';
+                            levelEl.textContent = 'Level: KABUPATEN / KOTA';
                         }
                     }
                 }
@@ -2238,17 +2877,27 @@
                     const kabupaten = item.kabupaten;
                     if (!kabupaten) return;
 
-                    let lat = kabupaten.latitude !== null ? Number(kabupaten.latitude) : null;
-                    let lng = kabupaten.longitude !== null ? Number(kabupaten.longitude) : null;
+                    let lat = kabupaten.latitude !== null && kabupaten.latitude !== undefined ? Number(kabupaten.latitude) : null;
+                    let lng = kabupaten.longitude !== null && kabupaten.longitude !== undefined ? Number(kabupaten.longitude) : null;
+                    const norm = kabupaten.nama_kabupaten ? normalizeKabName(kabupaten.nama_kabupaten) : '';
 
-                    if ((lat === null || lng === null || isNaN(lat) || isNaN(lng)) && kabupaten.nama_kabupaten) {
-                        const norm = normalizeKabName(kabupaten.nama_kabupaten);
-                        if (geoCentroidsByNorm[norm]) {
-                            lat = geoCentroidsByNorm[norm].lat;
-                            lng = geoCentroidsByNorm[norm].lng;
-                            kabupaten.latitude = lat;
-                            kabupaten.longitude = lng;
-                        }
+                    // 1. Prioritas utama: Kamus koordinat daratan resmi (memastikan Sorong, Jepara & wilayah kepulauan berada tepat di daratan/wilayah masing-masing)
+                    if (norm && KABUPATEN_DARATAN_COORDS[norm]) {
+                        lat = KABUPATEN_DARATAN_COORDS[norm].lat;
+                        lng = KABUPATEN_DARATAN_COORDS[norm].lng;
+                        kabupaten.latitude = lat;
+                        kabupaten.longitude = lng;
+                    }
+                    // 2. Prioritas kedua: GeoCentroid batas poligon resmi GeoJSON jika tersedia
+                    else if (norm && geoCentroidsByNorm[norm]) {
+                        lat = geoCentroidsByNorm[norm].lat;
+                        lng = geoCentroidsByNorm[norm].lng;
+                        kabupaten.latitude = lat;
+                        kabupaten.longitude = lng;
+                    }
+                    // 3. Prioritas ketiga: Gunakan koordinat database resmi
+                    else if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
+                        // Gunakan lat & lng resmi dari database
                     }
 
                     if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) {
@@ -2322,8 +2971,30 @@
                     const markerIcon = createCustomMarkerIcon(entries);
                     const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(markersLayer);
 
-                    // Label nama kabupaten di peta (seperti Gambar 3)
-                    marker.bindTooltip(`KAB. ${escapeHtml(kabupaten.nama_kabupaten).toUpperCase()}`, {
+                    // Label nama kabupaten & ringkasan status di peta
+                    let markerStatusSummary = 'Rentan';
+                    if (rCount > 0 && (tCount > 0 || gCount > 0)) {
+                        markerStatusSummary = 'Multi-Status';
+                    } else if (rCount > 0) {
+                        markerStatusSummary = 'Resisten';
+                    } else if (tCount > 0) {
+                        markerStatusSummary = 'Toleran';
+                    } else if (gCount > 0) {
+                        markerStatusSummary = 'Rentan';
+                    }
+
+                    const markerTooltipHtml = `
+                        <div class="text-center font-extrabold text-[11px] leading-tight text-slate-900">
+                            ${formatKabKotaShort(kabupaten.nama_kabupaten)}
+                        </div>
+                        <div class="mt-1 flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-700">
+                            <span>📍 ${totalEntri} Titik Uji</span>
+                            <span>•</span>
+                            <span>${markerStatusSummary}</span>
+                        </div>
+                    `;
+
+                    marker.bindTooltip(markerTooltipHtml, {
                         direction: 'top',
                         offset: [0, -26],
                         className: 'region-map-label'
@@ -2337,7 +3008,7 @@
                         showKabupatenDetail(kabupaten.id, true);
                         marker.openTooltip();
                         activeTooltipLayer = marker;
-                        map.flyTo([lat, lng], 10, { duration: 0.8 });
+                        flyToVisibleCenter([lat, lng], 10, { duration: 0.8 });
                     });
 
                     marker.on('mouseover', function () {
@@ -2463,7 +3134,7 @@
                     const kab = escapeHtml(item.kabupaten ? item.kabupaten.nama_kabupaten : '-');
                     const rawAlamat = item.alamat || '';
                     const alamat = rawAlamat
-                        ? `<span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="${escapeHtml(rawAlamat)}"><span class="text-blue-500 shrink-0">📍</span><span class="truncate">${escapeHtml(rawAlamat)}</span></span>`
+                        ? `<div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="${escapeHtml(rawAlamat)}"><span class="text-blue-500 shrink-0 mt-0.5 text-[11px]">📍</span><span class="break-words leading-tight">${escapeHtml(rawAlamat)}</span></div>`
                         : `<span class="italic text-slate-400">Belum diisi</span>`;
                     const sampel = Number(item.sampel_diperiksa || 0).toLocaleString();
                     const periode = escapeHtml(`${item.bulan || ''} ${item.tahun || ''}`);
@@ -2473,11 +3144,11 @@
 
                     let statusBadge = '<span class="text-xs text-slate-400 italic">-</span>';
                     if (item.status === 'Resisten') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700"><span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700"><span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten</span>';
                     } else if (item.status === 'Toleran' || item.status === 'Toleran/Terduga Resisten' || item.status === 'Terduga Resisten') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[10px] font-bold text-amber-700"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran</span>';
                     } else if (item.status === 'Rentan') {
-                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan</span>';
+                        statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan</span>';
                     }
 
                     const hasCoords = item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude;
@@ -2485,7 +3156,7 @@
                         <div class="inline-flex items-center justify-center gap-1">
                             <button type="button"
                                     onclick="showRowDetailModal(${item.id})"
-                                    class="inline-flex items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
                                     title="Tampilkan rincian data pemeriksaan ini">
                                 <span>👁️</span>
                                 <span>Detail</span>
@@ -2493,7 +3164,7 @@
                             ${hasCoords ? `
                                 <button type="button"
                                         onclick="focusOnMap(${Number(item.kabupaten.latitude)}, ${Number(item.kabupaten.longitude)}, ${Number(item.kabupaten.id)})"
-                                        class="inline-flex items-center gap-0.5 rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                        class="inline-flex items-center gap-0.5 rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
                                         title="Lihat titik lokasi ini di peta">
                                     <span>📍</span>
                                     <span>Peta</span>
@@ -2504,24 +3175,24 @@
 
                     return `
                         <tr class="hover:bg-blue-50/40 transition" id="row-data-${item.id}">
-                            <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">${rowNumber}</td>
-                            <td class="px-2 py-2 text-xs truncate">
-                                <div class="font-semibold text-slate-800 leading-tight truncate" title="${kab}">${kab}</div>
-                                <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="${prov}">${prov}</div>
+                            <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs whitespace-nowrap">${rowNumber}</td>
+                            <td class="px-2 py-2 text-xs">
+                                <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap">${kab}</div>
+                                <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5">${prov}</div>
                             </td>
-                            <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">${alamat}</td>
-                            <td class="px-1.5 py-2 whitespace-nowrap truncate">
-                                <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full">
+                            <td class="px-2 py-2 text-xs text-slate-700 leading-snug">${alamat}</td>
+                            <td class="px-2 py-2 text-center whitespace-nowrap">
+                                <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[10.5px] font-semibold text-blue-700 whitespace-nowrap">
                                     ${nyamuk}
                                 </span>
                             </td>
-                            <td class="px-2 py-2 text-xs truncate">
-                                <div class="font-semibold text-slate-800 leading-tight truncate" title="${insek}">${insek}</div>
-                                <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="${metode}">${metode}</div>
+                            <td class="px-2 py-2 text-xs">
+                                <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap">${insek}</div>
+                                <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5">${metode}</div>
                             </td>
-                            <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">${sampel}</td>
+                            <td class="px-1.5 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap">${sampel}</td>
                             <td class="px-1.5 py-2 text-center whitespace-nowrap">${statusBadge}</td>
-                            <td class="px-1 py-2 text-center text-[11px] text-slate-500 whitespace-nowrap truncate">${periode}</td>
+                            <td class="px-1.5 py-2 text-center text-[10.5px] font-medium text-slate-600 whitespace-nowrap">${periode}</td>
                             <td class="px-1.5 py-2 text-center whitespace-nowrap">${aksiBtn}</td>
                         </tr>
                     `;
@@ -2692,7 +3363,7 @@
 
                     kabSelect.disabled = true;
                     kabSelect.value = '';
-                    kabSelect.innerHTML = '<option value="">-- Pilih Kabupaten --</option>';
+                    kabSelect.innerHTML = '<option value="">-- Pilih Kabupaten / Kota --</option>';
                     kabSelect.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-60');
                     kabSelect.classList.remove('bg-white', 'cursor-pointer');
                 } else if (level === 'kabupaten') {
@@ -2722,7 +3393,7 @@
                 if (!kabSelect) return;
 
                 if (!provId) {
-                    kabSelect.innerHTML = '<option value="">-- Pilih Kabupaten --</option>';
+                    kabSelect.innerHTML = '<option value="">-- Pilih Kabupaten / Kota --</option>';
                     kabSelect.disabled = true;
                     kabSelect.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-60');
                     kabSelect.classList.remove('bg-white', 'cursor-pointer');
@@ -2735,7 +3406,7 @@
                 fetch(`/kabupaten/${provId}`)
                     .then(res => res.json())
                     .then(data => {
-                        kabSelect.innerHTML = '<option value="">-- Semua / Pilih Kabupaten --</option>';
+                        kabSelect.innerHTML = '<option value="">-- Semua / Pilih Kabupaten / Kota --</option>';
                         data.forEach(kab => {
                             if (kab.latitude && kab.longitude) {
                                 kabupatenCoordsCache[kab.id] = [Number(kab.latitude), Number(kab.longitude)];
@@ -2772,7 +3443,7 @@
                 const selectedKabId = document.getElementById('filterKabupatenSelect')?.value;
 
                 if (currentLevel === 'kabupaten' && selectedKabId && markersByKabId[selectedKabId]) {
-                    map.flyTo(markersByKabId[selectedKabId].getLatLng(), 9, { duration: 1.2 });
+                    flyToVisibleCenter(markersByKabId[selectedKabId].getLatLng(), 9, { duration: 1.2 });
                     setTimeout(() => {
                         showKabupatenDetail(selectedKabId, true);
                         if (markersByKabId[selectedKabId]) {
@@ -2781,11 +3452,11 @@
                         }
                     }, 1300);
                 } else if (currentLevel === 'kabupaten' && selectedKabId && kabupatenCoordsCache[selectedKabId]) {
-                    map.flyTo(kabupatenCoordsCache[selectedKabId], 9, { duration: 1.2 });
+                    flyToVisibleCenter(kabupatenCoordsCache[selectedKabId], 9, { duration: 1.2 });
                 } else if (currentLevel === 'kabupaten' && selectedKabId) {
                     const matchedItem = rawData.find(d => String(d.kabupaten_id) === String(selectedKabId));
                     if (matchedItem && matchedItem.kabupaten && matchedItem.kabupaten.latitude && matchedItem.kabupaten.longitude) {
-                        map.flyTo([Number(matchedItem.kabupaten.latitude), Number(matchedItem.kabupaten.longitude)], 9, { duration: 1.2 });
+                        flyToVisibleCenter([Number(matchedItem.kabupaten.latitude), Number(matchedItem.kabupaten.longitude)], 9, { duration: 1.2 });
                     }
                 } else if ((currentLevel === 'provinsi' || currentLevel === 'kabupaten') && selectedProvId) {
                     const provItems = rawData.filter(d => String(d.provinsi_id) === String(selectedProvId) && d.kabupaten && d.kabupaten.latitude);
@@ -2978,7 +3649,7 @@
                         <div class="border-b border-slate-200 pb-1.5">
                             <div class="text-[10px] font-bold uppercase tracking-wider text-blue-600">📍 Titik Lokasi / Desa</div>
                             <div class="font-extrabold text-slate-800 text-sm leading-tight">${escapeHtml(desaName)}</div>
-                            <div class="text-[10.5px] text-slate-500 font-medium">Kab. ${escapeHtml(kabName)}, ${escapeHtml(provName)}</div>
+                            <div class="text-[10.5px] text-slate-500 font-medium">${formatKabKotaShort(kabName)}, ${escapeHtml(provName)}</div>
                         </div>
                         <div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status Resistensi:</div>
@@ -3024,17 +3695,29 @@
                 `;
 
                 desaMarker.bindPopup(popupHtml, {
-                    maxWidth: 280,
-                    className: 'custom-desa-popup'
+                    maxWidth: 275,
+                    className: 'custom-desa-popup',
+                    autoPan: true,
+                    autoPanPaddingTopLeft: L.point(30, 30),
+                    autoPanPaddingBottomRight: L.point(350, 40),
+                    closeButton: true
                 });
 
-                // 4. Terbang dan zoom ke titik desa dengan durasi halus
-                map.flyTo([targetLat, targetLng], 13, { duration: 1.4 });
+                // Jika di layar compact (< 768px), perkecil otomatis detail card agar popup desa memiliki ruang bebas maksimal
+                if (window.innerWidth < 768 && isDetailPinned && !isDetailMinimized) {
+                    isDetailMinimized = true;
+                    if (pinnedKabId && kabDataById[pinnedKabId]) {
+                        infoControl.renderDetails(kabDataById[pinnedKabId], true);
+                    }
+                }
+
+                // 4. Terbang dan zoom ke titik desa dengan pergeseran cerdas (tidak bertabrakan dengan card kanan atas)
+                flyToVisibleCenter([targetLat, targetLng], 13, { duration: 1.2 });
 
                 // Buka popup desa otomatis saat kamera tiba di lokasi
                 setTimeout(() => {
                     desaMarker.openPopup();
-                }, 1450);
+                }, 1250);
 
                 // 5. Otomatis saring tabel pemeriksaan di bawah tanpa scroll dulu
                 focusOnDesaInTable(desaName, kabId, false);
@@ -3098,8 +3781,26 @@
                     mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
+                let targetLat = lat;
+                let targetLng = lng;
+                if (kabDataById[kabId] && kabDataById[kabId].kabupaten) {
+                    const k = kabDataById[kabId].kabupaten;
+                    const norm = normalizeKabName(k.nama_kabupaten || '');
+                    if (norm && KABUPATEN_DARATAN_COORDS[norm]) {
+                        targetLat = KABUPATEN_DARATAN_COORDS[norm].lat;
+                        targetLng = KABUPATEN_DARATAN_COORDS[norm].lng;
+                    } else if (norm && geoCentroidsByNorm[norm]) {
+                        targetLat = geoCentroidsByNorm[norm].lat;
+                        targetLng = geoCentroidsByNorm[norm].lng;
+                    }
+                } else if (markersByKabId[kabId]) {
+                    const pos = markersByKabId[kabId].getLatLng();
+                    targetLat = pos.lat;
+                    targetLng = pos.lng;
+                }
+
                 setTimeout(() => {
-                    map.flyTo([lat, lng], 10, { duration: 1.2 });
+                    flyToVisibleCenter([targetLat, targetLng], 10, { duration: 1.2 });
                     setTimeout(() => {
                         showKabupatenDetail(kabId, true);
                         if (markersByKabId[kabId]) {

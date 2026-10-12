@@ -787,11 +787,44 @@
     html.dark .map-legend-control:hover {
         background: rgba(15, 23, 42, 0.95) !important;
     }
+    html.dark .map-legend-control .text-slate-900,
     html.dark .map-legend-control .text-slate-800 {
         color: #f8fafc !important;
     }
-    html.dark .map-legend-control .text-slate-700 {
+    html.dark .map-legend-control .text-slate-700,
+    html.dark .map-legend-control .text-slate-600 {
         color: #cbd5e1 !important;
+    }
+    html.dark .map-legend-control .text-slate-500 {
+        color: #94a3b8 !important;
+    }
+    html.dark .map-legend-control .border-slate-200\/80,
+    html.dark .map-legend-control .border-slate-100 {
+        border-color: #334155 !important;
+    }
+    html.dark .map-legend-control .bg-rose-50 {
+        background-color: rgba(136, 19, 55, 0.35) !important;
+        border-color: rgba(225, 29, 72, 0.5) !important;
+        color: #fda4af !important;
+    }
+    html.dark .map-legend-control .bg-amber-50 {
+        background-color: rgba(120, 53, 15, 0.35) !important;
+        border-color: rgba(217, 119, 6, 0.5) !important;
+        color: #fde68a !important;
+    }
+    html.dark .map-legend-control .bg-emerald-50 {
+        background-color: rgba(6, 78, 59, 0.35) !important;
+        border-color: rgba(16, 185, 129, 0.5) !important;
+        color: #a7f3d0 !important;
+    }
+    html.dark .map-legend-control .bg-indigo-50 {
+        background-color: rgba(49, 46, 129, 0.35) !important;
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        color: #c7d2fe !important;
+    }
+    html.dark .map-legend-control .bg-slate-50 {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: #475569 !important;
     }
     html.dark .leaflet-popup-content-wrapper {
         background: #0f172a !important;

@@ -26,8 +26,49 @@
             aria-haspopup="true"
             title="Menu Akun Pengguna">
         
+        @php
+            $uRole = Auth::check() ? Auth::user()->role : '';
+            $avatarGrad = 'from-slate-700 to-slate-500 ring-slate-100';
+            $roleLabel = 'Viewer';
+            $roleColor = 'text-slate-500';
+            $badgeBg = 'bg-slate-100 text-slate-700 border-slate-200';
+            $badgeLabel = '👁️ Viewer';
+
+            if ($uRole === 'admin') {
+                $avatarGrad = 'from-blue-700 to-blue-500 ring-blue-100';
+                $roleLabel = 'Administrator';
+                $roleColor = 'text-blue-600 font-bold';
+                $badgeBg = 'bg-blue-100 text-blue-700 border-blue-200';
+                $badgeLabel = '🛡️ Administrator';
+            } elseif ($uRole === 'petugas') {
+                $avatarGrad = 'from-emerald-700 to-emerald-500 ring-emerald-100';
+                $roleLabel = 'Petugas Lab';
+                $roleColor = 'text-emerald-600 font-bold';
+                $badgeBg = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                $badgeLabel = '🔬 Petugas Lab';
+            } elseif ($uRole === 'dinas_kesehatan' || $uRole === 'dinkes') {
+                $avatarGrad = 'from-teal-700 to-teal-500 ring-teal-100';
+                $roleLabel = 'Dinas Kesehatan';
+                $roleColor = 'text-teal-600 font-bold';
+                $badgeBg = 'bg-teal-100 text-teal-700 border-teal-200';
+                $badgeLabel = '🏥 Dinas Kesehatan';
+            } elseif ($uRole === 'balai_kekarantinaan_kesehatan' || $uRole === 'bkk' || $uRole === 'balai_karantina') {
+                $avatarGrad = 'from-amber-700 to-amber-500 ring-amber-100';
+                $roleLabel = 'Balai Kekarantinaan';
+                $roleColor = 'text-amber-600 font-bold';
+                $badgeBg = 'bg-amber-100 text-amber-700 border-amber-200';
+                $badgeLabel = '🚢 Balai Kekarantinaan';
+            } elseif ($uRole === 'labkesmas') {
+                $avatarGrad = 'from-cyan-700 to-cyan-500 ring-cyan-100';
+                $roleLabel = 'Labkesmas';
+                $roleColor = 'text-cyan-600 font-bold';
+                $badgeBg = 'bg-cyan-100 text-cyan-700 border-cyan-200';
+                $badgeLabel = '🧪 Labkesmas';
+            }
+        @endphp
+
         {{-- AVATAR DENGAN INISIAL --}}
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr {{ Auth::check() && Auth::user()->role === 'admin' ? 'from-blue-700 to-blue-500 ring-blue-100' : (Auth::check() ? 'from-emerald-700 to-emerald-500 ring-emerald-100' : 'from-slate-600 to-slate-400 ring-slate-100') }} font-extrabold text-white text-sm shadow-xs ring-2">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr {{ $avatarGrad }} font-extrabold text-white text-sm shadow-xs ring-2">
             {{ Auth::check() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '?' }}
         </div>
 
@@ -36,8 +77,8 @@
             <p class="text-xs font-bold text-slate-800 leading-tight">
                 {{ Auth::check() ? Auth::user()->name : 'Tamu (Belum Login)' }}
             </p>
-            <p class="text-[10px] {{ Auth::check() && Auth::user()->role === 'admin' ? 'text-blue-600 font-bold' : (Auth::check() ? 'text-emerald-600 font-bold' : 'text-slate-400 font-medium') }} capitalize leading-tight mt-0.5">
-                {{ Auth::check() ? (Auth::user()->role === 'admin' ? 'Administrator' : 'Petugas Lab') : 'Klik untuk Masuk' }}
+            <p class="text-[10px] {{ $roleColor }} capitalize leading-tight mt-0.5">
+                {{ Auth::check() ? $roleLabel : 'Klik untuk Masuk' }}
             </p>
             <p class="text-[10px] font-semibold text-slate-500 flex items-center gap-1 mt-0.5 leading-tight">
                 <svg class="h-2.5 w-2.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,8 +108,8 @@
             </p>
             <div class="mt-1.5 flex items-center gap-1.5">
                 @if (Auth::check())
-                    <span class="inline-flex items-center gap-1 rounded {{ Auth::user()->role === 'admin' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200' }} px-1.5 py-0.5 text-[9px] font-bold border uppercase">
-                        {{ Auth::user()->role === 'admin' ? '🛡️ Administrator' : '🔬 Petugas Lab' }}
+                    <span class="inline-flex items-center gap-1 rounded {{ $badgeBg }} px-1.5 py-0.5 text-[9px] font-bold border uppercase">
+                        {{ $badgeLabel }}
                     </span>
                     <span class="inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 border border-emerald-200">
                         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Aktif

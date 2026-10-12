@@ -848,23 +848,52 @@ class ExportImportController extends Controller
                     }
                 }
 
-                // Normalisasi dan Pencocokan Kabupaten (abaikan tulisan "kab / kabupaten / kota")
+                // Normalisasi dan Pencocokan Kabupaten / Kota
+                $isKotaInput = preg_match('/^(kota|kotamadya)\s+/i', trim($kabNama));
                 $cleanedKab = $this->cleanKabupatenName($kabNama);
                 $kabObj = null;
 
                 if ($cleanedKab || $kabNama) {
                     if ($provObj) {
+                        // 1. Prioritas utama: Cocokkan persis nama lengkap (misal "Kota Semarang" atau "Kabupaten Semarang")
                         $kabObj = Kabupaten::where('provinsi_id', $provObj->id)
-                            ->where(function ($q) use ($cleanedKab, $kabNama) {
-                                $q->whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])
-                                  ->orWhereRaw('LOWER(name) = ?', [strtolower($kabNama)])
-                                  ->orWhere('name', 'LIKE', "%{$cleanedKab}%");
-                            })->first();
+                            ->whereRaw('LOWER(name) = ?', [strtolower(trim($kabNama))])
+                            ->first();
+
+                        // 2. Jika input adalah Kota, cocokkan dengan "Kota <nama>"
+                        if (!$kabObj && $isKotaInput) {
+                            $kabObj = Kabupaten::where('provinsi_id', $provObj->id)
+                                ->whereRaw('LOWER(name) = ?', ['kota ' . strtolower($cleanedKab)])
+                                ->first();
+                        }
+
+                        // 3. Jika input bukan Kota, coba cocokkan dengan "Kabupaten <nama>"
+                        if (!$kabObj && !$isKotaInput) {
+                            $kabObj = Kabupaten::where('provinsi_id', $provObj->id)
+                                ->whereRaw('LOWER(name) = ?', ['kabupaten ' . strtolower($cleanedKab)])
+                                ->first();
+                        }
+
+                        // 4. Fallback nama bersih
+                        if (!$kabObj) {
+                            $kabObj = Kabupaten::where('provinsi_id', $provObj->id)
+                                ->where(function ($q) use ($cleanedKab) {
+                                    $q->whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])
+                                      ->orWhere('name', 'LIKE', "%{$cleanedKab}%");
+                                })->first();
+                        }
                     }
 
                     // Jika belum ketemu di provinsinya, cari di seluruh data master kabupaten
                     if (!$kabObj && $cleanedKab) {
-                        $kabObj = Kabupaten::whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])->first();
+                        if ($isKotaInput) {
+                            $kabObj = Kabupaten::whereRaw('LOWER(name) = ?', ['kota ' . strtolower($cleanedKab)])->first();
+                        } else {
+                            $kabObj = Kabupaten::whereRaw('LOWER(name) = ?', ['kabupaten ' . strtolower($cleanedKab)])->first();
+                        }
+                        if (!$kabObj) {
+                            $kabObj = Kabupaten::whereRaw('LOWER(name) = ?', [strtolower($cleanedKab)])->first();
+                        }
                     }
 
                     if ($kabObj) {

@@ -60,6 +60,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Force HTTPS
+    |--------------------------------------------------------------------------
+    |
+    | Ketika diaktifkan (FORCE_HTTPS=true), semua URL yang dihasilkan aplikasi
+    | akan dipaksa menggunakan skema https dan setiap permintaan http dialihkan
+    | ke https. Aktifkan pada server produksi agar tidak muncul peringatan
+    | "Not secure" pada browser. Biarkan false saat pengembangan lokal.
+    |
+    */
+
+    'force_https' => env('FORCE_HTTPS', env('APP_ENV', 'production') === 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

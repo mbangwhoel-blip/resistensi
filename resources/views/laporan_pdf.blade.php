@@ -29,12 +29,12 @@
             padding: 0;
         }
         .kop-logo {
-            width: 75px;
+            width: 165px;
             text-align: left;
         }
         .kop-logo img {
-            max-width: 75px;
-            max-height: 50px;
+            max-width: 165px;
+            max-height: 55px;
             height: auto;
         }
         .kop-text {
@@ -257,13 +257,13 @@
             </td>
             <td class="kop-text">
                 <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
-                <div class="kop-title-2">DIREKTORAT JENDERAL PENCEGAHAN DAN PENGENDALIAN PENYAKIT</div>
+                <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
                 <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
                 <div class="kop-address">
-                    Sistem Informasi Manajemen Pemeriksaan Laboratorium (SIMPEL BBLKL) • Layanan Surveilans Vektor & Uji Resistensi
+                    Sistem Informasi Resistensi Insektisida Indonesia • Layanan Surveilans Vektor & Uji Resistensi
                 </div>
             </td>
-            <td style="width: 75px; text-align: right;">
+            <td style="width: 165px; text-align: right;">
                 {{-- Spacer seimbang kanan --}}
             </td>
         </tr>
@@ -406,12 +406,26 @@
         </tbody>
     </table>
 
+    {{-- KETERANGAN STATUS RESISTENSI STANDAR KEMENKES RI / WHO --}}
+    <div style="margin-top: 8px; margin-bottom: 8px; padding: 6px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 7pt; color: #334155;">
+        <div style="font-weight: bold; margin-bottom: 3px; color: #0f172a; text-transform: uppercase;">
+            Keterangan Kategori Status Resistensi Vektor (Standar Kemenkes RI / WHO):
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 6.8pt;">
+            <tr>
+                <td style="width: 33%;"><strong style="color: #e11d48;">● RESISTEN</strong>: Kematian &lt; 90% (Vektor kebal insektisida)</td>
+                <td style="width: 34%;"><strong style="color: #d97706;">● TOLERAN / TERDUGA</strong>: Kematian 90% - 97% (Waspada/perlu konfirmasi)</td>
+                <td style="width: 33%;"><strong style="color: #059669;">● RENTAN</strong>: Kematian 98% - 100% (Insektisida efektif)</td>
+            </tr>
+        </table>
+    </div>
+
     {{-- TANDA TANGAN / PENGESAHAN --}}
     <table class="signature-table">
         <tr>
             <td style="width: 65%;">
                 <div class="footer-note">
-                    * Dokumen laporan ini dicetak secara otomatis melalui Sistem Informasi Manajemen Pemeriksaan Laboratorium (SIMPEL BBLKL).<br>
+                    * Dokumen laporan ini dicetak secara otomatis melalui Sistem Informasi Resistensi Insektisida Indonesia.<br>
                     * Data merupakan arsip resmi surveilans resistensi vektor Balai Besar Laboratorium Kesehatan Lingkungan - Kementerian Kesehatan RI.
                 </div>
             </td>

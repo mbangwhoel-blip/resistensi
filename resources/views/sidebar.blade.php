@@ -15,9 +15,9 @@
 
     .custom-sidebar {
         width: 16rem;
-        background-color: #0b132b;
+        background-color: #0B3D3A;
         color: #f8fafc;
-        border-right: 1px solid rgba(255, 255, 255, 0.07);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     /* Scrollbar ramping */
@@ -28,11 +28,11 @@
         background: transparent;
     }
     .custom-sidebar-nav::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.15);
         border-radius: 4px;
     }
     .custom-sidebar-nav::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.25);
     }
 
     /* Section Header */
@@ -41,7 +41,7 @@
         font-weight: 700;
         letter-spacing: 0.075em;
         text-transform: uppercase;
-        color: #64748b;
+        color: #8dafa8;
         padding: 0 11px 5px 11px;
         display: flex;
         align-items: center;
@@ -65,7 +65,7 @@
 
     /* Inactive State */
     .nav-menu-link.inactive {
-        color: #cbd5e1;
+        color: #d1e2e0;
         font-weight: 500;
         background-color: transparent;
         border: 1px solid transparent;
@@ -73,18 +73,18 @@
 
     .nav-menu-link.inactive:hover {
         color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.07);
-        border-color: rgba(255, 255, 255, 0.06);
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.08);
         transform: translateX(2px);
     }
 
     .nav-menu-link.inactive .nav-menu-icon {
-        color: #94a3b8;
+        color: #8dafa8;
         transition: color 0.18s ease, transform 0.18s ease;
     }
 
     .nav-menu-link.inactive:hover .nav-menu-icon {
-        color: #60a5fa;
+        color: #5eead4;
         transform: scale(1.06);
     }
 
@@ -92,9 +92,9 @@
     .nav-menu-link.active {
         color: #ffffff;
         font-weight: 600;
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        box-shadow: 0 3px 12px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: 0 3px 12px rgba(20, 184, 166, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     .nav-menu-link.active .nav-menu-icon {
@@ -130,7 +130,7 @@
 <aside class="custom-sidebar fixed inset-y-0 left-0 z-50 flex flex-col shadow-2xl">
 
     {{-- LOGO BRAND & APLIKASI --}}
-    <div class="shrink-0 flex flex-col items-center justify-center border-b border-slate-800/80 px-3 py-3 bg-[#0b132b]/95 backdrop-blur-sm text-center">
+    <div class="shrink-0 flex flex-col items-center justify-center border-b border-white/[0.08] px-3 py-3 bg-[#0B3D3A]/95 backdrop-blur-sm text-center">
         {{-- LOGO BADGE DARI FOLDER PUBLIC (UKURAN LEBIH BESAR AGAR TEKS JELAS TERBACA) --}}
         <div class="w-full flex items-center justify-center rounded-xl bg-white px-2.5 py-2 shadow-sm border border-white/90 transition hover:scale-[1.01]">
             <img src="{{ asset('logo_bblkl.png') }}" alt="Logo Kemenkes BBLKL" class="w-full h-auto max-h-[52px] object-contain">

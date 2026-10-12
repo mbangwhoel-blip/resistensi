@@ -371,86 +371,86 @@
 
             {{-- TABEL KONTEN --}}
             <div class="overflow-x-auto bg-slate-50">
-                <table class="w-full text-left text-xs table-fixed">
+                <table class="w-full text-left text-xs min-w-[1020px]">
                     <thead class="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
-                            <th class="w-[4%] px-1.5 py-2.5 text-center text-slate-500">No</th>
-                            <th class="w-[13%] px-2 py-2.5 whitespace-nowrap">Kab/Prov</th>
-                            <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Alamat / Lokasi</th>
-                            <th class="w-[11%] px-1.5 py-2.5 whitespace-nowrap">Jenis Nyamuk</th>
-                            <th class="w-[16%] px-2 py-2.5 whitespace-nowrap">Insektisida / Metode</th>
-                            <th class="w-[6%] px-1 py-2.5 text-center whitespace-nowrap">Sampel</th>
-                            <th class="w-[10%] px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
-                            <th class="w-[9%] px-1 py-2.5 text-center whitespace-nowrap">Periode</th>
-                            <th class="w-[15%] px-1.5 py-2.5 text-center whitespace-nowrap">Aksi</th>
+                            <th class="w-12 px-2.5 py-3 text-center text-slate-500 whitespace-nowrap">No</th>
+                            <th class="min-w-[130px] px-3 py-3 whitespace-nowrap">Kab/Prov</th>
+                            <th class="min-w-[220px] px-3 py-3 whitespace-nowrap">Alamat / Lokasi</th>
+                            <th class="min-w-[140px] px-3 py-3 whitespace-nowrap">Jenis Nyamuk</th>
+                            <th class="min-w-[150px] px-3 py-3 whitespace-nowrap">Insektisida / Metode</th>
+                            <th class="w-20 px-2 py-3 text-center whitespace-nowrap">Sampel</th>
+                            <th class="w-28 px-2 py-3 text-center whitespace-nowrap">Status</th>
+                            <th class="min-w-[115px] px-3 py-3 text-center whitespace-nowrap">Periode</th>
+                            <th class="w-32 px-2 py-3 text-center whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 bg-white">
                         @forelse ($data as $item)
                             <tr class="hover:bg-slate-50/80 transition">
-                                <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs truncate">
+                                <td class="px-2.5 py-2.5 text-center font-bold text-slate-400 text-xs whitespace-nowrap">
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
-                                <td class="px-2 py-2 text-xs truncate">
-                                    <div class="font-bold text-slate-800 leading-tight truncate" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
+                                <td class="px-3 py-2.5 text-xs">
+                                    <div class="font-bold text-slate-800 leading-tight" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                         {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                     </div>
-                                    <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
+                                    <div class="text-[11px] text-slate-500 font-normal leading-tight" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
                                         {{ $item->provinsi->nama_provinsi ?? '-' }}
                                     </div>
                                 </td>
-                                <td class="px-2 py-2 text-xs text-slate-700 leading-snug truncate">
+                                <td class="px-3 py-2.5 text-xs text-slate-700 leading-snug">
                                     @if (!empty($item->alamat))
-                                        <span class="inline-flex items-center gap-1 font-medium text-slate-700 max-w-full truncate" title="{{ $item->alamat }}">
-                                            <span class="text-blue-500 shrink-0">📍</span>
-                                            <span class="truncate">{{ $item->alamat }}</span>
-                                        </span>
+                                        <div class="inline-flex items-start gap-1 font-medium text-slate-700" title="{{ $item->alamat }}">
+                                            <span class="text-blue-500 shrink-0 mt-0.5">📍</span>
+                                            <span class="break-words">{{ $item->alamat }}</span>
+                                        </div>
                                     @else
                                         <span class="italic text-slate-400">Belum diisi</span>
                                     @endif
                                 </td>
-                                <td class="px-1.5 py-2 whitespace-nowrap truncate">
-                                    <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 truncate max-w-full" title="{{ $item->jenis_nyamuk }}">
+                                <td class="px-3 py-2.5 whitespace-nowrap">
+                                    <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap" title="{{ $item->jenis_nyamuk }}">
                                         {{ $item->jenis_nyamuk }}
                                     </span>
                                 </td>
-                                <td class="px-2 py-2 text-xs truncate">
-                                    <div class="font-semibold text-slate-800 leading-tight truncate" title="{{ $item->insektisida ?? '-' }}">
+                                <td class="px-3 py-2.5 text-xs">
+                                    <div class="font-semibold text-slate-800 leading-tight" title="{{ $item->insektisida ?? '-' }}">
                                         {{ $item->insektisida ?? '-' }}
                                     </div>
-                                    <div class="text-[11px] text-slate-500 font-normal leading-tight truncate" title="{{ $item->metode ?? '-' }}">
+                                    <div class="text-[11px] text-slate-500 font-normal leading-tight" title="{{ $item->metode ?? '-' }}">
                                         {{ $item->metode ?? '-' }}
                                     </div>
                                 </td>
-                                <td class="px-1 py-2 text-center font-bold text-slate-800 text-xs whitespace-nowrap truncate">
+                                <td class="px-2 py-2.5 text-center font-bold text-slate-800 text-xs whitespace-nowrap">
                                     {{ number_format($item->sampel_diperiksa) }}
                                 </td>
-                                <td class="px-1.5 py-2 text-center whitespace-nowrap">
+                                <td class="px-2 py-2.5 text-center whitespace-nowrap">
                                     @if ($item->status === 'Resisten')
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[11px] font-bold text-rose-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2 py-0.5 text-[11px] font-bold text-rose-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Resisten
                                         </span>
                                     @elseif ($item->status === 'Rentan')
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan
                                         </span>
                                     @elseif (in_array($item->status, ['Toleran/Terduga Resisten', 'Toleran', 'Terduga Resisten']))
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[11px] font-bold text-amber-700">
+                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-[11px] font-bold text-amber-700">
                                             <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Toleran
                                         </span>
                                     @else
                                         <span class="text-xs text-slate-400 italic">-</span>
                                     @endif
                                 </td>
-                                <td class="px-1 py-2 text-center text-[11px] text-slate-600 font-medium whitespace-nowrap truncate">
+                                <td class="px-3 py-2.5 text-center text-[11px] text-slate-600 font-medium whitespace-nowrap">
                                     {{ $item->bulan }} {{ $item->tahun }}
                                 </td>
-                                <td class="px-1.5 py-2 text-center whitespace-nowrap">
+                                <td class="px-2 py-2.5 text-center whitespace-nowrap">
                                     <div class="flex items-center justify-center gap-1">
                                         <button 
                                             type="button" 
                                             onclick='openEditModal(@json($item))'
-                                            class="inline-flex items-center gap-0.5 rounded-md border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-700 hover:bg-amber-100 transition shadow-2xs cursor-pointer"
+                                            class="inline-flex items-center gap-0.5 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700 hover:bg-amber-100 transition shadow-2xs cursor-pointer"
                                             title="Edit Data"
                                         >
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -461,7 +461,7 @@
                                         <button 
                                             type="button" 
                                             onclick="openDeleteModal({{ $item->id }})"
-                                            class="inline-flex items-center gap-0.5 rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 text-[11px] font-semibold text-rose-700 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
+                                            class="inline-flex items-center gap-0.5 rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
                                             title="Hapus Data"
                                         >
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

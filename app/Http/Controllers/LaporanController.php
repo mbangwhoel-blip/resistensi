@@ -83,9 +83,12 @@ class LaporanController extends Controller
         $totalPemeriksaan = (clone $statsQuery)->count();
         $totalSampel = (int)(clone $statsQuery)->sum('sample_count');
         
-        $totalResisten = (clone $statsQuery)->where('status', 'resisten')->count();
-        $totalToleran = (clone $statsQuery)->where('status', 'toleran')->count();
-        $totalRentan = (clone $statsQuery)->where('status', 'rentan')->count();
+        $totalResisten = (clone $statsQuery)->whereRaw('LOWER(status) = ?', ['resisten'])->count();
+        $totalToleran = (clone $statsQuery)->where(function ($q) {
+            $q->whereRaw('LOWER(status) LIKE ?', ['%toleran%'])
+              ->orWhereRaw('LOWER(status) LIKE ?', ['%terduga%']);
+        })->count();
+        $totalRentan = (clone $statsQuery)->whereRaw('LOWER(status) = ?', ['rentan'])->count();
 
         $persenResisten = $totalPemeriksaan > 0 ? round(($totalResisten / $totalPemeriksaan) * 100, 1) : 0;
         $persenToleran = $totalPemeriksaan > 0 ? round(($totalToleran / $totalPemeriksaan) * 100, 1) : 0;
@@ -146,9 +149,9 @@ class LaporanController extends Controller
         // 2. Hitung statistik ringkasan
         $totalPemeriksaan = $dataUji->count();
         $totalSampel = $dataUji->sum('sample_count');
-        $totalResisten = $dataUji->where('status', 'Resisten')->count();
-        $totalToleran = $dataUji->where('status', 'Toleran')->count();
-        $totalRentan = $dataUji->where('status', 'Rentan')->count();
+        $totalResisten = $dataUji->filter(fn($d) => strtolower($d->status ?? '') === 'resisten')->count();
+        $totalToleran = $dataUji->filter(fn($d) => str_contains(strtolower($d->status ?? ''), 'toleran') || str_contains(strtolower($d->status ?? ''), 'terduga'))->count();
+        $totalRentan = $dataUji->filter(fn($d) => strtolower($d->status ?? '') === 'rentan')->count();
 
         $stats = [
             'total_pemeriksaan' => $totalPemeriksaan,
@@ -206,9 +209,9 @@ class LaporanController extends Controller
         // 2. Hitung statistik ringkasan
         $totalPemeriksaan = $dataUji->count();
         $totalSampel = $dataUji->sum('sample_count');
-        $totalResisten = $dataUji->where('status', 'Resisten')->count();
-        $totalToleran = $dataUji->where('status', 'Toleran')->count();
-        $totalRentan = $dataUji->where('status', 'Rentan')->count();
+        $totalResisten = $dataUji->filter(fn($d) => strtolower($d->status ?? '') === 'resisten')->count();
+        $totalToleran = $dataUji->filter(fn($d) => str_contains(strtolower($d->status ?? ''), 'toleran') || str_contains(strtolower($d->status ?? ''), 'terduga'))->count();
+        $totalRentan = $dataUji->filter(fn($d) => strtolower($d->status ?? '') === 'rentan')->count();
 
         $stats = [
             'total_pemeriksaan' => $totalPemeriksaan,
@@ -312,7 +315,14 @@ class LaporanController extends Controller
         // Filter Status
         if ($request->filled('status') && $request->status !== 'Semua') {
             $valStatus = strtolower(trim($request->status));
-            $query->where('status', $valStatus);
+            if ($valStatus === 'toleran') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) LIKE ?', ['%toleran%'])
+                      ->orWhereRaw('LOWER(status) LIKE ?', ['%terduga%']);
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$valStatus]);
+            }
         }
 
         // Filter Pencarian Teks

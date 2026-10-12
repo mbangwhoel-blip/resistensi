@@ -27,6 +27,12 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
 
+        // HSTS: paksa browser selalu memakai HTTPS pada kunjungan berikutnya.
+        // Hanya dikirim saat koneksi sudah HTTPS agar tidak memblokir akses lokal via http.
+        if ($request->secure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        }
+
         return $response;
     }
 }

@@ -39,7 +39,13 @@ class UserController extends Controller
         }
 
         if ($roleFilter && $roleFilter !== 'Semua') {
-            $query->where('role', $roleFilter);
+            if ($roleFilter === 'dinas_kesehatan') {
+                $query->whereIn('role', ['dinas_kesehatan', 'dinkes']);
+            } elseif ($roleFilter === 'balai_kekarantinaan_kesehatan') {
+                $query->whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina']);
+            } else {
+                $query->where('role', $roleFilter);
+            }
         }
 
         if ($statusFilter && $statusFilter !== 'Semua') {
@@ -53,6 +59,9 @@ class UserController extends Controller
             'total' => User::count(),
             'admin' => User::where('role', 'admin')->count(),
             'petugas' => User::where('role', 'petugas')->count(),
+            'dinas_kesehatan' => User::whereIn('role', ['dinas_kesehatan', 'dinkes'])->count(),
+            'balai_kekarantinaan_kesehatan' => User::whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina'])->count(),
+            'labkesmas' => User::where('role', 'labkesmas')->count(),
             'viewer' => User::where('role', 'viewer')->count(),
             'aktif' => User::where('status', 'aktif')->count(),
             'nonaktif' => User::where('status', 'nonaktif')->count(),
@@ -71,7 +80,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -91,12 +100,16 @@ class UserController extends Controller
             'status.required' => 'Pilih status akun pengguna.',
         ]);
 
+        $role = $validated['role'];
+        if ($role === 'dinkes') $role = 'dinas_kesehatan';
+        if ($role === 'bkk' || $role === 'balai_karantina') $role = 'balai_kekarantinaan_kesehatan';
+
         User::create([
             'name' => $validated['name'],
             'username' => strtolower($validated['username']),
             'email' => strtolower($validated['email']),
             'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
+            'role' => $role,
             'status' => $validated['status'],
             'phone' => $validated['telepon'] ?? null,
         ]);
@@ -116,7 +129,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username,' . $id,
             'email' => 'required|email|max:100|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -133,12 +146,16 @@ class UserController extends Controller
             'status.required' => 'Pilih status akun.',
         ]);
 
+        $role = $validated['role'];
+        if ($role === 'dinkes') $role = 'dinas_kesehatan';
+        if ($role === 'bkk' || $role === 'balai_karantina') $role = 'balai_kekarantinaan_kesehatan';
+
         // Keamanan: Cegah admin menonaktifkan atau menurunkan role akunnya sendiri yang sedang aktif
         if (Auth::check() && Auth::id() === $user->id) {
             if ($validated['status'] === 'nonaktif') {
                 return redirect()->back()->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri yang sedang digunakan.');
             }
-            if ($validated['role'] !== 'admin') {
+            if ($role !== 'admin') {
                 return redirect()->back()->with('error', 'Anda tidak dapat mengubah role akun Anda sendiri menjadi non-admin.');
             }
         }
@@ -147,7 +164,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'username' => strtolower($validated['username']),
             'email' => strtolower($validated['email']),
-            'role' => $validated['role'],
+            'role' => $role,
             'status' => $validated['status'],
             'phone' => $validated['telepon'] ?? null,
         ];
