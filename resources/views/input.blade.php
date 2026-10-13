@@ -24,14 +24,25 @@
 
 
     {{-- MAIN--}}
+    @php
+        $currentUser = Auth::user();
+        $isViewer = $currentUser && (strtolower((string)$currentUser->role) === 'viewer' || (method_exists($currentUser, 'isViewer') && $currentUser->isViewer()));
+    @endphp
     <main class="ml-64 min-h-screen">
 
         {{-- TOPBAR DENGAN PROFIL & LOGOUT DI KANAN ATAS --}}
         <header class="sticky top-0 z-40 flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
             <div class="min-w-0 flex flex-col justify-center">
-                <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug">
-                    Input Data Uji Resistensi
-                </h1>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug">
+                        {{ $isViewer ? 'Data Hasil Uji Resistensi' : 'Input Data Uji Resistensi' }}
+                    </h1>
+                    @if ($isViewer)
+                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                            <span>👁️</span> Mode Viewer (Lihat Saja)
+                        </span>
+                    @endif
+                </div>
                 <p class="text-xs text-slate-500 font-medium mt-1">
                     Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL)
                 </p>
@@ -43,6 +54,43 @@
         </header>
 
         <section class="p-6 lg:p-8 space-y-5">
+
+            {{-- ALERT NOTIFIKASI SUKSES / ERROR --}}
+            @if (session('success'))
+                <div class="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3.5 text-emerald-800 shadow-2xs">
+                    <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-xs font-semibold">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-3.5 text-rose-800 shadow-2xs">
+                    <svg class="h-5 w-5 shrink-0 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-xs font-semibold">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            {{-- BANNER HAK AKSES ROLE VIEWER --}}
+            @if ($isViewer)
+                <div class="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-5 py-3.5 text-xs text-amber-900 shadow-2xs">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700 font-bold text-sm">
+                            👁️
+                        </div>
+                        <div>
+                            <p class="font-bold text-amber-900">Hak Akses: Viewer (Lihat Saja)</p>
+                            <p class="text-[11px] text-amber-700 mt-0.5">Akun Anda hanya dapat melihat, mencari, dan memfilter data uji resistensi. Fitur penambahan, pengubahan, dan penghapusan data dinonaktifkan.</p>
+                        </div>
+                    </div>
+                    <span class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-200/70 text-amber-800 border border-amber-300">
+                        Read-Only
+                    </span>
+                </div>
+            @endif
 
             {{-- HEADER KARTU & FILTER PERIODE BULANAN (RINGKAS & PROPORSIONAL) --}}
             <div class="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs">
@@ -342,6 +390,7 @@
                         <option value="all" {{ (string)($perPageRaw ?? request('per_page', 10)) === 'all' ? 'selected' : '' }}>Semua data</option>
                     </select>
 
+                    @if (!$isViewer)
                     {{-- TOMBOL IMPORT EXCEL --}}
                     <button 
                         type="button" 
@@ -366,6 +415,7 @@
                         </svg>
                         <span>Input Data</span>
                     </button>
+                    @endif
                 </div>
             </div>
 
@@ -382,7 +432,9 @@
                             <th class="w-20 px-2 py-3 text-center whitespace-nowrap">Sampel</th>
                             <th class="w-28 px-2 py-3 text-center whitespace-nowrap">Status</th>
                             <th class="min-w-[115px] px-3 py-3 text-center whitespace-nowrap">Periode</th>
+                            @if (!$isViewer)
                             <th class="w-32 px-2 py-3 text-center whitespace-nowrap">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 bg-white">
@@ -445,6 +497,7 @@
                                 <td class="px-3 py-2.5 text-center text-[11px] text-slate-600 font-medium whitespace-nowrap">
                                     {{ $item->bulan }} {{ $item->tahun }}
                                 </td>
+                                @if (!$isViewer)
                                 <td class="px-2 py-2.5 text-center whitespace-nowrap">
                                     <div class="flex items-center justify-center gap-1">
                                         <button 
@@ -471,10 +524,11 @@
                                         </button>
                                     </div>
                                 </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="px-6 py-12 text-center">
+                                <td colspan="{{ $isViewer ? 8 : 9 }}" class="px-6 py-12 text-center">
                                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3.5 border border-blue-100 shadow-2xs">
                                         @if(!empty($search))
                                             <svg class="h-7 w-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -514,6 +568,7 @@
                                                     📊 Tampilkan Semua Periode ({{ number_format($totalSemuaData) }} Data)
                                                 </a>
                                             @endif
+                                            @if (!$isViewer)
                                             <button 
                                                 type="button" 
                                                 onclick="openModal('modalImportExcel')" 
@@ -528,6 +583,7 @@
                                             >
                                                 + Input Data
                                             </button>
+                                            @endif
                                         </div>
                                     @endif
                                 </td>
@@ -551,9 +607,9 @@
 </main>
 
     {{-- ========================================================================= --}}
+    {{-- MODAL TAMBAH, EDIT, HAPUS & IMPORT DATA (HANYA DIRENDER UNTUK NON-VIEWER) --}}
     {{-- ========================================================================= --}}
-    {{-- MODAL IMPORT EXCEL --}}
-    {{-- ========================================================================= --}}
+    @if (!$isViewer)
     <div id="modalImportExcel" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 transition-all">
         <div class="min-h-full flex items-center justify-center py-6 w-full">
             <div class="relative w-full max-w-2xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-100 my-auto">
@@ -1079,6 +1135,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- SCRIPT INTERAKSI MODAL & DINAMIS KABUPATEN --}}
     <script>

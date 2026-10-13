@@ -141,6 +141,7 @@
     @php
         $currentUser = Auth::user();
         $isAdmin = $currentUser && strtolower((string)$currentUser->role) === 'admin';
+        $isViewer = $currentUser && (strtolower((string)$currentUser->role) === 'viewer' || (method_exists($currentUser, 'isViewer') && $currentUser->isViewer()));
     @endphp
     <nav class="custom-sidebar-nav flex-1 overflow-y-auto px-3 pt-3 pb-4 space-y-3.5 text-xs">
 
@@ -175,7 +176,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </span>
-                        <span class="truncate">Input Data</span>
+                        <span class="truncate">{{ $isViewer ? 'Data Resistensi' : 'Input Data' }}</span>
                     </div>
                     @if(request()->routeIs('input'))
                         <span class="nav-active-dot"></span>
@@ -216,7 +217,8 @@
             </div>
         </div>
 
-        {{-- SEKSI 2: DATA --}}
+        {{-- SEKSI 2: DATA (HANYA UNTUK PENGGUNA NON-VIEWER) --}}
+        @if (!$isViewer)
         <div>
             <div class="nav-section-title">
                 Data
@@ -255,6 +257,7 @@
                 </a>
             </div>
         </div>
+        @endif
 
         {{-- SEKSI 3: MASTER DATA (HANYA DITAMPILKAN UNTUK ADMINISTRATOR) --}}
         @if ($isAdmin)
@@ -315,7 +318,8 @@
         </div>
         @endif
 
-        {{-- SEKSI 4: SISTEM --}}
+        {{-- SEKSI 4: SISTEM (TIDAK DITAMPILKAN UNTUK ROLE VIEWER) --}}
+        @if ($isAdmin || !$isViewer)
         <div>
             <div class="nav-section-title">
                 Sistem
@@ -339,7 +343,8 @@
                 </a>
                 @endif
 
-                {{-- BACKUP & RESTORE (DITAMPILKAN UNTUK SEMUA USER) --}}
+                {{-- BACKUP & RESTORE (DITAMPILKAN UNTUK NON-VIEWER) --}}
+                @if (!$isViewer)
                 <a href="{{ route('backup.index') }}"
                    class="nav-menu-link {{ request()->routeIs('backup.*') ? 'active' : 'inactive' }}">
                     <div class="flex items-center gap-2.5 min-w-0">
@@ -354,8 +359,10 @@
                         <span class="nav-active-dot"></span>
                     @endif
                 </a>
+                @endif
             </div>
         </div>
+        @endif
 
     </nav>
 

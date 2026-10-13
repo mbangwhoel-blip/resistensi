@@ -16,8 +16,8 @@ class SecurityHeaders
         $response = $next($request);
 
         // Hapus banner X-Powered-By agar fingerprinting server tidak bocor
-        if (function_exists('header_remove')) {
-            header_remove('X-Powered-By');
+        if (function_exists('header_remove') && !headers_sent()) {
+            @header_remove('X-Powered-By');
         }
 
         // Terapkan header keamanan HTTP standar

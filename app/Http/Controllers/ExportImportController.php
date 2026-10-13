@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DataUjiResistensi;
 use App\Models\Provinsi;
 use App\Models\Kabupaten;
@@ -22,6 +23,10 @@ class ExportImportController extends Controller
      */
     public function exportIndex(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (tidak dapat mengekspor data).');
+        }
+
         $bulanFilter = $request->get('bulan', 'Semua');
         $tahunFilter = $request->get('tahun', 'Semua');
         $nyamukFilter = $request->get('jenis_nyamuk', '');
@@ -119,6 +124,10 @@ class ExportImportController extends Controller
      */
     public function exportDownload(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (tidak dapat mengekspor data).');
+        }
+
         $format = strtolower($request->get('format', 'xlsx'));
         $bulanFilter = $request->get('bulan', 'Semua');
         $tahunFilter = $request->get('tahun', 'Semua');
@@ -393,6 +402,10 @@ class ExportImportController extends Controller
      */
     public function importIndex()
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        }
+
         $totalData = DataUjiResistensi::count();
         $totalProvinsi = Provinsi::count();
         $totalKabupaten = Kabupaten::count();
@@ -670,6 +683,10 @@ class ExportImportController extends Controller
      */
     public function importProcess(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only) tanpa hak akses menambah/mengimpor data.');
+        }
+
         $request->validate([
             'file' => 'required|file|max:20480' // max 20MB
         ]);

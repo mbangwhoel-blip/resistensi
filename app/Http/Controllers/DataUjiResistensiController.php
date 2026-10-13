@@ -8,6 +8,7 @@ use App\Models\DataUjiResistensi;
 use App\Models\KategoriUji;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DeleteRequest;
 
 class DataUjiResistensiController extends Controller
@@ -135,6 +136,10 @@ class DataUjiResistensiController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only) tanpa hak akses menambah data.');
+        }
+
         // Jika input dikirim sebagai satu data langsung (dari Modal / Form Tambah Data)
         if ($request->filled('provinsi_id') || !$request->has('rows')) {
             $validated = $request->validate([
@@ -247,6 +252,10 @@ class DataUjiResistensiController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only) tanpa hak akses mengedit data.');
+        }
+
         $data = DataUjiResistensi::findOrFail($id);
 
         $validated = $request->validate([
@@ -389,6 +398,10 @@ class DataUjiResistensiController extends Controller
 
     public function destroy($id)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only) tanpa hak akses menghapus data.');
+        }
+
         $data = DataUjiResistensi::findOrFail($id);
         $bulan = $data->bulan;
         $tahun = $data->tahun;

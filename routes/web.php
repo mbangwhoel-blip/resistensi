@@ -203,20 +203,23 @@ Route::middleware('auth')->group(function () {
         'index'
     ])->name('input');
 
-    Route::post('/input', [
-        DataUjiResistensiController::class,
-        'store'
-    ])->name('input.store');
+    // Rute Input / Edit / Hapus Data Uji Resistensi (Khusus Non-Viewer)
+    Route::middleware('not_viewer')->group(function () {
+        Route::post('/input', [
+            DataUjiResistensiController::class,
+            'store'
+        ])->name('input.store');
 
-    Route::put('/input/{id}', [
-        DataUjiResistensiController::class,
-        'update'
-    ])->name('input.update');
+        Route::put('/input/{id}', [
+            DataUjiResistensiController::class,
+            'update'
+        ])->name('input.update');
 
-    Route::delete('/input/{id}', [
-        DataUjiResistensiController::class,
-        'destroy'
-    ])->name('input.destroy');
+        Route::delete('/input/{id}', [
+            DataUjiResistensiController::class,
+            'destroy'
+        ])->name('input.destroy');
+    });
 
     Route::get('/kabupaten/{provinsi_id}', [
         DataUjiResistensiController::class,
@@ -234,21 +237,21 @@ Route::middleware('auth')->group(function () {
     // Analisis Data Hasil Uji Resistensi (Grafik & Statistik Interaktif)
     Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis.index');
 
-    // Export Data
-    Route::prefix('export')->name('export.')->group(function () {
+    // Export Data (Khusus Pengguna Non-Viewer)
+    Route::middleware('not_viewer')->prefix('export')->name('export.')->group(function () {
         Route::get('/', [ExportImportController::class, 'exportIndex'])->name('index');
         Route::get('/download', [ExportImportController::class, 'exportDownload'])->name('download');
     });
 
-    // Import Data
-    Route::prefix('import')->name('import.')->group(function () {
+    // Import Data (Khusus Petugas / Pengguna Non-Viewer)
+    Route::middleware('not_viewer')->prefix('import')->name('import.')->group(function () {
         Route::get('/', [ExportImportController::class, 'importIndex'])->name('index');
         Route::get('/template', [ExportImportController::class, 'downloadTemplate'])->name('template');
         Route::post('/process', [ExportImportController::class, 'importProcess'])->name('process');
     });
 
-    // Backup & Restore Database (Tersedia untuk Pengguna yang Login)
-    Route::prefix('backup-restore')->name('backup.')->group(function () {
+    // Backup & Restore Database (Khusus Pengguna Non-Viewer)
+    Route::middleware('not_viewer')->prefix('backup-restore')->name('backup.')->group(function () {
         Route::get('/', [BackupRestoreController::class, 'index'])->name('index');
         Route::post('/create', [BackupRestoreController::class, 'createBackup'])->name('create');
         Route::get('/download/{filename}', [BackupRestoreController::class, 'downloadBackup'])->name('download');

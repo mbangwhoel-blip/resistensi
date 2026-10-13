@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BackupRestoreController extends Controller
@@ -64,6 +65,10 @@ class BackupRestoreController extends Controller
      */
     public function createBackup(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        }
+
         try {
             $tables = DB::select('SHOW TABLES');
             $dbName = config('database.connections.mysql.database', 'db_simpel');
@@ -154,6 +159,10 @@ class BackupRestoreController extends Controller
      */
     public function deleteBackup($filename)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        }
+
         $cleanFilename = basename($filename);
         if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $cleanFilename)) {
             abort(400, 'Format nama file backup tidak valid.');
@@ -175,6 +184,10 @@ class BackupRestoreController extends Controller
      */
     public function restoreBackup(Request $request)
     {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        }
+
         $request->validate([
             'backup_file' => 'required|file|max:51200' // max 50MB
         ]);

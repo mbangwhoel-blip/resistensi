@@ -83,6 +83,16 @@ class User extends Authenticatable
         ]);
     }
 
+    public function isViewer(): bool
+    {
+        return strtolower((string)$this->role) === 'viewer';
+    }
+
+    public function canManageData(): bool
+    {
+        return !$this->isViewer();
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'aktif';
