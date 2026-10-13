@@ -133,17 +133,17 @@
                 {{-- TAB NAVIGASI --}}
                 <div class="flex border-b border-slate-200 mb-6 gap-2">
                     <a href="{{ route('kategori.index', ['tab' => 'nyamuk']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'nyamuk' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'nyamuk' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
                         <span>🦟 Jenis Nyamuk</span>
                         <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalNyamuk }}</span>
                     </a>
                     <a href="{{ route('kategori.index', ['tab' => 'insektisida']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'insektisida' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'insektisida' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
                         <span>🧪 Insektisida</span>
                         <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalInsektisida }}</span>
                     </a>
                     <a href="{{ route('kategori.index', ['tab' => 'metode']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'metode' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'metode' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
                         <span>🔬 Metode Pengendalian</span>
                         <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalMetode }}</span>
                     </a>
@@ -209,7 +209,7 @@
                                     <td class="px-6 py-4">
                                         @php
                                             $badgeColor = match($item->kategori) {
-                                                'nyamuk' => 'bg-blue-50 text-blue-700 border-blue-200',
+                                                'nyamuk' => 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300',
                                                 'insektisida' => 'bg-amber-50 text-amber-700 border-amber-200',
                                                 'metode' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
                                                 default => 'bg-slate-50 text-slate-700 border-slate-200',

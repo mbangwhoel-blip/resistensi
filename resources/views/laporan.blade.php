@@ -48,7 +48,7 @@
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
                     <span>PETA RESISTENSI</span>
                     <span>/</span>
-                    <span class="text-blue-600">Laporan</span>
+                    <span class="text-teal-600 dark:text-teal-400">Laporan</span>
                 </div>
                 <h1 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
                     <span>📑 Laporan Hasil Uji Resistensi Vektor</span>
@@ -83,17 +83,17 @@
                 </div>
 
                 {{-- TOTAL SAMPEL NYAMUK --}}
-                <div class="rounded-2xl border border-blue-200 bg-blue-50/40 p-4 shadow-2xs">
+                <div class="rounded-2xl border border-teal-200 bg-teal-50/40 dark:bg-teal-950/20 dark:border-teal-800/50 p-4 shadow-2xs">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Total Nyamuk</span>
-                        <div class="h-8 w-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">Total Nyamuk</span>
+                        <div class="h-8 w-8 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center text-teal-700 dark:text-teal-300 font-bold text-xs">
                             🦟
                         </div>
                     </div>
-                    <div class="mt-2 text-2xl font-black text-blue-900 leading-tight">
+                    <div class="mt-2 text-2xl font-black text-teal-900 dark:text-white leading-tight">
                         {{ number_format($stats['total_sampel'], 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-blue-600">
+                    <div class="mt-1 text-[11px] font-semibold text-teal-600 dark:text-teal-400">
                         Ekor nyamuk diuji
                     </div>
                 </div>
@@ -410,7 +410,7 @@
                                     <td class="px-2.5 py-2.5 text-xs text-slate-700 dark:text-slate-200 leading-snug break-words">
                                         @if(!empty($row->alamat))
                                             <div class="flex items-start gap-1 font-medium">
-                                                <span class="text-blue-500 shrink-0 text-xs mt-0.5">📍</span>
+                                                <span class="text-teal-600 dark:text-teal-400 shrink-0 text-xs mt-0.5">📍</span>
                                                 <span class="break-words leading-snug">{{ $row->alamat }}</span>
                                             </div>
                                         @else
@@ -418,7 +418,7 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2.5">
-                                        <span class="inline-block rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/60 px-2 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 break-words leading-tight">
+                                        <span class="inline-block rounded-md bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800/60 px-2 py-0.5 text-[11px] font-semibold text-teal-700 dark:text-teal-300 break-words leading-tight">
                                             {{ $row->jenis_nyamuk ?: '-' }}
                                         </span>
                                     </td>

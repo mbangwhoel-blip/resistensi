@@ -872,9 +872,9 @@
         /* Badge Provinsi pada Detail Peta (Mode Gelap) */
         html.dark .map-detail-panel .panel-provinsi-badge,
         html.dark .map-detail-panel .bg-blue-100\/80 {
-            background-color: #1e3a8a !important;
-            color: #93c5fd !important;
-            border: 1px solid #0d9488 !important;
+            background-color: #0B3D3A !important;
+            color: #ffffff !important;
+            border: 1px solid #14b8a6 !important;
             font-weight: 800 !important;
         }
         /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
@@ -973,6 +973,36 @@
         html.dark .leaflet-popup-content .border-slate-100 {
             border-color: #27272a !important;
         }
+    
+        /* Warna Tulisan Terpilih dan Uji Selalu Putih Sesuai Permintaan */
+        .badge-terpilih,
+        .badge-terpilih *,
+        html.dark .badge-terpilih,
+        html.dark .badge-terpilih *,
+        .map-detail-panel .badge-terpilih,
+        .map-detail-panel .badge-terpilih *,
+        html.dark .map-detail-panel .badge-terpilih,
+        html.dark .map-detail-panel .badge-terpilih * {
+            color: #ffffff !important;
+            background-color: #0d9488 !important;
+            border-color: #0f766e !important;
+            font-weight: 800 !important;
+        }
+
+        .badge-count-uji,
+        .badge-count-uji *,
+        html.dark .badge-count-uji,
+        html.dark .badge-count-uji *,
+        .map-detail-panel .badge-count-uji,
+        .map-detail-panel .badge-count-uji *,
+        html.dark .map-detail-panel .badge-count-uji,
+        html.dark .map-detail-panel .badge-count-uji * {
+            color: #ffffff !important;
+            background-color: #0d9488 !important;
+            border-color: #0f766e !important;
+            font-weight: 800 !important;
+        }
+
     </style>
 </head>
 
@@ -2125,15 +2155,15 @@
                         return `
                             <button type="button"
                                     onclick="focusOnDesaAlamat('${escapeHtml(item).replace(/'/g, "\\'")}', '${kabupaten ? kabupaten.id : ''}', event)"
-                                    class="w-full text-left bg-blue-50/70 hover:bg-blue-100 active:bg-blue-200 border border-blue-200 hover:border-blue-300 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-800 font-medium transition cursor-pointer flex items-center justify-between group shadow-2xs"
+                                    class="w-full text-left bg-slate-50 hover:bg-slate-100 active:bg-slate-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 hover:border-teal-300 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-800 dark:text-zinc-100 font-medium transition cursor-pointer flex items-center justify-between group shadow-2xs"
                                     title="Klik untuk menyorot dan mengarahkan peta ke titik lokasi ${escapeHtml(item)}">
                                 <span class="flex items-center gap-1.5 truncate">
                                     <span class="text-xs transition-transform group-hover:scale-125">📍</span>
                                     <span class="truncate font-semibold text-slate-800">${escapeHtml(item)}</span>
                                 </span>
-                                <span class="flex items-center gap-1 text-[10px] text-blue-600 group-hover:text-blue-800 font-bold shrink-0 ml-1.5 bg-white/80 px-1.5 py-0.5 rounded border border-blue-100">
-                                    <span>${countInAlamat > 0 ? countInAlamat + ' uji' : 'Lihat'}</span>
-                                    <span class="transition-transform group-hover:translate-x-0.5">→</span>
+                                <span class="badge-count-uji flex items-center gap-1 text-[10px] font-bold text-white bg-teal-600 hover:bg-teal-700 px-2 py-0.5 rounded border border-teal-500 shrink-0 ml-1.5 shadow-2xs" style="color: #ffffff !important;">
+                                    <span style="color: #ffffff !important;" class="text-white">${countInAlamat > 0 ? countInAlamat + ' uji' : 'Lihat'}</span>
+                                    <span style="color: #ffffff !important;" class="text-white transition-transform group-hover:translate-x-0.5">→</span>
                                 </span>
                             </button>
                         `;
@@ -2200,10 +2230,10 @@
                     <div>
                         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100/80 text-blue-800 uppercase tracking-wide panel-provinsi-badge">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#0B3D3A] text-white uppercase tracking-wide panel-provinsi-badge border border-teal-600/60 shadow-2xs">
                                     PROVINSI ${escapeHtml(provinsi ? provinsi.nama_provinsi : 'INDONESIA')}
                                 </span>
-                                ${isPinned ? '<span class="text-[9.5px] font-bold text-teal-700 bg-teal-50/80 border border-teal-200/80 px-1.5 py-0.5 rounded-full">📌 Terpilih</span>' : ''}
+                                ${isPinned ? '<span class="badge-terpilih text-[9.5px] font-bold text-white bg-teal-600 border border-teal-500 px-2 py-0.5 rounded-full shadow-2xs" style="color: #ffffff !important;">📌 Terpilih</span>' : ''}
                             </div>
                             <div class="flex items-center gap-1">
                                 <button type="button" onclick="window.toggleMinimizeDetailCard(event)" class="text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full h-5 w-5 flex items-center justify-center font-bold text-xs transition cursor-pointer" title="Perkecil Panel">−</button>

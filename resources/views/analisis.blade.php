@@ -74,7 +74,7 @@
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
                     <span>PETA RESISTENSI</span>
                     <span>/</span>
-                    <span class="text-blue-600">Analisis Data</span>
+                    <span class="text-teal-600 dark:text-teal-400">Analisis Data</span>
                 </div>
                 <h1 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
                     <span>📊 Analisis & Visualisasi Grafik Resistensi</span>
@@ -725,7 +725,7 @@
                         }
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         titleFont: { size: 12, weight: 'bold' },
                         bodyFont: { size: 12 },
                         padding: 10,
@@ -769,7 +769,7 @@
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         padding: 10,
                         cornerRadius: 10,
                         callbacks: {
@@ -828,7 +828,7 @@
                         }
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         padding: 10,
                         cornerRadius: 10
                     }
@@ -894,7 +894,7 @@
                         }
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         padding: 10,
                         cornerRadius: 10
                     }
@@ -934,7 +934,7 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         padding: 10,
                         cornerRadius: 10,
                         callbacks: {
@@ -992,7 +992,7 @@
                         display: false // Menggunakan daftar rincian HTML rata kiri yang rapi di bawah chart
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: '#141417',
                         padding: 10,
                         cornerRadius: 10,
                         callbacks: {

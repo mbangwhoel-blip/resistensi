@@ -242,7 +242,7 @@
     html.dark .bg-blue-50\/40,
     html.dark .bg-blue-50\/50,
     html.dark .bg-blue-50\/70 {
-        background-color: rgba(59, 130, 246, 0.18) !important;
+        background-color: rgba(13, 148, 136, 0.16) !important;
     }
     html.dark .bg-blue-200,
     html.dark .bg-blue-200\/80 {
@@ -256,16 +256,16 @@
         color: #dbeafe !important;
     }
     html.dark .text-blue-700 {
-        color: #93c5fd !important;
+        color: #2dd4bf !important;
     }
     html.dark .text-blue-600 {
-        color: #60a5fa !important;
+        color: #2dd4bf !important;
     }
     html.dark .border-blue-200,
     html.dark .border-blue-100,
     html.dark .border-blue-300,
     html.dark .border-blue-200\/60 {
-        border-color: rgba(59, 130, 246, 0.4) !important;
+        border-color: rgba(13, 148, 136, 0.35) !important;
     }
 
     /* Amber / Toleran */
@@ -792,9 +792,9 @@
     /* Badge Provinsi pada Detail Peta (Mode Gelap) */
     html.dark .map-detail-panel .panel-provinsi-badge,
     html.dark .map-detail-panel .bg-blue-100\/80 {
-        background-color: #1e3a8a !important;
-        color: #93c5fd !important;
-        border: 1px solid #3b82f6 !important;
+        background-color: #0B3D3A !important;
+        color: #ffffff !important;
+        border: 1px solid #14b8a6 !important;
         font-weight: 800 !important;
     }
     /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
@@ -941,8 +941,8 @@
     html.dark nav[role="navigation"] a:hover,
     html.dark #dashboardTablePagination button:hover {
         background-color: #27272a !important;
-        border-color: #3b82f6 !important;
-        color: #60a5fa !important;
+        border-color: #0d9488 !important;
+        color: #2dd4bf !important;
     }
 
     /* Tombol Paginasi Disabled (Sebelumnya / Selanjutnya di Halaman Pertama / Terakhir) */
@@ -956,10 +956,10 @@
     /* Nomor Halaman Aktif (Biru Menonjol) */
     html.dark nav[role="navigation"] span.bg-blue-600,
     html.dark #dashboardTablePagination span.bg-blue-600 {
-        background-color: #2563eb !important;
+        background-color: #0d9488 !important;
         color: #ffffff !important;
-        border-color: #2563eb !important;
-        box-shadow: 0 2px 8px -1px rgba(37, 99, 235, 0.5) !important;
+        border-color: #0d9488 !important;
+        box-shadow: 0 2px 8px -1px rgba(13, 148, 136, 0.5) !important;
     }
 
     /* Titik-titik Pemisah (...) */
@@ -1026,4 +1026,34 @@
             color: #000000 !important;
         }
     }
+
+        /* Warna Tulisan Terpilih dan Uji Selalu Putih Sesuai Permintaan */
+        .badge-terpilih,
+        .badge-terpilih *,
+        html.dark .badge-terpilih,
+        html.dark .badge-terpilih *,
+        .map-detail-panel .badge-terpilih,
+        .map-detail-panel .badge-terpilih *,
+        html.dark .map-detail-panel .badge-terpilih,
+        html.dark .map-detail-panel .badge-terpilih * {
+            color: #ffffff !important;
+            background-color: #0d9488 !important;
+            border-color: #0f766e !important;
+            font-weight: 800 !important;
+        }
+
+        .badge-count-uji,
+        .badge-count-uji *,
+        html.dark .badge-count-uji,
+        html.dark .badge-count-uji *,
+        .map-detail-panel .badge-count-uji,
+        .map-detail-panel .badge-count-uji *,
+        html.dark .map-detail-panel .badge-count-uji,
+        html.dark .map-detail-panel .badge-count-uji * {
+            color: #ffffff !important;
+            background-color: #0d9488 !important;
+            border-color: #0f766e !important;
+            font-weight: 800 !important;
+        }
+
 </style>

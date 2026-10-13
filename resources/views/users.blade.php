@@ -260,7 +260,7 @@
                                     {{-- ROLE --}}
                                     <td class="px-2 py-2.5 text-center whitespace-nowrap">
                                         @if ($u->role === 'admin')
-                                            <span class="inline-flex items-center gap-1 rounded-lg bg-blue-50 border border-blue-200 px-2 py-0.5 text-[11px] font-bold text-blue-700">
+                                            <span class="inline-flex items-center gap-1 rounded-lg bg-teal-50 border border-teal-200 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 px-2 py-0.5 text-[11px] font-bold text-teal-700">
                                                 <span>🛡️</span>
                                                 <span>Administrator</span>
                                             </span>

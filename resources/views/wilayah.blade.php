@@ -117,14 +117,14 @@
                 {{-- TAB NAVIGATION --}}
                 <div class="flex border-b border-slate-200 bg-slate-50/70 px-6 pt-4">
                     <a href="{{ route('wilayah.index', ['tab' => 'kabupaten']) }}"
-                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'kabupaten' ? 'border-blue-600 text-blue-600 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'kabupaten' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
                         Daftar Kabupaten / Kota
                     </a>
                     <a href="{{ route('wilayah.index', ['tab' => 'provinsi']) }}"
-                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'provinsi' ? 'border-blue-600 text-blue-600 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'provinsi' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                         </svg>
@@ -195,7 +195,7 @@
                                                 {{ $kab->nama_kabupaten }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                <span class="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                                                <span class="inline-flex items-center rounded-lg bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700 dark:bg-teal-950/40 dark:text-teal-300">
                                                     {{ $kab->provinsi?->nama_provinsi ?? '-' }}
                                                 </span>
                                             </td>

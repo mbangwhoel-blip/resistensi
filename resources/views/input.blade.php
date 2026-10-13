@@ -329,9 +329,9 @@
                         </span>
                         <span class="text-slate-300">•</span>
                         <span>Total:</span>
-                        <span class="font-bold text-blue-600">{{ number_format($data->total()) }} Data</span>
+                        <span class="font-bold text-teal-600 dark:text-teal-400">{{ number_format($data->total()) }} Data</span>
                         @if(!empty($search))
-                            <span class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 border border-blue-200">
+                            <span class="inline-flex items-center gap-1 rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 border border-teal-200">
                                 🔍 Kata kunci: "{{ $search }}"
                             </span>
                         @endif
@@ -454,7 +454,7 @@
                                 <td class="px-3 py-2.5 text-xs text-slate-700 leading-snug">
                                     @if (!empty($item->alamat))
                                         <div class="inline-flex items-start gap-1 font-medium text-slate-700" title="{{ $item->alamat }}">
-                                            <span class="text-blue-500 shrink-0 mt-0.5">📍</span>
+                                            <span class="text-teal-600 dark:text-teal-400 shrink-0 mt-0.5">📍</span>
                                             <span class="break-words">{{ $item->alamat }}</span>
                                         </div>
                                     @else
@@ -462,7 +462,7 @@
                                     @endif
                                 </td>
                                 <td class="px-3 py-2.5 whitespace-nowrap">
-                                    <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap" title="{{ $item->jenis_nyamuk }}">
+                                    <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-2 py-0.5 text-[11px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 whitespace-nowrap" title="{{ $item->jenis_nyamuk }}">
                                         {{ $item->jenis_nyamuk }}
                                     </span>
                                 </td>
@@ -547,7 +547,7 @@
                                             Tidak ditemukan hasil untuk kata kunci <span class="font-bold text-slate-700">"{{ $search }}"</span> pada filter periode saat ini.
                                         </p>
                                         <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-                                            <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua', 'search' => $search], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                            <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua', 'search' => $search], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-2 text-xs font-bold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-600 hover:text-white transition shadow-2xs">
                                                 🔍 Cari di Semua Periode
                                             </a>
                                             <a href="{{ route('input', array_merge(['bulan' => $bulan, 'tahun' => $tahun], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
@@ -564,7 +564,7 @@
                                         </p>
                                         <div class="mt-4 flex flex-wrap items-center justify-center gap-2.5">
                                             @if($totalSemuaData > 0)
-                                                <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua'], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs">
+                                                <a href="{{ route('input', array_merge(['bulan' => 'Semua', 'tahun' => 'Semua'], request('per_page') ? ['per_page' => request('per_page')] : [])) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-bold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-600 hover:text-white transition shadow-2xs">
                                                     📊 Tampilkan Semua Periode ({{ number_format($totalSemuaData) }} Data)
                                                 </a>
                                             @endif
