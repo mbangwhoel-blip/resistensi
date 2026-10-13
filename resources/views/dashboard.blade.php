@@ -649,32 +649,45 @@
             color: #ffffff !important;
         }
         html.dark button[onclick="resetMapView()"] {
-            background-color: rgba(13, 148, 136, 0.2) !important;
-            border-color: rgba(13, 148, 136, 0.45) !important;
-            color: #2dd4bf !important;
+            background-color: rgba(37, 99, 235, 0.15) !important;
+            border-color: rgba(37, 99, 235, 0.4) !important;
+            color: #60a5fa !important;
         }
         html.dark button[onclick="resetMapView()"]:hover {
-            background-color: #0d9488 !important;
-            border-color: #0d9488 !important;
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        html.dark button[onclick="resetMapView()"] svg {
+            color: #60a5fa !important;
+        }
+        html.dark button[onclick="resetMapView()"]:hover svg {
             color: #ffffff !important;
         }
         html.dark button[title="Buka/Tutup Filter"] {
-            background-color: rgba(13, 148, 136, 0.2) !important;
-            border-color: rgba(13, 148, 136, 0.45) !important;
-            color: #2dd4bf !important;
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
         }
         html.dark button[title="Buka/Tutup Filter"]:hover,
         html.dark .group:hover button[title="Buka/Tutup Filter"] {
-            background-color: #0d9488 !important;
-            border-color: #0d9488 !important;
+            background-color: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
             color: #ffffff !important;
         }
         html.dark #filterCollapseIcon {
-            color: #2dd4bf !important;
+            color: #ffffff !important;
         }
         html.dark button[title="Buka/Tutup Filter"]:hover #filterCollapseIcon,
         html.dark .group:hover #filterCollapseIcon {
             color: #ffffff !important;
+        }
+        html.dark #filterPanelHeader {
+            background-color: #141417 !important;
+            border-color: #27272a !important;
+        }
+        html.dark #filterPanelHeader:hover {
+            background-color: #1a1a1e !important;
         }
 
         /* Filter Toolbar Peta */
@@ -1174,30 +1187,31 @@
             @if (!$isViewer)
             {{-- ================================================= --}}
             {{-- PANEL FILTER UTAMA (SESUAI GAMBAR 2: INDIKATOR, PERIODE, LEVEL) --}}
+            {{-- TAMPIL HANYA UNTUK SELAIN ROLE VIEWER & DEFAULTNYA MENUTUP --}}
             {{-- ================================================= --}}
             <div class="mt-4 rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
                 {{-- Header Filter dengan Tombol Collapse --}}
-                <div class="group flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-white hover:bg-slate-50/70 select-none cursor-pointer transition" onclick="toggleFilterPanel()">
+                <div id="filterPanelHeader" class="group flex items-center justify-between px-5 py-3.5 bg-white hover:bg-slate-50/70 select-none cursor-pointer transition" onclick="toggleFilterPanel()">
                     <div class="flex items-center gap-2.5">
-                        <span class="text-xs font-bold text-slate-800 tracking-wider uppercase">
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 tracking-wider uppercase">
                             FILTER
                         </span>
                         <span class="rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
                             Nasional • Provinsi • Kab / Kota
                         </span>
                     </div>
-                    <button type="button" class="h-7 w-7 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 flex items-center justify-center shadow-2xs transition-all cursor-pointer" title="Buka/Tutup Filter">
-                        <svg id="filterCollapseIcon" class="h-4 w-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="button" class="h-7 w-7 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-xs transition-all cursor-pointer" title="Buka/Tutup Filter">
+                        <svg id="filterCollapseIcon" class="h-4 w-4 transition-transform duration-200" style="transform: rotate(180deg);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
                         </svg>
                     </button>
                 </div>
 
-                {{-- Form Filter --}}
-                <div id="filterPanelBody" class="p-5 space-y-4">
+                {{-- Form Filter (Default Menutup / Hidden) --}}
+                <div id="filterPanelBody" class="hidden p-5 space-y-4">
                     {{-- Row 1: Indikator --}}
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700">Indikator</label>
+                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300">Indikator</label>
                         <div class="md:col-span-10">
                             <select id="filterIndikator" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs transition">
                                 <option value="Peta Endemisitas & Resistensi">Peta Endemisitas & Resistensi (Semua Indikator)</option>
@@ -1209,7 +1223,7 @@
 
                     {{-- Row 2: Periode Laporan --}}
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700">Periode Laporan</label>
+                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300">Periode Laporan</label>
                         <div class="md:col-span-10">
                             <select id="filterPeriodeTahun" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs transition">
                                 <option value="">Semua Periode (Pilih Tahun)</option>
@@ -1222,10 +1236,10 @@
 
                     {{-- Row 3: Level --}}
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700 pt-1.5">Level</label>
+                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300 pt-1.5">Level</label>
                         <div class="md:col-span-10 space-y-3">
                             {{-- Radio Pilihan Level --}}
-                            <div class="flex flex-wrap items-center gap-6 text-xs text-slate-700 font-semibold">
+                            <div class="flex flex-wrap items-center gap-6 text-xs text-slate-700 dark:text-zinc-300 font-semibold">
                                 <label class="inline-flex items-center gap-2 cursor-pointer">
                                     <input type="radio" name="levelFilter" value="nasional" checked onchange="handleLevelChange('nasional')" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300">
                                     <span>Nasional</span>
@@ -1273,39 +1287,28 @@
                     </div>
                 </div>
             </div>
+            @endif
 
-            {{-- KETERANGAN STATUS FILTER DI ATAS PETA (SESUAI GAMBAR 2) --}}
-            <div class="mt-4 mb-2 px-1 text-slate-800">
-                <h4 id="activeFilterTitle" class="text-sm font-bold text-slate-900 leading-snug">
+            {{-- KETERANGAN STATUS FILTER DI ATAS PETA (SESUAI GAMBAR 1 - TAMPIL UNTUK SEMUA ROLE TERMASUK VIEWER) --}}
+            <div class="mt-4 mb-2 px-1 text-slate-800 dark:text-slate-100">
+                <h4 id="activeFilterTitle" class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
                     Peta Endemisitas & Resistensi
                 </h4>
-                <div id="activeFilterLevel" class="text-xs font-semibold text-slate-700 mt-0.5">
+                <div id="activeFilterLevel" class="text-xs font-semibold text-slate-700 dark:text-zinc-300 mt-0.5">
                     Level: NASIONAL (Seluruh Indonesia)
                 </div>
-                <div id="activeFilterPeriode" class="text-xs text-slate-500 mt-0.5">
+                <div id="activeFilterPeriode" class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                     Periode Laporan: Semua Periode
                 </div>
             </div>
-            @else
-            {{-- KETERANGAN PETA UNTUK ROLE VIEWER --}}
-            <div class="mt-4 mb-2 px-1 text-slate-800">
-                <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
-                    Peta Sebaran & Endemisitas Resistensi Nasional
-                </h4>
-                <div class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                    Menampilkan seluruh data sebaran pengujian resistensi vektor Kemenkes RI
-                </div>
-            </div>
-            @endif
 
             {{-- ================================================= --}}
             {{-- MAP SEBARAN PEMERIKSAAN DENGAN FILTER SEJAJAR --}}
             {{-- ================================================= --}}
             <div class="mt-2 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs">
 
-                @if (!$isViewer)
-                {{-- FILTER TOOLBAR DI ATAS PETA (PROPORSIONAL PENUH) --}}
-                <div class="mb-3.5 flex flex-wrap items-center gap-2.5 border-b border-slate-100 pb-3.5">
+                {{-- FILTER TOOLBAR DI ATAS PETA (SESUAI GAMBAR 1 - TAMPIL UNTUK SEMUA ROLE TERMASUK VIEWER) --}}
+                <div class="mb-3.5 flex flex-wrap items-center gap-2.5 border-b border-slate-100 dark:border-zinc-800 pb-3.5">
 
                     {{-- JENIS NYAMUK --}}
                     <div class="flex-1 min-w-[150px]">
@@ -1364,19 +1367,6 @@
                     </div>
 
                 </div>
-
-                                @else
-                {{-- HEADER PETA UNTUK ROLE VIEWER (TANPA FILTER) --}}
-                <div class="mb-3 flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-2.5">
-                    <span class="text-xs font-semibold text-slate-500 dark:text-zinc-400">Peta Sebaran Pengujian</span>
-                    <button type="button" onclick="resetMapView()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-teal-200 bg-teal-50 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white px-2.5 py-1 text-xs font-semibold text-teal-700 transition shadow-2xs cursor-pointer">
-                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                        <span>Reset Tampilan Peta</span>
-                    </button>
-                </div>
-                @endif
 
                 {{-- MAP CONTAINER --}}
                 <div id="map"></div>
@@ -3397,13 +3387,16 @@
             window.toggleFilterPanel = function() {
                 const body = document.getElementById('filterPanelBody');
                 const icon = document.getElementById('filterCollapseIcon');
+                const header = document.getElementById('filterPanelHeader');
                 if (!body) return;
                 if (body.classList.contains('hidden')) {
                     body.classList.remove('hidden');
                     if (icon) icon.style.transform = 'rotate(0deg)';
+                    if (header) header.classList.add('border-b', 'border-slate-100');
                 } else {
                     body.classList.add('hidden');
                     if (icon) icon.style.transform = 'rotate(180deg)';
+                    if (header) header.classList.remove('border-b', 'border-slate-100');
                 }
             };
 
