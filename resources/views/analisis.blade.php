@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisis Data Hasil Uji Resistensi - SIMPEL BBLKL</title>
+    <title>Analisis Data Hasil Uji Resistensi - PETA RESISTENSI</title>
 
     {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
     @include('dark_mode_head')
@@ -72,7 +72,7 @@
         <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-2xs">
             <div>
                 <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
-                    <span>SIMPEL BBLKL</span>
+                    <span>PETA RESISTENSI</span>
                     <span>/</span>
                     <span class="text-blue-600">Analisis Data</span>
                 </div>

@@ -281,7 +281,7 @@
             height: 0;
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
-            border-top: 9px solid #334155;
+            border-top: 9px solid #27272a;
             margin-top: -2px;
         }
 
@@ -290,7 +290,7 @@
             display: flex;
             align-items: center;
             gap: 2.5px;
-            background: rgba(15, 23, 42, 0.88);
+            background: rgba(20, 20, 23, 0.92);
             backdrop-filter: blur(4px);
             padding: 1.5px 4.5px;
             border-radius: 9999px;
@@ -350,18 +350,18 @@
         /* ======================================================== */
         html.dark,
         html.dark body {
-            background-color: #0b0f17 !important;
+            background-color: #09090b !important;
             color: #f1f5f9 !important;
         }
 
         html.dark main {
-            background-color: #0b0f17 !important;
+            background-color: #09090b !important;
         }
 
         /* Topbar Header */
         html.dark header.sticky {
-            background-color: #111827 !important;
-            border-color: #1f2937 !important;
+            background-color: #141417 !important;
+            border-color: #27272a !important;
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
         }
         html.dark header h1 {
@@ -373,21 +373,21 @@
 
         /* Tombol Tema & Dropdown User */
         html.dark #themeToggleBtn {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark #themeToggleBtn:hover {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
             border-color: #475569 !important;
         }
         html.dark #userDropdownBtn {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark #userDropdownBtn:hover {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
             border-color: #475569 !important;
         }
         html.dark #userDropdownBtn p.text-slate-800 {
@@ -397,14 +397,14 @@
             color: #94a3b8 !important;
         }
         html.dark #userDropdownMenu {
-            background-color: #111827 !important;
-            border-color: #1f2937 !important;
+            background-color: #141417 !important;
+            border-color: #27272a !important;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
         }
         html.dark #userDropdownMenu .bg-slate-50\/60,
         html.dark #userDropdownMenu .border-slate-100 {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
         }
         html.dark #userDropdownMenu p.text-slate-800 {
             color: #f8fafc !important;
@@ -416,14 +416,14 @@
             color: #cbd5e1 !important;
         }
         html.dark #dropdownThemeToggle:hover {
-            background-color: #1f2937 !important;
+            background-color: #27272a !important;
         }
 
         /* Semua Background Putih di Main Menjadi Dark Slate */
         html.dark main .bg-white:not(#themeSwitchThumb),
         html.dark main div.bg-white,
         html.dark main header.bg-white {
-            background-color: #111827 !important;
+            background-color: #141417 !important;
         }
         html.dark #themeSwitchThumb {
             background-color: #ffffff !important;
@@ -432,14 +432,14 @@
         /* Container Card Shadow & Border */
         html.dark main .rounded-xl.border,
         html.dark main .rounded-2xl.border {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35) !important;
         }
 
         /* Border Halus di Mode Gelap */
         html.dark main .border-slate-100,
         html.dark main .border-slate-200 {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
         }
 
         /* Teks Judul, Label, dan Deskripsi */
@@ -471,6 +471,21 @@
         }
 
         /* Badges & Pills Contrast di Mode Gelap */
+
+        /* Teal Accents & Badges in Dark Mode */
+        html.dark main .bg-teal-50,
+        html.dark main .bg-teal-100 {
+            background-color: rgba(13, 148, 136, 0.16) !important;
+        }
+        html.dark main .text-teal-700,
+        html.dark main .text-teal-600 {
+            color: #2dd4bf !important;
+        }
+        html.dark main .border-teal-200,
+        html.dark main .border-teal-100 {
+            border-color: rgba(13, 148, 136, 0.35) !important;
+        }
+
         html.dark main .bg-emerald-50,
         html.dark main .bg-emerald-100 {
             background-color: rgba(16, 185, 129, 0.16) !important;
@@ -582,8 +597,8 @@
         /* Kotak Pencarian */
         html.dark #headerSearch,
         html.dark #tableSearchInput {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark #headerSearch::placeholder,
@@ -593,7 +608,7 @@
         html.dark #headerSearch:focus,
         html.dark #tableSearchInput:focus {
             border-color: #0d9488 !important;
-            background-color: #111827 !important;
+            background-color: #141417 !important;
             box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2) !important;
         }
         html.dark #headerClearBtn,
@@ -607,30 +622,30 @@
 
         /* Panel Filter Form & Inputs */
         html.dark #filterPanelBody {
-            background-color: #111827 !important;
+            background-color: #141417 !important;
         }
         html.dark #filterPanelBody select,
         html.dark #filterPanelBody input[type="text"] {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark #filterPanelBody select option {
-            background-color: #111827 !important;
+            background-color: #141417 !important;
             color: #f8fafc !important;
         }
         html.dark #filterPanelBody select:disabled {
-            background-color: #0b0f17 !important;
-            border-color: #1f2937 !important;
+            background-color: #09090b !important;
+            border-color: #27272a !important;
             color: #64748b !important;
         }
         html.dark button[onclick="resetAllFilters()"] {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #cbd5e1 !important;
         }
         html.dark button[onclick="resetAllFilters()"]:hover {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
             color: #ffffff !important;
         }
         html.dark button[onclick="resetMapView()"] {
@@ -667,51 +682,51 @@
         html.dark #filterInsektisida,
         html.dark #filterMetode,
         html.dark #filterStatus {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark #filterJenisNyamuk option,
         html.dark #filterInsektisida option,
         html.dark #filterMetode option,
         html.dark #filterStatus option {
-            background-color: #111827 !important;
+            background-color: #141417 !important;
             color: #f8fafc !important;
         }
 
         /* Tabel Data Pemeriksaan */
         html.dark #tablePemeriksaanSection {
-            background-color: #111827 !important;
-            border-color: #1f2937 !important;
+            background-color: #141417 !important;
+            border-color: #27272a !important;
         }
         html.dark #tablePemeriksaanSection .border-b {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
         }
         html.dark #tablePemeriksaanSection .overflow-x-auto {
-            background-color: #1f2937 !important;
+            background-color: #27272a !important;
         }
         html.dark #tablePemeriksaanSection thead,
         html.dark #tablePemeriksaanSection thead tr,
         html.dark #tablePemeriksaanSection thead th {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #94a3b8 !important;
         }
         html.dark #tablePemeriksaanSection thead th {
             color: #94a3b8 !important;
         }
         html.dark #tablePemeriksaanSection table {
-            border-color: #1f2937 !important;
-            background-color: #111827 !important;
+            border-color: #27272a !important;
+            background-color: #141417 !important;
         }
         html.dark #tableDataBody {
-            background-color: #111827 !important;
+            background-color: #141417 !important;
         }
         html.dark #tableDataBody tr {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
         }
         html.dark #tableDataBody tr:hover {
-            background-color: rgba(30, 41, 59, 0.7) !important;
+            background-color: rgba(255, 255, 255, 0.04) !important;
         }
         html.dark #tableDataBody .text-slate-800 {
             color: #f8fafc !important;
@@ -724,66 +739,66 @@
             color: #94a3b8 !important;
         }
         html.dark #tablePageSizeSelect {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark div:has(> #tablePageSizeSelect) {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
         }
         html.dark #dashboardTablePagination {
-            background-color: #111827 !important;
-            border-color: #1f2937 !important;
+            background-color: #141417 !important;
+            border-color: #27272a !important;
         }
         html.dark #dashboardTablePagination button {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #cbd5e1 !important;
         }
         html.dark #dashboardTablePagination button:hover:not(:disabled) {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
             color: #ffffff !important;
         }
         html.dark button[onclick^="showRowDetailModal"] {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #cbd5e1 !important;
         }
         html.dark button[onclick^="showRowDetailModal"]:hover {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
             color: #2dd4bf !important;
             border-color: #2dd4bf !important;
         }
 
         /* Modal Detail */
         html.dark #rowDetailModalCard {
-            background-color: #111827 !important;
-            border-color: #1f2937 !important;
+            background-color: #141417 !important;
+            border-color: #27272a !important;
             color: #f1f5f9 !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
         }
         html.dark #rowDetailModalCard .border-b,
         html.dark #rowDetailModalCard .border-t {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
         }
         html.dark #rowDetailModalCard .bg-gradient-to-r {
-            background: linear-gradient(to right, #111827, #1f2937) !important;
+            background: linear-gradient(to right, #141417, #27272a) !important;
         }
         html.dark #modalDetailFooter {
-            background-color: #0b0f17 !important;
+            background-color: #09090b !important;
         }
         html.dark #modalDetailBody {
             color: #e2e8f0 !important;
         }
         html.dark #modalDetailBody .bg-slate-50,
         html.dark #modalDetailBody .bg-slate-100 {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
         }
         html.dark #modalDetailBody .border-slate-100,
         html.dark #modalDetailBody .border-slate-200 {
-            border-color: #27354a !important;
+            border-color: #27272a !important;
         }
 
         /* Peta Leaflet Dark Mode Tiles (Bebas Watermark & Tanpa Perlu API Key) */
@@ -794,19 +809,19 @@
             filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
         }
         html.dark .leaflet-container {
-            background-color: #0b0f17 !important;
+            background-color: #09090b !important;
         }
 
         html.dark #map {
-            border-color: #1f2937 !important;
+            border-color: #27272a !important;
         }
         html.dark .leaflet-bar a {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
             color: #f8fafc !important;
         }
         html.dark .leaflet-bar a:hover {
-            background-color: #27354a !important;
+            background-color: #27272a !important;
         }
         html.dark .leaflet-container .leaflet-control-attribution {
             background: rgba(15, 23, 42, 0.85) !important;
@@ -816,20 +831,20 @@
             color: #2dd4bf !important;
         }
         html.dark .region-map-label {
-            background: #1f2937 !important;
+            background: #27272a !important;
             border: 1px solid #475569 !important;
             color: #f1f5f9 !important;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
         }
         html.dark .map-detail-panel {
-            background: rgba(15, 23, 42, 0.94) !important;
-            border: 1px solid rgba(51, 65, 85, 0.95) !important;
+            background: rgba(20, 20, 23, 0.95) !important;
+            border: 1px solid rgba(39, 39, 42, 0.95) !important;
             color: #f1f5f9 !important;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
         }
         html.dark .map-detail-panel.is-pinned,
         html.dark .map-detail-panel:hover {
-            background: rgba(15, 23, 42, 0.98) !important;
+            background: rgba(20, 20, 23, 0.98) !important;
         }
         html.dark .map-detail-panel .text-slate-800 {
             color: #f8fafc !important;
@@ -849,10 +864,10 @@
         html.dark .map-detail-panel .border-slate-100,
         html.dark .map-detail-panel .border-slate-200,
         html.dark .map-detail-panel .border-slate-200\/60 {
-            border-color: #27354a !important;
+            border-color: #27272a !important;
         }
         html.dark .map-detail-panel .bg-slate-50 {
-            background-color: #1f2937 !important;
+            background-color: #27272a !important;
         }
         /* Badge Provinsi pada Detail Peta (Mode Gelap) */
         html.dark .map-detail-panel .panel-provinsi-badge,
@@ -865,8 +880,8 @@
         /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
         html.dark .map-detail-panel .panel-stat-box,
         html.dark .map-detail-panel .grid .bg-white\/45 {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
         }
         html.dark .map-detail-panel .panel-stat-box .text-slate-800 {
             color: #ffffff !important;
@@ -879,8 +894,8 @@
         /* Kotak Hasil Pemeriksaan (Mode Gelap) */
         html.dark .map-detail-panel .panel-results-box,
         html.dark .map-detail-panel .bg-white\/45 {
-            background-color: #1f2937 !important;
-            border-color: #27354a !important;
+            background-color: #27272a !important;
+            border-color: #27272a !important;
         }
         html.dark .map-detail-panel .panel-results-box .text-slate-800 {
             color: #f8fafc !important;
@@ -893,13 +908,13 @@
             color: #94a3b8 !important;
         }
         html.dark .map-legend-control {
-            background: rgba(15, 23, 42, 0.88) !important;
-            border: 1px solid rgba(51, 65, 85, 0.9) !important;
+            background: rgba(20, 20, 23, 0.92) !important;
+            border: 1px solid rgba(39, 39, 42, 0.9) !important;
             color: #f1f5f9 !important;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
         }
         html.dark .map-legend-control:hover {
-            background: rgba(15, 23, 42, 0.95) !important;
+            background: rgba(20, 20, 23, 0.96) !important;
         }
         html.dark .map-legend-control .text-slate-900,
         html.dark .map-legend-control .text-slate-800 {
@@ -914,7 +929,7 @@
         }
         html.dark .map-legend-control .border-slate-200\/80,
         html.dark .map-legend-control .border-slate-100 {
-            border-color: #27354a !important;
+            border-color: #27272a !important;
         }
         html.dark .map-legend-control .bg-rose-50 {
             background-color: rgba(136, 19, 55, 0.35) !important;
@@ -937,17 +952,17 @@
             color: #c7d2fe !important;
         }
         html.dark .map-legend-control .bg-slate-50 {
-            background-color: rgba(30, 41, 59, 0.6) !important;
+            background-color: rgba(39, 39, 42, 0.6) !important;
             border-color: #475569 !important;
         }
         html.dark .leaflet-popup-content-wrapper {
-            background: #111827 !important;
+            background: #141417 !important;
             color: #f1f5f9 !important;
-            border: 1px solid #27354a !important;
+            border: 1px solid #27272a !important;
             box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.7) !important;
         }
         html.dark .leaflet-popup-tip {
-            background: #111827 !important;
+            background: #141417 !important;
         }
         html.dark .leaflet-popup-content .text-slate-800 {
             color: #f8fafc !important;
@@ -956,7 +971,7 @@
             color: #cbd5e1 !important;
         }
         html.dark .leaflet-popup-content .border-slate-100 {
-            border-color: #27354a !important;
+            border-color: #27272a !important;
         }
     </style>
 </head>
@@ -1120,10 +1135,13 @@
             </div>
 
             @php
+                $currentUser = auth()->user();
+                $isViewer = $currentUser && (strtolower((string)$currentUser->role) === 'viewer' || (method_exists($currentUser, 'isViewer') && $currentUser->isViewer()));
                 $provinsis = $provinsis ?? \App\Models\Provinsi::orderBy('name')->get();
                 $daftarTahun = $daftarTahun ?? [2026, 2025, 2024];
             @endphp
 
+            @if (!$isViewer)
             {{-- ================================================= --}}
             {{-- PANEL FILTER UTAMA (SESUAI GAMBAR 2: INDIKATOR, PERIODE, LEVEL) --}}
             {{-- ================================================= --}}
@@ -1238,18 +1256,30 @@
                     Periode Laporan: Semua Periode
                 </div>
             </div>
+            @else
+            {{-- KETERANGAN PETA UNTUK ROLE VIEWER --}}
+            <div class="mt-4 mb-2 px-1 text-slate-800">
+                <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
+                    Peta Sebaran & Endemisitas Resistensi Nasional
+                </h4>
+                <div class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                    Menampilkan seluruh data sebaran pengujian resistensi vektor Kemenkes RI
+                </div>
+            </div>
+            @endif
 
             {{-- ================================================= --}}
             {{-- MAP SEBARAN PEMERIKSAAN DENGAN FILTER SEJAJAR --}}
             {{-- ================================================= --}}
             <div class="mt-2 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs">
 
+                @if (!$isViewer)
                 {{-- FILTER TOOLBAR DI ATAS PETA (PROPORSIONAL PENUH) --}}
                 <div class="mb-3.5 flex flex-wrap items-center gap-2.5 border-b border-slate-100 pb-3.5">
 
                     {{-- JENIS NYAMUK --}}
                     <div class="flex-1 min-w-[150px]">
-                        <select id="filterJenisNyamuk" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer transition">
+                        <select id="filterJenisNyamuk" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
                             <option value="">Semua Nyamuk</option>
                             @foreach ($daftarNyamuk as $nyamuk)
                                 <option value="{{ $nyamuk }}">{{ $nyamuk }}</option>
@@ -1259,7 +1289,7 @@
 
                     {{-- INSEKTISIDA --}}
                     <div class="flex-1 min-w-[150px]">
-                        <select id="filterInsektisida" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer transition">
+                        <select id="filterInsektisida" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
                             <option value="">Semua Insektisida</option>
                             @foreach ($daftarInsektisida as $ins)
                                 <option value="{{ $ins }}">{{ $ins }}</option>
@@ -1269,7 +1299,7 @@
 
                     {{-- METODE --}}
                     <div class="flex-1 min-w-[140px]">
-                        <select id="filterMetode" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer transition">
+                        <select id="filterMetode" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
                             <option value="">Semua Metode</option>
                             @foreach ($daftarMetode as $met)
                                 <option value="{{ $met }}">{{ $met }}</option>
@@ -1279,7 +1309,7 @@
 
                     {{-- STATUS RESISTENSI --}}
                     <div class="flex-1 min-w-[150px]">
-                        <select id="filterStatus" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer transition">
+                        <select id="filterStatus" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
                             <option value="">Semua Status</option>
                             <option value="Resisten">🔴 Resisten</option>
                             <option value="Toleran">🟡 Toleran</option>
@@ -1304,6 +1334,19 @@
                     </div>
 
                 </div>
+
+                                @else
+                {{-- HEADER PETA UNTUK ROLE VIEWER (TANPA FILTER) --}}
+                <div class="mb-3 flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-2.5">
+                    <span class="text-xs font-semibold text-slate-500 dark:text-zinc-400">Peta Sebaran Pengujian</span>
+                    <button type="button" onclick="resetMapView()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-teal-200 bg-teal-50 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white px-2.5 py-1 text-xs font-semibold text-teal-700 transition shadow-2xs cursor-pointer">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>Reset Tampilan Peta</span>
+                    </button>
+                </div>
+                @endif
 
                 {{-- MAP CONTAINER --}}
                 <div id="map"></div>
@@ -1378,7 +1421,7 @@
 
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
                     <div class="flex items-center gap-2">
-                        <span class="flex h-2 w-2 rounded-full bg-blue-600 ring-4 ring-blue-100"></span>
+                        <span class="flex h-2 w-2 rounded-full bg-teal-600 ring-4 ring-teal-100 dark:ring-teal-950"></span>
                         <h3 class="text-sm font-bold text-slate-800" id="tableHeaderTitle">
                             Data Pemeriksaan Terbaru
                         </h3>
@@ -1396,7 +1439,7 @@
                                    id="tableSearchInput"
                                    oninput="handleSearch(this.value)"
                                    placeholder="Cari di tabel pemeriksaan..."
-                                   class="w-full rounded-lg border border-slate-200 bg-slate-50/80 pl-8 pr-7 py-1.5 text-xs text-slate-700 transition focus:border-blue-500 focus:bg-white focus:outline-none shadow-2xs">
+                                   class="w-full rounded-lg border border-slate-200 bg-slate-50/80 pl-8 pr-7 py-1.5 text-xs text-slate-700 transition focus:border-teal-500 focus:bg-white focus:outline-none shadow-2xs">
                             <button type="button"
                                     id="tableSearchClearBtn"
                                     onclick="clearSearch()"
@@ -1414,7 +1457,7 @@
                                 </svg>
                                 <span>Tampil:</span>
                             </label>
-                            <select id="tablePageSizeSelect" onchange="changeTablePageSize(this.value)" class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer">
+                            <select id="tablePageSizeSelect" onchange="changeTablePageSize(this.value)" class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer">
                                 <option value="5">5 data</option>
                                 <option value="10" selected>10 data</option>
                                 <option value="25">25 data</option>
@@ -1424,7 +1467,7 @@
                             </select>
                         </div>
 
-                        <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:text-blue-800 px-3 py-1.5 text-xs font-semibold text-blue-700 shadow-2xs transition whitespace-nowrap">
+                        <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-lg border border-teal-200 bg-teal-50 hover:bg-teal-100 hover:text-teal-800 px-3 py-1.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-900/50 shadow-2xs transition whitespace-nowrap">
                             <span>Lihat Semua Data</span>
                             <span>→</span>
                         </a>
@@ -1449,7 +1492,7 @@
 
                         <tbody class="divide-y divide-slate-100 bg-white" id="tableDataBody">
                             @forelse ($dataTerbaru as $index => $item)
-                                <tr class="hover:bg-blue-50/40 transition" id="row-data-{{ $item->id }}">
+                                <tr class="hover:bg-teal-50/30 dark:hover:bg-zinc-800/60 transition" id="row-data-{{ $item->id }}">
                                     <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs whitespace-nowrap">
                                         {{ $index + 1 }}
                                     </td>
@@ -1464,7 +1507,7 @@
                                     <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
                                         @if (!empty($item->alamat))
                                             <div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="{{ $item->alamat }}">
-                                                <span class="text-blue-500 shrink-0 mt-0.5 text-[11px]">📍</span>
+                                                <span class="text-teal-600 dark:text-teal-400 shrink-0 mt-0.5 text-[11px]">📍</span>
                                                 <span class="break-words leading-tight">{{ $item->alamat }}</span>
                                             </div>
                                         @else
@@ -1472,7 +1515,7 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-center whitespace-nowrap">
-                                        <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[10.5px] font-semibold text-blue-700 whitespace-nowrap">
+                                        <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-1.5 py-0.5 text-[10.5px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 whitespace-nowrap">
                                             {{ $item->jenis_nyamuk }}
                                         </span>
                                     </td>
@@ -1511,7 +1554,7 @@
                                         <div class="inline-flex items-center justify-center gap-1">
                                             <button type="button"
                                                     onclick="showRowDetailModal({{ $item->id }})"
-                                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-600 hover:border-teal-300 dark:hover:text-teal-300 dark:hover:border-teal-500 transition shadow-2xs cursor-pointer"
                                                     title="Tampilkan rincian data pemeriksaan ini">
                                                 <span>👁️</span>
                                                 <span>Detail</span>
@@ -1519,7 +1562,7 @@
                                             @if ($item->kabupaten && $item->kabupaten->latitude && $item->kabupaten->longitude)
                                                 <button type="button"
                                                         onclick="focusOnMap({{ $item->kabupaten->latitude }}, {{ $item->kabupaten->longitude }}, {{ $item->kabupaten->id }})"
-                                                        class="inline-flex items-center gap-0.5 rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                                        class="inline-flex items-center gap-0.5 rounded border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white transition shadow-2xs cursor-pointer"
                                                         title="Lihat titik lokasi ini di peta">
                                                     <span>📍</span>
                                                     <span>Peta</span>
@@ -1992,7 +2035,7 @@
                         badgeText: '-',
                         color: '#64748B', // Slate
                         pulseColor: 'rgba(100, 116, 139, 0.45)',
-                        textHex: '#334155',
+                        textHex: '#27272a',
                         badgeClass: 'bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-900/60 dark:border-slate-800/60 dark:text-slate-400',
                         dotClass: 'bg-slate-400',
                         priority: 0
@@ -2700,7 +2743,7 @@
                 if (gCount > 0) activeList.push({ key: 'Rentan', count: gCount, color: '#10B981', label: 'Rentan' });
 
                 let headBackground = '#64748B';
-                let pointerColor = '#334155';
+                let pointerColor = '#27272a';
                 let pulseColor = 'rgba(100, 116, 139, 0.5)';
                 let dotsHtml = '';
 
@@ -3089,7 +3132,7 @@
                 const totalItems = dataItems.length;
 
                 if (hasQuery || hasFilter) {
-                    title.innerHTML = `Data Pemeriksaan Terbaru <span class="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-md ml-1.5">${totalItems} ditemukan</span>`;
+                    title.innerHTML = `Data Pemeriksaan Terbaru <span class="text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md ml-1.5 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300">${totalItems} ditemukan</span>`;
                 } else {
                     title.textContent = 'Data Pemeriksaan Terbaru';
                 }
@@ -3129,7 +3172,7 @@
                     const kab = escapeHtml(item.kabupaten ? item.kabupaten.nama_kabupaten : '-');
                     const rawAlamat = item.alamat || '';
                     const alamat = rawAlamat
-                        ? `<div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="${escapeHtml(rawAlamat)}"><span class="text-blue-500 shrink-0 mt-0.5 text-[11px]">📍</span><span class="break-words leading-tight">${escapeHtml(rawAlamat)}</span></div>`
+                        ? `<div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="${escapeHtml(rawAlamat)}"><span class="text-teal-600 dark:text-teal-400 shrink-0 mt-0.5 text-[11px]">📍</span><span class="break-words leading-tight">${escapeHtml(rawAlamat)}</span></div>`
                         : `<span class="italic text-slate-400">Belum diisi</span>`;
                     const sampel = Number(item.sampel_diperiksa || 0).toLocaleString();
                     const periode = escapeHtml(`${item.bulan || ''} ${item.tahun || ''}`);
@@ -3151,7 +3194,7 @@
                         <div class="inline-flex items-center justify-center gap-1">
                             <button type="button"
                                     onclick="showRowDetailModal(${item.id})"
-                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition shadow-2xs cursor-pointer"
+                                    class="inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-600 hover:border-teal-300 dark:hover:text-teal-300 dark:hover:border-teal-500 transition shadow-2xs cursor-pointer"
                                     title="Tampilkan rincian data pemeriksaan ini">
                                 <span>👁️</span>
                                 <span>Detail</span>
@@ -3159,7 +3202,7 @@
                             ${hasCoords ? `
                                 <button type="button"
                                         onclick="focusOnMap(${Number(item.kabupaten.latitude)}, ${Number(item.kabupaten.longitude)}, ${Number(item.kabupaten.id)})"
-                                        class="inline-flex items-center gap-0.5 rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-2xs cursor-pointer"
+                                        class="inline-flex items-center gap-0.5 rounded border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white transition shadow-2xs cursor-pointer"
                                         title="Lihat titik lokasi ini di peta">
                                     <span>📍</span>
                                     <span>Peta</span>
@@ -3169,7 +3212,7 @@
                     `;
 
                     return `
-                        <tr class="hover:bg-blue-50/40 transition" id="row-data-${item.id}">
+                        <tr class="hover:bg-teal-50/30 dark:hover:bg-zinc-800/60 transition" id="row-data-${item.id}">
                             <td class="px-1.5 py-2 text-center font-bold text-slate-400 text-xs whitespace-nowrap">${rowNumber}</td>
                             <td class="px-2 py-2 text-xs">
                                 <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap">${kab}</div>
@@ -3177,7 +3220,7 @@
                             </td>
                             <td class="px-2 py-2 text-xs text-slate-700 leading-snug">${alamat}</td>
                             <td class="px-2 py-2 text-center whitespace-nowrap">
-                                <span class="inline-block rounded-md bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[10.5px] font-semibold text-blue-700 whitespace-nowrap">
+                                <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-1.5 py-0.5 text-[10.5px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 whitespace-nowrap">
                                     ${nyamuk}
                                 </span>
                             </td>
