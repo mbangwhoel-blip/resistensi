@@ -76,17 +76,17 @@
 
             {{-- BANNER HAK AKSES ROLE VIEWER --}}
             @if ($isViewer)
-                <div class="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-5 py-3.5 text-xs text-amber-900 shadow-2xs">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700 font-bold text-sm">
+                <div id="viewerBanner" class="viewer-alert-banner flex items-center justify-between gap-3 rounded-2xl border border-amber-300/80 bg-amber-50 px-5 py-3.5 text-xs text-amber-950 shadow-2xs">
+                    <div class="flex items-center gap-3.5">
+                        <div class="viewer-banner-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800 font-bold text-base border border-amber-200 shadow-2xs">
                             👁️
                         </div>
                         <div>
-                            <p class="font-bold text-amber-900">Hak Akses: Viewer (Lihat Saja)</p>
-                            <p class="text-[11px] text-amber-700 mt-0.5">Akun Anda hanya dapat melihat, mencari, dan memfilter data uji resistensi. Fitur penambahan, pengubahan, dan penghapusan data dinonaktifkan.</p>
+                            <p class="viewer-banner-title font-extrabold text-amber-950 text-xs tracking-tight">Hak Akses: Viewer (Lihat Saja)</p>
+                            <p class="viewer-banner-desc text-[11px] text-amber-900/90 font-medium mt-0.5 leading-relaxed">Akun Anda hanya dapat melihat, mencari, dan memfilter data uji resistensi. Fitur penambahan, pengubahan, dan penghapusan data dinonaktifkan.</p>
                         </div>
                     </div>
-                    <span class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-200/70 text-amber-800 border border-amber-300">
+                    <span class="viewer-banner-badge shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-950 border border-amber-400/80 shadow-2xs">
                         Read-Only
                     </span>
                 </div>

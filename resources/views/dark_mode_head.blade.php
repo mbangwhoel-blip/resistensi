@@ -269,15 +269,20 @@
     html.dark .bg-amber-100,
     html.dark .bg-amber-50\/50,
     html.dark .bg-amber-50\/40,
-    html.dark .bg-amber-50\/70 {
+    html.dark .bg-amber-50\/70,
+    html.dark .bg-amber-50\/80,
+    html.dark .bg-amber-50\/90,
+    html.dark [class*="bg-amber-50"] {
         background-color: rgba(245, 158, 11, 0.18) !important;
     }
     html.dark .bg-amber-200,
-    html.dark .bg-amber-200\/80 {
+    html.dark .bg-amber-200\/80,
+    html.dark .bg-amber-200\/70 {
         background-color: rgba(217, 119, 6, 0.32) !important;
         border: 1px solid rgba(251, 191, 36, 0.55) !important;
     }
-    html.dark .text-amber-900 {
+    html.dark .text-amber-900,
+    html.dark .text-amber-950 {
         color: #fef3c7 !important;
     }
     html.dark .text-amber-800 {
@@ -293,8 +298,43 @@
     }
     html.dark .border-amber-200,
     html.dark .border-amber-300,
-    html.dark .border-amber-200\/80 {
-        border-color: rgba(245, 158, 11, 0.4) !important;
+    html.dark .border-amber-400,
+    html.dark .border-amber-200\/80,
+    html.dark .border-amber-300\/80,
+    html.dark .border-amber-400\/80 {
+        border-color: rgba(245, 158, 11, 0.45) !important;
+    }
+
+    /* Banner Hak Akses Viewer (Mode Gelap: Kontras Tinggi, Tajam & Sangat Jelas) */
+    html.dark .viewer-alert-banner,
+    html.dark #viewerBanner {
+        background-color: #0f172a !important;
+        border: 1px solid rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.6) !important;
+    }
+    html.dark .viewer-alert-banner .viewer-banner-title,
+    html.dark #viewerBanner .viewer-banner-title {
+        color: #fef08a !important;
+        font-weight: 800 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    }
+    html.dark .viewer-alert-banner .viewer-banner-desc,
+    html.dark #viewerBanner .viewer-banner-desc {
+        color: #f8fafc !important;
+        font-weight: 500 !important;
+    }
+    html.dark .viewer-alert-banner .viewer-banner-icon,
+    html.dark #viewerBanner .viewer-banner-icon {
+        background-color: rgba(245, 158, 11, 0.22) !important;
+        border: 1px solid rgba(251, 191, 36, 0.55) !important;
+        color: #fde047 !important;
+    }
+    html.dark .viewer-alert-banner .viewer-banner-badge,
+    html.dark #viewerBanner .viewer-banner-badge {
+        background-color: rgba(245, 158, 11, 0.25) !important;
+        border: 1px solid rgba(251, 191, 36, 0.65) !important;
+        color: #fef08a !important;
+        font-weight: 900 !important;
     }
 
     /* Rose / Resisten */
