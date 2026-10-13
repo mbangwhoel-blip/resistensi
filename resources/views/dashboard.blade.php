@@ -1021,11 +1021,6 @@
                             ✕
                         </button>
                     </div>
-
-                    <a href="{{ route('input') }}"
-                        class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-2xs transition hover:bg-blue-700 shrink-0">
-                        <span>+ Input Data Uji</span>
-                    </a>
                 </div>
             </div>
 
