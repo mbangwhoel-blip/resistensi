@@ -24,24 +24,24 @@
     /* SIMPEL BBLKL - GLOBAL DARK MODE STYLESHEET               */
     /* ======================================================== */
 
-    /* 1. Latar Belakang & Halaman Utama */
+    /* 1. Latar Belakang & Halaman Utama (Neutral Deep Dark Slate) */
     html.dark,
     html.dark body {
-        background-color: #0a0f1d !important;
+        background-color: #0b0f17 !important;
         color: #f1f5f9 !important;
     }
 
     html.dark main {
-        background-color: #0a0f1d !important;
+        background-color: #0b0f17 !important;
         color: #f1f5f9 !important;
     }
 
     /* 2. Topbar / Sticky Header */
     html.dark header.sticky,
     html.dark header {
-        background-color: #0f172a !important;
-        border-color: #1e293b !important;
-        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
     }
     html.dark header h1,
     html.dark header h2,
@@ -52,14 +52,14 @@
         color: #94a3b8 !important;
     }
 
-    /* 3. Semua Kartu Putih Menjadi Dark Slate */
+    /* 3. Semua Kartu Putih Menjadi Neutral Dark Slate */
     html.dark main .bg-white:not(#themeSwitchThumb),
     html.dark div.bg-white:not(#themeSwitchThumb),
     html.dark section .bg-white:not(#themeSwitchThumb),
     html.dark [id^="modal"] .bg-white,
     html.dark .modal-content,
     html.dark #rowDetailModalCard {
-        background-color: #0f172a !important;
+        background-color: #111827 !important;
     }
 
     /* Switch Thumb Tetap Putih */
@@ -71,8 +71,8 @@
     html.dark .rounded-xl.border,
     html.dark .rounded-2xl.border,
     html.dark .rounded-3xl.border {
-        border-color: #1e293b !important;
-        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35) !important;
+        border-color: #1f2937 !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
     }
 
     /* 5. Border Halus */
@@ -81,7 +81,7 @@
     html.dark .border-slate-200\/80,
     html.dark .border-slate-200\/70,
     html.dark .border-slate-300 {
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
     }
 
     /* 6. Latar Belakang Slate Ringan (Secondary Cards, Table Headers, Form Bars) */
@@ -93,7 +93,7 @@
     html.dark .bg-slate-50\/40,
     html.dark [id^="modal"] .bg-slate-50,
     html.dark [id^="modal"] .bg-slate-100 {
-        background-color: #1e293b !important;
+        background-color: #161e2e !important;
     }
 
     /* 7. Warna Teks, Label & Tipografi */
@@ -141,12 +141,12 @@
     html.dark input[type="password"],
     html.dark select,
     html.dark textarea {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
+        background-color: #161e2e !important;
+        border-color: #27354a !important;
         color: #f8fafc !important;
     }
     html.dark select option {
-        background-color: #0f172a !important;
+        background-color: #111827 !important;
         color: #f8fafc !important;
     }
     html.dark input::placeholder,
@@ -156,45 +156,49 @@
     html.dark input:focus,
     html.dark select:focus,
     html.dark textarea:focus {
-        border-color: #3b82f6 !important;
-        background-color: #0f172a !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+        border-color: #0d9488 !important;
+        background-color: #111827 !important;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25) !important;
+    }
+    html.dark input[type="radio"]:checked,
+    html.dark input[type="checkbox"]:checked {
+        accent-color: #0d9488 !important;
     }
     html.dark input:disabled,
     html.dark select:disabled,
     html.dark textarea:disabled {
         background-color: #0b1120 !important;
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
         color: #64748b !important;
     }
 
     /* 9. Tabel & Baris Data */
     html.dark table {
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
     }
     html.dark table thead,
     html.dark table thead tr,
     html.dark table thead th {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
+        background-color: #161e2e !important;
+        border-color: #27354a !important;
         color: #94a3b8 !important;
     }
     html.dark table thead th {
         color: #94a3b8 !important;
-        border-color: #334155 !important;
+        border-color: #27354a !important;
     }
     html.dark table tbody tr {
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
     }
     html.dark table tbody tr:hover {
-        background-color: rgba(30, 41, 59, 0.7) !important;
+        background-color: rgba(22, 30, 46, 0.75) !important;
     }
     html.dark table tbody td {
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
     }
     html.dark .divide-slate-100 > * + *,
     html.dark .divide-slate-200 > * + * {
-        border-color: #1e293b !important;
+        border-color: #1f2937 !important;
     }
 
     /* 10. Badges, Pills & Status Cards */
@@ -409,8 +413,8 @@
     html.dark #kpiSection > div,
     html.dark .stat-card,
     html.dark .kpi-card {
-        background-color: #0f172a !important;
-        border-color: #334155 !important;
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
         box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -418,7 +422,7 @@
     html.dark .grid > .rounded-xl.border:hover,
     html.dark .grid > .rounded-2xl.border:hover,
     html.dark #kpiSection > div:hover {
-        border-color: #475569 !important;
+        border-color: #374151 !important;
         box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.6) !important;
     }
 
@@ -663,14 +667,14 @@
     /* 15. Header User & Theme Toggle Buttons */
     html.dark #themeToggleBtn,
     html.dark #userDropdownBtn {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
+        background-color: #161e2e !important;
+        border-color: #27354a !important;
         color: #f8fafc !important;
     }
     html.dark #themeToggleBtn:hover,
     html.dark #userDropdownBtn:hover {
-        background-color: #334155 !important;
-        border-color: #475569 !important;
+        background-color: #1f2937 !important;
+        border-color: #0d9488 !important;
     }
     html.dark #userDropdownBtn p.text-slate-800 {
         color: #f8fafc !important;
@@ -679,14 +683,19 @@
         color: #94a3b8 !important;
     }
     html.dark #userDropdownMenu {
-        background-color: #0f172a !important;
-        border-color: #1e293b !important;
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
     }
     html.dark #userDropdownMenu .bg-slate-50\/60,
     html.dark #userDropdownMenu .border-slate-100 {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
+        background-color: #161e2e !important;
+        border-color: #27354a !important;
+    }
+    html.dark .border-blue-200.bg-blue-50.text-blue-600 {
+        background-color: rgba(13, 148, 136, 0.2) !important;
+        border-color: rgba(13, 148, 136, 0.45) !important;
+        color: #2dd4bf !important;
     }
     html.dark #userDropdownMenu p.text-slate-800 {
         color: #f8fafc !important;

@@ -216,14 +216,14 @@
             if (isDark) {
                 if (track) {
                     track.classList.remove('bg-amber-100', 'bg-slate-200');
-                    track.classList.add('bg-blue-600');
+                    track.classList.add('bg-emerald-600');
                 }
                 if (thumb) {
                     thumb.classList.remove('translate-x-0');
                     thumb.classList.add('translate-x-4');
                 }
                 if (thumbIcon) {
-                    thumbIcon.className = 'h-2.5 w-2.5 text-blue-200';
+                    thumbIcon.className = 'h-2.5 w-2.5 text-emerald-200';
                     thumbIcon.innerHTML = '<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>';
                 }
                 if (text) {
@@ -235,11 +235,11 @@
                 if (dropLabel) dropLabel.textContent = 'Mode Gelap';
                 if (dropBadge) {
                     dropBadge.textContent = 'Aktif';
-                    dropBadge.className = 'text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-700/60';
+                    dropBadge.className = 'text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700/60';
                 }
             } else {
                 if (track) {
-                    track.classList.remove('bg-blue-600');
+                    track.classList.remove('bg-emerald-600', 'bg-blue-600');
                     track.classList.add('bg-amber-100');
                 }
                 if (thumb) {
