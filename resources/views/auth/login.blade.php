@@ -55,7 +55,7 @@
             <div class="inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-white px-5 sm:px-6 py-2.5 sm:py-3 shadow-lg shadow-teal-500/10 border border-white/90 backdrop-blur-md mb-2 sm:mb-2.5 transition active:scale-95 sm:hover:scale-[1.02] duration-300">
                 <img src="{{ asset('logo_bblkl.png') }}" 
                      alt="Kemenkes Labkesmas Kesehatan Lingkungan" 
-                     class="h-10 sm:h-12 w-auto object-contain max-w-[280px] sm:max-w-[340px]">
+                     class="h-14 sm:h-16 w-auto object-contain max-w-[320px] sm:max-w-[420px]">
             </div>
 
             <div class="flex items-center justify-center mt-0.5">
@@ -205,13 +205,9 @@
 
         </div>
 
-        {{-- KEAMANAN FOOTER --}}
+        {{-- FOOTER --}}
         <div class="mt-2.5 sm:mt-3.5 text-center px-2">
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-900/70 border border-slate-800/80 text-[10px] text-slate-400 shadow-sm">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                <span>Koneksi Aman Terenkripsi SSL • Peta Resistensi</span>
-            </div>
-            <p class="text-[9.5px] text-slate-500 mt-1 leading-normal">
+            <p class="text-[9.5px] text-slate-500 leading-normal">
                 © {{ date('Y') }} Balai Besar Laboratorium Kesehatan Lingkungan<br class="block sm:hidden"> • Kemenkes RI
             </p>
         </div>
