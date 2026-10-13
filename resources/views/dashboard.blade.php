@@ -350,18 +350,18 @@
         /* ======================================================== */
         html.dark,
         html.dark body {
-            background-color: #0a0f1d !important;
+            background-color: #0b0f17 !important;
             color: #f1f5f9 !important;
         }
 
         html.dark main {
-            background-color: #0a0f1d !important;
+            background-color: #0b0f17 !important;
         }
 
         /* Topbar Header */
         html.dark header.sticky {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
+            background-color: #111827 !important;
+            border-color: #1f2937 !important;
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
         }
         html.dark header h1 {
@@ -373,21 +373,21 @@
 
         /* Tombol Tema & Dropdown User */
         html.dark #themeToggleBtn {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark #themeToggleBtn:hover {
-            background-color: #334155 !important;
+            background-color: #27354a !important;
             border-color: #475569 !important;
         }
         html.dark #userDropdownBtn {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark #userDropdownBtn:hover {
-            background-color: #334155 !important;
+            background-color: #27354a !important;
             border-color: #475569 !important;
         }
         html.dark #userDropdownBtn p.text-slate-800 {
@@ -397,14 +397,14 @@
             color: #94a3b8 !important;
         }
         html.dark #userDropdownMenu {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
+            background-color: #111827 !important;
+            border-color: #1f2937 !important;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
         }
         html.dark #userDropdownMenu .bg-slate-50\/60,
         html.dark #userDropdownMenu .border-slate-100 {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
         }
         html.dark #userDropdownMenu p.text-slate-800 {
             color: #f8fafc !important;
@@ -416,14 +416,14 @@
             color: #cbd5e1 !important;
         }
         html.dark #dropdownThemeToggle:hover {
-            background-color: #1e293b !important;
+            background-color: #1f2937 !important;
         }
 
         /* Semua Background Putih di Main Menjadi Dark Slate */
         html.dark main .bg-white:not(#themeSwitchThumb),
         html.dark main div.bg-white,
         html.dark main header.bg-white {
-            background-color: #0f172a !important;
+            background-color: #111827 !important;
         }
         html.dark #themeSwitchThumb {
             background-color: #ffffff !important;
@@ -432,14 +432,14 @@
         /* Container Card Shadow & Border */
         html.dark main .rounded-xl.border,
         html.dark main .rounded-2xl.border {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35) !important;
         }
 
         /* Border Halus di Mode Gelap */
         html.dark main .border-slate-100,
         html.dark main .border-slate-200 {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
         }
 
         /* Teks Judul, Label, dan Deskripsi */
@@ -491,7 +491,7 @@
             color: #93c5fd !important;
         }
         html.dark main .text-blue-600 {
-            color: #60a5fa !important;
+            color: #2dd4bf !important;
         }
         html.dark main .border-blue-200,
         html.dark main .border-blue-100 {
@@ -582,8 +582,8 @@
         /* Kotak Pencarian */
         html.dark #headerSearch,
         html.dark #tableSearchInput {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark #headerSearch::placeholder,
@@ -592,9 +592,9 @@
         }
         html.dark #headerSearch:focus,
         html.dark #tableSearchInput:focus {
-            border-color: #3b82f6 !important;
-            background-color: #0f172a !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+            border-color: #0d9488 !important;
+            background-color: #111827 !important;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2) !important;
         }
         html.dark #headerClearBtn,
         html.dark #tableSearchClearBtn {
@@ -607,55 +607,55 @@
 
         /* Panel Filter Form & Inputs */
         html.dark #filterPanelBody {
-            background-color: #0f172a !important;
+            background-color: #111827 !important;
         }
         html.dark #filterPanelBody select,
         html.dark #filterPanelBody input[type="text"] {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark #filterPanelBody select option {
-            background-color: #0f172a !important;
+            background-color: #111827 !important;
             color: #f8fafc !important;
         }
         html.dark #filterPanelBody select:disabled {
-            background-color: #0b1120 !important;
-            border-color: #1e293b !important;
+            background-color: #0b0f17 !important;
+            border-color: #1f2937 !important;
             color: #64748b !important;
         }
         html.dark button[onclick="resetAllFilters()"] {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #cbd5e1 !important;
         }
         html.dark button[onclick="resetAllFilters()"]:hover {
-            background-color: #334155 !important;
+            background-color: #27354a !important;
             color: #ffffff !important;
         }
         html.dark button[onclick="resetMapView()"] {
-            background-color: rgba(59, 130, 246, 0.2) !important;
-            border-color: rgba(59, 130, 246, 0.45) !important;
-            color: #60a5fa !important;
+            background-color: rgba(13, 148, 136, 0.2) !important;
+            border-color: rgba(13, 148, 136, 0.45) !important;
+            color: #2dd4bf !important;
         }
         html.dark button[onclick="resetMapView()"]:hover {
-            background-color: #2563eb !important;
-            border-color: #2563eb !important;
+            background-color: #0d9488 !important;
+            border-color: #0d9488 !important;
             color: #ffffff !important;
         }
         html.dark button[title="Buka/Tutup Filter"] {
-            background-color: rgba(59, 130, 246, 0.2) !important;
-            border-color: rgba(59, 130, 246, 0.45) !important;
-            color: #60a5fa !important;
+            background-color: rgba(13, 148, 136, 0.2) !important;
+            border-color: rgba(13, 148, 136, 0.45) !important;
+            color: #2dd4bf !important;
         }
         html.dark button[title="Buka/Tutup Filter"]:hover,
         html.dark .group:hover button[title="Buka/Tutup Filter"] {
-            background-color: #2563eb !important;
-            border-color: #2563eb !important;
+            background-color: #0d9488 !important;
+            border-color: #0d9488 !important;
             color: #ffffff !important;
         }
         html.dark #filterCollapseIcon {
-            color: #60a5fa !important;
+            color: #2dd4bf !important;
         }
         html.dark button[title="Buka/Tutup Filter"]:hover #filterCollapseIcon,
         html.dark .group:hover #filterCollapseIcon {
@@ -667,48 +667,48 @@
         html.dark #filterInsektisida,
         html.dark #filterMetode,
         html.dark #filterStatus {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark #filterJenisNyamuk option,
         html.dark #filterInsektisida option,
         html.dark #filterMetode option,
         html.dark #filterStatus option {
-            background-color: #0f172a !important;
+            background-color: #111827 !important;
             color: #f8fafc !important;
         }
 
         /* Tabel Data Pemeriksaan */
         html.dark #tablePemeriksaanSection {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
+            background-color: #111827 !important;
+            border-color: #1f2937 !important;
         }
         html.dark #tablePemeriksaanSection .border-b {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
         }
         html.dark #tablePemeriksaanSection .overflow-x-auto {
-            background-color: #1e293b !important;
+            background-color: #1f2937 !important;
         }
         html.dark #tablePemeriksaanSection thead,
         html.dark #tablePemeriksaanSection thead tr,
         html.dark #tablePemeriksaanSection thead th {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #94a3b8 !important;
         }
         html.dark #tablePemeriksaanSection thead th {
             color: #94a3b8 !important;
         }
         html.dark #tablePemeriksaanSection table {
-            border-color: #1e293b !important;
-            background-color: #0f172a !important;
+            border-color: #1f2937 !important;
+            background-color: #111827 !important;
         }
         html.dark #tableDataBody {
-            background-color: #0f172a !important;
+            background-color: #111827 !important;
         }
         html.dark #tableDataBody tr {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
         }
         html.dark #tableDataBody tr:hover {
             background-color: rgba(30, 41, 59, 0.7) !important;
@@ -724,66 +724,66 @@
             color: #94a3b8 !important;
         }
         html.dark #tablePageSizeSelect {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark div:has(> #tablePageSizeSelect) {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
         }
         html.dark #dashboardTablePagination {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
+            background-color: #111827 !important;
+            border-color: #1f2937 !important;
         }
         html.dark #dashboardTablePagination button {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #cbd5e1 !important;
         }
         html.dark #dashboardTablePagination button:hover:not(:disabled) {
-            background-color: #334155 !important;
+            background-color: #27354a !important;
             color: #ffffff !important;
         }
         html.dark button[onclick^="showRowDetailModal"] {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #cbd5e1 !important;
         }
         html.dark button[onclick^="showRowDetailModal"]:hover {
-            background-color: #334155 !important;
-            color: #60a5fa !important;
-            border-color: #60a5fa !important;
+            background-color: #27354a !important;
+            color: #2dd4bf !important;
+            border-color: #2dd4bf !important;
         }
 
         /* Modal Detail */
         html.dark #rowDetailModalCard {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
+            background-color: #111827 !important;
+            border-color: #1f2937 !important;
             color: #f1f5f9 !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
         }
         html.dark #rowDetailModalCard .border-b,
         html.dark #rowDetailModalCard .border-t {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
         }
         html.dark #rowDetailModalCard .bg-gradient-to-r {
-            background: linear-gradient(to right, #0f172a, #1e293b) !important;
+            background: linear-gradient(to right, #111827, #1f2937) !important;
         }
         html.dark #modalDetailFooter {
-            background-color: #0b1120 !important;
+            background-color: #0b0f17 !important;
         }
         html.dark #modalDetailBody {
             color: #e2e8f0 !important;
         }
         html.dark #modalDetailBody .bg-slate-50,
         html.dark #modalDetailBody .bg-slate-100 {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
         }
         html.dark #modalDetailBody .border-slate-100,
         html.dark #modalDetailBody .border-slate-200 {
-            border-color: #334155 !important;
+            border-color: #27354a !important;
         }
 
         /* Peta Leaflet Dark Mode Tiles (Bebas Watermark & Tanpa Perlu API Key) */
@@ -794,29 +794,29 @@
             filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
         }
         html.dark .leaflet-container {
-            background-color: #0b1120 !important;
+            background-color: #0b0f17 !important;
         }
 
         html.dark #map {
-            border-color: #1e293b !important;
+            border-color: #1f2937 !important;
         }
         html.dark .leaflet-bar a {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
             color: #f8fafc !important;
         }
         html.dark .leaflet-bar a:hover {
-            background-color: #334155 !important;
+            background-color: #27354a !important;
         }
         html.dark .leaflet-container .leaflet-control-attribution {
             background: rgba(15, 23, 42, 0.85) !important;
             color: #94a3b8 !important;
         }
         html.dark .leaflet-container .leaflet-control-attribution a {
-            color: #60a5fa !important;
+            color: #2dd4bf !important;
         }
         html.dark .region-map-label {
-            background: #1e293b !important;
+            background: #1f2937 !important;
             border: 1px solid #475569 !important;
             color: #f1f5f9 !important;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
@@ -849,24 +849,24 @@
         html.dark .map-detail-panel .border-slate-100,
         html.dark .map-detail-panel .border-slate-200,
         html.dark .map-detail-panel .border-slate-200\/60 {
-            border-color: #334155 !important;
+            border-color: #27354a !important;
         }
         html.dark .map-detail-panel .bg-slate-50 {
-            background-color: #1e293b !important;
+            background-color: #1f2937 !important;
         }
         /* Badge Provinsi pada Detail Peta (Mode Gelap) */
         html.dark .map-detail-panel .panel-provinsi-badge,
         html.dark .map-detail-panel .bg-blue-100\/80 {
             background-color: #1e3a8a !important;
             color: #93c5fd !important;
-            border: 1px solid #3b82f6 !important;
+            border: 1px solid #0d9488 !important;
             font-weight: 800 !important;
         }
         /* Kotak Statistik (Total Uji & Sampel Diuji) (Mode Gelap) */
         html.dark .map-detail-panel .panel-stat-box,
         html.dark .map-detail-panel .grid .bg-white\/45 {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
         }
         html.dark .map-detail-panel .panel-stat-box .text-slate-800 {
             color: #ffffff !important;
@@ -879,8 +879,8 @@
         /* Kotak Hasil Pemeriksaan (Mode Gelap) */
         html.dark .map-detail-panel .panel-results-box,
         html.dark .map-detail-panel .bg-white\/45 {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
+            background-color: #1f2937 !important;
+            border-color: #27354a !important;
         }
         html.dark .map-detail-panel .panel-results-box .text-slate-800 {
             color: #f8fafc !important;
@@ -914,7 +914,7 @@
         }
         html.dark .map-legend-control .border-slate-200\/80,
         html.dark .map-legend-control .border-slate-100 {
-            border-color: #334155 !important;
+            border-color: #27354a !important;
         }
         html.dark .map-legend-control .bg-rose-50 {
             background-color: rgba(136, 19, 55, 0.35) !important;
@@ -941,13 +941,13 @@
             border-color: #475569 !important;
         }
         html.dark .leaflet-popup-content-wrapper {
-            background: #0f172a !important;
+            background: #111827 !important;
             color: #f1f5f9 !important;
-            border: 1px solid #334155 !important;
+            border: 1px solid #27354a !important;
             box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.7) !important;
         }
         html.dark .leaflet-popup-tip {
-            background: #0f172a !important;
+            background: #111827 !important;
         }
         html.dark .leaflet-popup-content .text-slate-800 {
             color: #f8fafc !important;
@@ -956,7 +956,7 @@
             color: #cbd5e1 !important;
         }
         html.dark .leaflet-popup-content .border-slate-100 {
-            border-color: #334155 !important;
+            border-color: #27354a !important;
         }
     </style>
 </head>
