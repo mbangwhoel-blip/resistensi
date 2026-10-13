@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Backup otomatis ke Google Drive & Email setiap hari pukul 01.00 WIB
+        $schedule->command('backup:auto')
+            ->dailyAt('01:00')
+            ->timezone('Asia/Jakarta')
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**

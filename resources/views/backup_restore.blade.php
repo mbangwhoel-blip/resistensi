@@ -83,6 +83,62 @@
                 </div>
             </div>
 
+            {{-- KARTU STATUS BACKUP OTOMATIS (PUKUL 01.00 WIB) --}}
+            <div class="mb-8 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-white p-6 shadow-xs">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm text-2xl">
+                            ⏰
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-base font-bold text-slate-800">Otomatisasi Backup Harian (Pukul 01.00 WIB)</h2>
+                                <span class="rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 border border-emerald-300">
+                                    Aktif
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Sistem secara terjadwal mengekstrak database, mengompresi ke arsip ZIP, mengunggah ke Google Drive, dan mengirimkan file backup ke alamat email.
+                            </p>
+                            <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-xs">
+                                <div class="flex items-center gap-1.5 text-slate-700">
+                                    <span class="text-slate-400">Jadwal:</span>
+                                    <strong class="font-semibold text-blue-700">Setiap Hari, 01:00 WIB</strong>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-slate-700">
+                                    <span class="text-slate-400">Email Tujuan:</span>
+                                    <code class="rounded bg-white px-2 py-0.5 border border-slate-200 text-slate-800 font-mono text-[11px]">{{ config('backup.email') ?: 'Belum disetel di .env' }}</code>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-slate-700">
+                                    <span class="text-slate-400">Google Drive:</span>
+                                    @if(config('backup.google_drive.enable'))
+                                        <span class="text-emerald-700 font-semibold">✓ Terhubung</span>
+                                    @else
+                                        <span class="text-slate-500 font-medium">Opsional (Siap dikonfigurasi)</span>
+                                    @endif
+                                </div>
+                                <div class="flex items-center gap-1.5 text-slate-700">
+                                    <span class="text-slate-400">Penyimpanan Server:</span>
+                                    <span class="text-slate-600">Retensi {{ config('backup.retention_days', 14) }} hari</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shrink-0 pt-2 md:pt-0">
+                        <form action="{{ route('backup.auto_now') }}" method="POST" onsubmit="return confirm('Jalankan backup otomatis sekarang dan kirimkan ke email {{ config('backup.email') }}?')">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                <span>Jalankan Backup & Kirim Email Sekarang</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 
                 {{-- KARTU BUAT BACKUP --}}
@@ -139,7 +195,7 @@
                             </span>
                             <div>
                                 <h2 class="text-base font-bold text-slate-800">Restore Database dari File</h2>
-                                <p class="text-xs text-slate-500">Pulihkan basis data dari file berkas backup (.sql)</p>
+                                <p class="text-xs text-slate-500">Pulihkan basis data dari file berkas backup (.sql atau .zip)</p>
                             </div>
                         </div>
 
@@ -150,8 +206,8 @@
                         <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data" id="restoreForm">
                             @csrf
                             <div class="mb-4">
-                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Pilih Berkas SQL Backup (.sql) *</label>
-                                <input type="file" name="backup_file" accept=".sql" required
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Pilih Berkas Backup (.sql atau .zip) *</label>
+                                <input type="file" name="backup_file" accept=".sql,.zip" required
                                        class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50" />
                             </div>
 

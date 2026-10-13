@@ -30,7 +30,7 @@ class BackupRestoreController extends Controller
         $backups = [];
 
         foreach ($files as $file) {
-            if (in_array(strtolower($file->getExtension()), ['sql', 'json'])) {
+            if (in_array(strtolower($file->getExtension()), ['sql', 'json', 'zip'])) {
                 $backups[] = [
                     'filename' => $file->getFilename(),
                     'size' => $this->formatBytes($file->getSize()),
@@ -180,7 +180,50 @@ class BackupRestoreController extends Controller
     }
 
     /**
-     * Restore Database dari File SQL
+     * Jalankan Backup Otomatis Sekarang (Manual Trigger via Web)
+     */
+    public function runAutoBackupNow(Request $request, \App\Services\DatabaseBackupService $backupService, \App\Services\GoogleDriveService $gdriveService)
+    {
+        if (Auth::check() && Auth::user()->isViewer()) {
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        }
+
+        try {
+            $backupInfo = $backupService->createBackup(config('backup.compress', true));
+            $gdriveResult = $gdriveService->uploadFile($backupInfo['final_path']);
+
+            $recipient = config('backup.email');
+            $mailSent = false;
+            $mailError = null;
+
+            if ($recipient) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($recipient)->send(new \App\Mail\BackupNotificationMail($backupInfo, $gdriveResult));
+                    $mailSent = true;
+                } catch (\Throwable $mEx) {
+                    $mailError = $mEx->getMessage();
+                }
+            }
+
+            $msg = "Backup berhasil dibuat: {$backupInfo['final_filename']} ({$backupInfo['formatted_size']}).";
+            if ($mailSent) {
+                $msg .= " Berkas dan laporan berhasil dikirim ke email {$recipient}.";
+            } elseif ($mailError) {
+                $msg .= " Namun email gagal dikirim: {$mailError}";
+            }
+
+            if (!empty($gdriveResult['success'])) {
+                $msg .= " Berhasil diunggah ke Google Drive.";
+            }
+
+            return redirect()->route('backup.index')->with('success', $msg);
+        } catch (\Throwable $e) {
+            return redirect()->route('backup.index')->with('error', 'Gagal memproses backup: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Restore Database dari File SQL atau ZIP
      */
     public function restoreBackup(Request $request)
     {
@@ -195,12 +238,32 @@ class BackupRestoreController extends Controller
         $file = $request->file('backup_file');
         $ext = strtolower($file->getClientOriginalExtension());
 
-        if ($ext !== 'sql') {
-            return redirect()->route('backup.index')->with('error', 'File restore harus berupa format .sql.');
+        if (!in_array($ext, ['sql', 'zip'])) {
+            return redirect()->route('backup.index')->with('error', 'File restore harus berupa format .sql atau .zip.');
         }
 
         try {
-            $sqlContent = file_get_contents($file->getRealPath());
+            $sqlContent = '';
+
+            if ($ext === 'zip') {
+                $zip = new \ZipArchive();
+                if ($zip->open($file->getRealPath()) === true) {
+                    for ($i = 0; $i < $zip->numFiles; $i++) {
+                        $stat = $zip->statIndex($i);
+                        if (str_ends_with(strtolower($stat['name']), '.sql')) {
+                            $sqlContent = $zip->getFromIndex($i);
+                            break;
+                        }
+                    }
+                    $zip->close();
+                }
+
+                if (empty($sqlContent)) {
+                    return redirect()->route('backup.index')->with('error', 'File .zip tidak memuat berkas SQL yang valid.');
+                }
+            } else {
+                $sqlContent = file_get_contents($file->getRealPath());
+            }
 
             // Eksekusi SQL
             DB::statement('SET FOREIGN_KEY_CHECKS = 0;');

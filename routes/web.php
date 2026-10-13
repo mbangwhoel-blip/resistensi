@@ -254,6 +254,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('not_viewer')->prefix('backup-restore')->name('backup.')->group(function () {
         Route::get('/', [BackupRestoreController::class, 'index'])->name('index');
         Route::post('/create', [BackupRestoreController::class, 'createBackup'])->name('create');
+        Route::post('/auto-now', [BackupRestoreController::class, 'runAutoBackupNow'])->name('auto_now');
         Route::get('/download/{filename}', [BackupRestoreController::class, 'downloadBackup'])->name('download');
         Route::delete('/delete/{filename}', [BackupRestoreController::class, 'deleteBackup'])->name('delete');
         Route::post('/restore', [BackupRestoreController::class, 'restoreBackup'])->name('restore');
