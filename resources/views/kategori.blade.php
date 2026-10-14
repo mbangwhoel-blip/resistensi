@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Master Data Parameter Uji - SIMPEL BBLKL</title>
+    <title>Master Data Parameter Uji - PETA RESISTENSI</title>
     {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
     @include('dark_mode_head')
 </head>
@@ -16,15 +16,25 @@
     @include('sidebar')
 
     {{-- KONTEN UTAMA --}}
-    <main class="ml-64 min-h-screen">
+    <main class="min-h-screen transition-all duration-300 ml-0 lg:ml-64">
 
         {{-- TOPBAR DENGAN LOGOUT DI KANAN ATAS --}}
-        <header class="sticky top-0 z-40 flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
-            <div class="min-w-0 flex flex-col justify-center">
-                <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug">Master Data Kategori & Parameter Uji</h1>
-                <p class="text-xs text-slate-500 font-medium mt-1">
-                    Kelola jenis nyamuk, insektisida, dan metode pengendalian vektor
-                </p>
+        <header class="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
+            <div class="min-w-0 flex items-center gap-3">
+                <button type="button"
+                        onclick="toggleSidebarDrawer()"
+                        class="lg:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition shadow-2xs cursor-pointer focus:outline-none"
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="min-w-0 flex flex-col justify-center">
+                    <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug truncate">Master Data Kategori & Parameter Uji</h1>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5 truncate">
+                        PETA RESISTENSI • Kelola jenis nyamuk, insektisida, dan metode pengendalian vektor
+                    </p>
+                </div>
             </div>
 
             <div class="flex items-center gap-3 shrink-0">
@@ -171,17 +181,29 @@
                         @endif
                     </form>
 
-                    <button onclick="openModalTambah('{{ $tab }}')" class="cursor-pointer rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 flex items-center gap-2">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>
-                            @if ($tab == 'nyamuk') Tambah Jenis Nyamuk
-                            @elseif ($tab == 'insektisida') Tambah Insektisida
-                            @else Tambah Metode Pengendalian
-                            @endif
-                        </span>
-                    </button>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <form method="POST" action="{{ route('kategori.sync') }}" onsubmit="return confirm('Apakah Anda yakin ingin menyinkronkan seluruh parameter (nyamuk, insektisida, metode) dari data uji laboratorium yang belum terdaftar di master data?')">
+                            @csrf
+                            <button type="submit" class="cursor-pointer rounded-xl border border-teal-500/50 bg-teal-50 hover:bg-teal-600 hover:text-white px-4 py-2.5 text-sm font-semibold text-teal-700 transition shadow-2xs flex items-center gap-2 dark:bg-teal-950/40 dark:border-teal-700/60 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white" title="Pindai data uji laboratorium dan tambahkan parameter yang belum ada ke master data">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Sinkronkan dari Data Uji</span>
+                            </button>
+                        </form>
+
+                        <button onclick="openModalTambah('{{ $tab }}')" class="cursor-pointer rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 flex items-center gap-2">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span>
+                                @if ($tab == 'nyamuk') Tambah Jenis Nyamuk
+                                @elseif ($tab == 'insektisida') Tambah Insektisida
+                                @else Tambah Metode Pengendalian
+                                @endif
+                            </span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- TABEL DATA PARAMETER --}}

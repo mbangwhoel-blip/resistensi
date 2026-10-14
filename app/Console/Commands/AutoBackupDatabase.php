@@ -31,7 +31,7 @@ class AutoBackupDatabase extends Command
     public function handle(DatabaseBackupService $backupService, GoogleDriveService $gdriveService): int
     {
         $this->info('=====================================================');
-        $this->info('SIMPEL BBLKL - Eksekusi Backup Database Otomatis');
+        $this->info('PETA RESISTENSI - Eksekusi Backup Database Otomatis');
         $this->info('Waktu: ' . date('Y-m-d H:i:s') . ' WIB');
         $this->info('=====================================================');
 

@@ -33,7 +33,7 @@ class DatabaseBackupService
         $sqlPath = $this->backupDir . DIRECTORY_SEPARATOR . $sqlFilename;
 
         $sqlDump = "-- =====================================================\n";
-        $sqlDump .= "-- SIMPEL BBLKL Database Backup\n";
+        $sqlDump .= "-- PETA RESISTENSI Database Backup\n";
         $sqlDump .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
         $sqlDump .= "-- Database: {$dbName}\n";
         $sqlDump .= "-- =====================================================\n\n";

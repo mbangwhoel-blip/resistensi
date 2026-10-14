@@ -85,4 +85,30 @@ class KategoriUji extends Model
             default => ucfirst($cat ?? ''),
         };
     }
+
+    /**
+     * Cari atau daftarkan parameter baru ke master data secara otomatis
+     */
+    public static function firstOrCreateCategory(string $category, string $name, ?string $description = null)
+    {
+        $cleanName = trim($name);
+        if ($cleanName === '') {
+            return null;
+        }
+
+        $existing = self::where('category', $category)
+            ->whereRaw('LOWER(name) = ?', [strtolower($cleanName)])
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return self::create([
+            'category' => $category,
+            'name' => $cleanName,
+            'description' => $description ?: 'Ditambahkan otomatis dari sistem pengujian laboratorium',
+            'is_active' => true,
+        ]);
+    }
 }

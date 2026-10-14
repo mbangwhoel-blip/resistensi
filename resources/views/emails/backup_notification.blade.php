@@ -104,7 +104,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>SIMPEL BBLKL</h1>
+            <h1>PETA RESISTENSI</h1>
             <p>Sistem Informasi Monitoring Vektor & Resistensi Insektisida</p>
         </div>
 
@@ -115,7 +115,7 @@
 
             <p style="font-size: 14px; line-height: 1.5; margin-top: 0;">
                 Halo Administrator,<br>
-                Proses pencadangan (backup) otomatis basis data aplikasi SIMPEL BBLKL telah selesai dieksekusi dengan rincian sebagai berikut:
+                Proses pencadangan (backup) otomatis basis data aplikasi Peta Resistensi telah selesai dieksekusi dengan rincian sebagai berikut:
             </p>
 
             <div class="info-card">
@@ -171,7 +171,7 @@
         </div>
 
         <div class="footer">
-            Pesan ini dikirim secara otomatis oleh penjadwal tugas SIMPEL BBLKL (Pukul 01.00 WIB).<br>
+            Pesan ini dikirim secara otomatis oleh penjadwal tugas Peta Resistensi (Pukul 01.00 WIB).<br>
             © {{ date('Y') }} Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL). All rights reserved.
         </div>
     </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backup & Restore - SIMPEL BBLKL</title>
+    <title>Backup & Restore - PETA RESISTENSI</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
     @include('dark_mode_head')
@@ -16,15 +16,25 @@
     @include('sidebar')
 
     {{-- KONTEN UTAMA --}}
-    <main class="ml-64 min-h-screen">
+    <main class="min-h-screen transition-all duration-300 ml-0 lg:ml-64">
 
         {{-- TOPBAR --}}
-        <header class="sticky top-0 z-40 flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
-            <div class="min-w-0 flex flex-col justify-center">
-                <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug">Backup & Restore Database</h1>
-                <p class="text-xs text-slate-500 font-medium mt-1">
-                    Amankan dan pulihkan data laboratorium SIMPEL BBLKL kapan saja
-                </p>
+        <header class="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 gap-3 shadow-xs">
+            <div class="min-w-0 flex items-center gap-3">
+                <button type="button"
+                        onclick="toggleSidebarDrawer()"
+                        class="lg:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition shadow-2xs cursor-pointer focus:outline-none"
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="min-w-0 flex flex-col justify-center">
+                    <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug truncate">Backup & Restore Database</h1>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5 truncate">
+                        PETA RESISTENSI • Amankan dan pulihkan data laboratorium kapan saja
+                    </p>
+                </div>
             </div>
 
             <div class="flex items-center gap-3 shrink-0">

@@ -186,7 +186,7 @@ class LaporanController extends Controller
             'insektisida' => $request->get('insektisida', 'Semua'),
             'status' => $request->get('status', 'Semua'),
             'dicetak_pada' => date('d F Y, H:i') . ' WIB',
-            'user' => auth()->check() ? auth()->user()->name : 'Petugas SIMPEL BBLKL'
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Peta Resistensi'
         ];
 
         return view('laporan_preview', compact('dataUji', 'stats', 'filterInfo'));
@@ -246,7 +246,7 @@ class LaporanController extends Controller
             'insektisida' => $request->get('insektisida', 'Semua'),
             'status' => $request->get('status', 'Semua'),
             'dicetak_pada' => date('d F Y, H:i') . ' WIB',
-            'user' => auth()->check() ? auth()->user()->name : 'Petugas SIMPEL BBLKL'
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Peta Resistensi'
         ];
 
         // 4. Logo Base64

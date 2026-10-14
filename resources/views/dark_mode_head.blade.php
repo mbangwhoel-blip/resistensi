@@ -7,6 +7,10 @@
 <script>
     (function() {
         try {
+            window.tailwind = window.tailwind || {};
+            window.tailwind.config = window.tailwind.config || {};
+            window.tailwind.config.darkMode = 'class';
+
             const savedTheme = localStorage.getItem('simpel_theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -21,7 +25,7 @@
 
 <style id="simpel-global-dark-mode">
     /* ======================================================== */
-    /* SIMPEL BBLKL - GLOBAL DARK MODE STYLESHEET               */
+    /* PETA RESISTENSI - GLOBAL DARK MODE STYLESHEET            */
     /* ======================================================== */
 
     /* 1. Latar Belakang & Halaman Utama (Neutral Deep Dark Slate) */
@@ -1054,6 +1058,129 @@
             background-color: #0d9488 !important;
             border-color: #0f766e !important;
             font-weight: 800 !important;
+        }
+
+        /* 25. Segmented Pills Tingkat Wilayah - Anti Silau / Eye-Friendly */
+        .level-pill-container {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        html.dark .level-pill-container {
+            background-color: #141417 !important;
+            border: 1px solid #27272a !important;
+        }
+
+        .level-pill-option {
+            color: #64748b;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+        .level-pill-option:hover {
+            color: #0f172a;
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .level-pill-option:has(input:checked) {
+            background-color: #ffffff !important;
+            color: #0f766e !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+            font-weight: 800 !important;
+        }
+
+        html.dark .level-pill-option {
+            color: #a1a1aa !important;
+        }
+        html.dark .level-pill-option:hover {
+            color: #f4f4f5 !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        html.dark .level-pill-option:has(input:checked) {
+            background-color: rgba(13, 148, 136, 0.22) !important;
+            color: #2dd4bf !important;
+            border: 1px solid rgba(45, 212, 191, 0.5) !important;
+            box-shadow: 0 2px 10px -2px rgba(13, 148, 136, 0.35) !important;
+            font-weight: 800 !important;
+        }
+        html.dark .level-pill-option:has(input:checked) * {
+            color: #2dd4bf !important;
+        }
+
+        /* 26. Reset Filter Button - Warna Jelas & Hangat (Amber) di Mode Gelap */
+        .btn-reset-filter {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-reset-filter svg {
+            color: #d97706;
+            transition: color 0.2s ease-in-out;
+        }
+        .btn-reset-filter:hover {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            color: #ffffff;
+        }
+        .btn-reset-filter:hover svg {
+            color: #ffffff;
+        }
+
+        html.dark .btn-reset-filter {
+            background-color: rgba(245, 158, 11, 0.16) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #fde047 !important;
+            box-shadow: 0 2px 8px -1px rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .btn-reset-filter svg {
+            color: #fbbf24 !important;
+        }
+        html.dark .btn-reset-filter:hover {
+            background-color: #d97706 !important;
+            border-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+        html.dark .btn-reset-filter:hover svg {
+            color: #ffffff !important;
+        }
+
+        /* 27. Reset Peta Button - Aksen Teal di Mode Gelap */
+        .btn-reset-peta {
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-reset-peta svg {
+            color: #0d9488;
+            transition: color 0.2s ease-in-out;
+        }
+        .btn-reset-peta:hover {
+            background-color: #0d9488;
+            border-color: #0d9488;
+            color: #ffffff;
+        }
+        .btn-reset-peta:hover svg {
+            color: #ffffff;
+        }
+
+        html.dark .btn-reset-peta {
+            background-color: rgba(13, 148, 136, 0.18) !important;
+            border: 1px solid rgba(20, 184, 166, 0.5) !important;
+            color: #2dd4bf !important;
+            box-shadow: 0 2px 8px -1px rgba(13, 148, 136, 0.25) !important;
+        }
+        html.dark .btn-reset-peta svg {
+            color: #2dd4bf !important;
+        }
+        html.dark .btn-reset-peta:hover {
+            background-color: #0d9488 !important;
+            border-color: #14b8a6 !important;
+            color: #ffffff !important;
+        }
+        html.dark .btn-reset-peta:hover svg {
+            color: #ffffff !important;
         }
 
 </style>

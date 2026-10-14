@@ -946,11 +946,16 @@ class ExportImportController extends Controller
                     'no' => (string)($importedCount + 1)
                 ]);
 
+                // Auto-register parameter uji ke master kategori jika belum terdaftar
+                if (!empty($nyamuk)) KategoriUji::firstOrCreateCategory('nyamuk', $nyamuk);
+                if (!empty($insektisida)) KategoriUji::firstOrCreateCategory('insektisida', $insektisida);
+                if (!empty($metode)) KategoriUji::firstOrCreateCategory('metode', $metode);
+
                 $importedCount++;
             }
         }
 
-        $message = "Berhasil mengimpor {$importedCount} data uji resistensi ke sistem SIMPEL BBLKL.";
+        $message = "Berhasil mengimpor {$importedCount} data uji resistensi ke sistem Peta Resistensi.";
         if ($matchedMasterCount > 0) {
             $message .= " ({$matchedMasterCount} data kabupaten berhasil disinkronkan dengan data master).";
         }

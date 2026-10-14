@@ -103,7 +103,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem SIMPEL BBLKL.');
+        return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem Peta Resistensi.');
     }
 
     /**

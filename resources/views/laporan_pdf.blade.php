@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Hasil Uji Resistensi Vektor - SIMPEL BBLKL</title>
+    <title>Laporan Hasil Uji Resistensi Vektor - PETA RESISTENSI</title>
     <style>
         @page {
             margin: 10mm 10mm 12mm 10mm;

@@ -32,7 +32,7 @@ class BackupNotificationMail extends Mailable
     {
         $date = date('d M Y');
         return new Envelope(
-            subject: "[SIMPEL BBLKL] Laporan Backup Database Otomatis - {$date}",
+            subject: "[PETA RESISTENSI] Laporan Backup Database Otomatis - {$date}",
         );
     }
 

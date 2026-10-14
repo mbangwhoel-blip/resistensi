@@ -112,17 +112,143 @@ class KategoriUjiController extends Controller
         }
 
         $oldName = $item->name ?? $item->nama;
+        $newName = trim($validated['nama']);
+        $category = $validated['kategori'];
 
         $item->update([
-            'category' => $validated['kategori'],
-            'name' => trim($validated['nama']),
+            'category' => $category,
+            'name' => $newName,
             'description' => $validated['keterangan'] ? trim($validated['keterangan']) : null,
             'is_active' => $request->has('is_active') ? (bool)$request->is_active : true,
         ]);
 
+        // KASKADE UPDATE: Sinkronkan seluruh data uji laboratorium yang menggunakan parameter ini
+        $affectedRows = 0;
+        if ($oldName !== $newName) {
+            if ($category === 'nyamuk') {
+                $affectedRows = DataUjiResistensi::where('mosquito_type', $oldName)->update(['mosquito_type' => $newName]);
+            } elseif ($category === 'insektisida') {
+                $affectedRows = DataUjiResistensi::where('insecticide', $oldName)->update(['insecticide' => $newName]);
+            } elseif ($category === 'metode') {
+                $affectedRows = DataUjiResistensi::where('method', $oldName)->update(['method' => $newName]);
+            }
+        }
+
+        $successMsg = "Data '{$oldName}' berhasil diperbarui!";
+        if ($affectedRows > 0) {
+            $successMsg .= " Sebanyak {$affectedRows} data hasil uji laboratorium otomatis disinkronkan ke '{$newName}'.";
+        }
+
         return redirect()
-            ->route('kategori.index', ['tab' => $validated['kategori']])
-            ->with('success', "Data '{$oldName}' berhasil diperbarui!");
+            ->route('kategori.index', ['tab' => $category])
+            ->with('success', $successMsg);
+    }
+
+    /**
+     * Sinkronkan seluruh parameter (nyamuk, insektisida, metode) dari data uji ke master kategori
+     */
+    public function sync(Request $request)
+    {
+        $stats = self::syncWithDataUji();
+
+        $totalAdded = $stats['nyamuk_added'] + $stats['insektisida_added'] + $stats['metode_added'];
+
+        if ($totalAdded > 0) {
+            $msg = "Sinkronisasi berhasil! Berhasil menambahkan {$totalAdded} parameter baru ke master data ({$stats['nyamuk_added']} jenis nyamuk, {$stats['insektisida_added']} insektisida, dan {$stats['metode_added']} metode).";
+        } else {
+            $msg = "Seluruh parameter (nyamuk, insektisida, dan metode) dari data uji sudah 100% sinkron dengan master data.";
+        }
+
+        return redirect()->back()->with('success', $msg);
+    }
+
+    /**
+     * Logika internal sinkronisasi parameter dari data uji
+     */
+    public static function syncWithDataUji(): array
+    {
+        $stats = [
+            'nyamuk_added' => 0,
+            'insektisida_added' => 0,
+            'metode_added' => 0,
+        ];
+
+        // 1. Jenis Nyamuk
+        $nyamukList = DataUjiResistensi::whereNotNull('mosquito_type')
+            ->where('mosquito_type', '!=', '')
+            ->distinct()
+            ->pluck('mosquito_type');
+
+        foreach ($nyamukList as $nama) {
+            $cleanName = trim($nama);
+            if ($cleanName === '') continue;
+
+            $exists = KategoriUji::where('category', 'nyamuk')
+                ->whereRaw('LOWER(name) = ?', [strtolower($cleanName)])
+                ->exists();
+
+            if (!$exists) {
+                KategoriUji::create([
+                    'category' => 'nyamuk',
+                    'name' => $cleanName,
+                    'description' => 'Ditambahkan otomatis dari data hasil uji laboratorium',
+                    'is_active' => true,
+                ]);
+                $stats['nyamuk_added']++;
+            }
+        }
+
+        // 2. Insektisida
+        $insList = DataUjiResistensi::whereNotNull('insecticide')
+            ->where('insecticide', '!=', '')
+            ->distinct()
+            ->pluck('insecticide');
+
+        foreach ($insList as $nama) {
+            $cleanName = trim($nama);
+            if ($cleanName === '') continue;
+
+            $exists = KategoriUji::where('category', 'insektisida')
+                ->whereRaw('LOWER(name) = ?', [strtolower($cleanName)])
+                ->exists();
+
+            if (!$exists) {
+                KategoriUji::create([
+                    'category' => 'insektisida',
+                    'name' => $cleanName,
+                    'description' => 'Ditambahkan otomatis dari data hasil uji laboratorium',
+                    'is_active' => true,
+                ]);
+                $stats['insektisida_added']++;
+            }
+        }
+
+        // 3. Metode Pengendalian
+        $metodeList = DataUjiResistensi::whereNotNull('method')
+            ->where('method', '!=', '')
+            ->distinct()
+            ->pluck('method');
+
+        foreach ($metodeList as $nama) {
+            $cleanName = trim($nama);
+            if ($cleanName === '') continue;
+
+            $exists = KategoriUji::where('category', 'metode')
+                ->whereRaw('LOWER(name) = ?', [strtolower($cleanName)])
+                ->exists();
+
+            if (!$exists) {
+                KategoriUji::create([
+                    'category' => 'metode',
+                    'name' => $cleanName,
+                    'description' => 'Ditambahkan otomatis dari data hasil uji laboratorium',
+                    'is_active' => true,
+                ]);
+                $stats['metode_added']++;
+            }
+        }
+
+        return $stats;
     }
 
     public function destroy($id)

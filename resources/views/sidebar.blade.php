@@ -127,14 +127,33 @@
     }
 </style>
 
-<aside class="custom-sidebar fixed inset-y-0 left-0 z-50 flex flex-col shadow-2xl">
+{{-- BACKDROP OVERLAY DRAWER UNTUK MOBILE --}}
+<div id="sidebarBackdrop"
+     onclick="toggleSidebarDrawer(true)"
+     class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+     aria-hidden="true">
+</div>
 
-    {{-- LOGO BRAND & APLIKASI --}}
-    <div class="shrink-0 flex flex-col items-center justify-center border-b border-white/[0.08] px-3 py-3 bg-[#0B3D3A]/95 backdrop-blur-sm text-center">
-        {{-- LOGO BADGE DARI FOLDER PUBLIC (UKURAN LEBIH BESAR AGAR TEKS JELAS TERBACA) --}}
-        <div class="w-full flex items-center justify-center rounded-xl bg-white px-2.5 py-2 shadow-sm border border-white/90 transition hover:scale-[1.01]">
-            <img src="{{ asset('logo_bblkl.png') }}" alt="Logo Kemenkes BBLKL" class="w-full h-auto max-h-[52px] object-contain">
+<aside id="appSidebar" class="custom-sidebar fixed inset-y-0 left-0 z-50 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full lg:translate-x-0">
+
+    {{-- LOGO BRAND & APLIKASI (PETA RESISTENSI) --}}
+    <div class="shrink-0 flex items-center justify-between gap-2 border-b border-white/[0.08] px-3.5 py-3 bg-[#0B3D3A]/95 backdrop-blur-sm">
+        <div class="flex-1 flex flex-col items-center justify-center rounded-xl bg-white px-2 py-1.5 shadow-xs border border-white/90">
+            <img src="{{ asset('logo_bblkl.png') }}" alt="Logo Kemenkes BBLKL" class="w-full h-auto max-h-[44px] object-contain">
+            <div class="w-full mt-1 pt-1 border-t border-slate-100 flex items-center justify-center gap-1.5">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[10px] font-black tracking-wider text-emerald-800 uppercase">PETA RESISTENSI</span>
+            </div>
         </div>
+        {{-- TOMBOL TUTUP DI MOBILE --}}
+        <button type="button"
+                onclick="toggleSidebarDrawer(true)"
+                class="lg:hidden flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                aria-label="Tutup Menu">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
 
     {{-- NAVIGASI MENU (LEBIH LEGA DAN TETAP FIT 1 LAYAR TANPA PERLU SCROLL) --}}
@@ -367,3 +386,38 @@
     </nav>
 
 </aside>
+
+{{-- SCRIPT PENGENDALI SIDEBAR DRAWER RESPONSIF --}}
+<script>
+    window.toggleSidebarDrawer = function(forceClose = false) {
+        const sidebar = document.getElementById('appSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        if (!sidebar || !backdrop) return;
+        
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (forceClose || !isClosed) {
+            sidebar.classList.add('-translate-x-full');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            document.body.style.overflow = '';
+        } else {
+            sidebar.classList.remove('-translate-x-full');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100', 'pointer-events-auto');
+            if (window.innerWidth < 1024) {
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    };
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (backdrop) {
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+            document.body.style.overflow = '';
+        }
+    });
+</script>

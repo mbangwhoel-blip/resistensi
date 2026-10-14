@@ -289,6 +289,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('kategori')->name('kategori.')->group(function () {
             Route::get('/', [KategoriUjiController::class, 'index'])->name('index');
             Route::post('/', [KategoriUjiController::class, 'store'])->name('store');
+            Route::post('/sync', [KategoriUjiController::class, 'sync'])->name('sync');
             Route::put('/{id}', [KategoriUjiController::class, 'update'])->name('update');
             Route::delete('/{id}', [KategoriUjiController::class, 'destroy'])->name('destroy');
         });

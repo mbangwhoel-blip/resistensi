@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     {{-- CHART.JS LIBRARY --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -33,6 +38,91 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+
+        /* ------------------------------------------------------------- */
+        /* STAT PILL BOX & ANALYTICS TABS UNTUK LIGHT & DARK MODE        */
+        /* ------------------------------------------------------------- */
+        .stat-pill-box {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+        }
+        .stat-pill-box .stat-label {
+            color: #64748b;
+        }
+        .stat-pill-box .stat-val-default {
+            color: #0f172a;
+        }
+        .stat-pill-box .stat-val-teal {
+            color: #0d9488;
+        }
+        .stat-pill-box .stat-val-indigo {
+            color: #4f46e5;
+        }
+
+        html.dark .stat-pill-box {
+            background-color: #141417 !important;
+            border-color: #27272a !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+        }
+        html.dark .stat-pill-box .stat-label {
+            color: #94a3b8 !important;
+        }
+        html.dark .stat-pill-box .stat-val-default {
+            color: #f8fafc !important;
+        }
+        html.dark .stat-pill-box .stat-val-teal {
+            color: #2dd4bf !important;
+        }
+        html.dark .stat-pill-box .stat-val-indigo {
+            color: #818cf8 !important;
+        }
+
+        /* Container Tabs Segmented */
+        .analytics-tabs-container {
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+        html.dark .analytics-tabs-container {
+            background-color: #141417 !important;
+            border-color: #27272a !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .analytics-tabs-container .tab-btn {
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.15s ease-in-out;
+        }
+
+        /* Active Tab */
+        .analytics-tabs-container .tab-btn.active-tab {
+            background-color: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+        html.dark .analytics-tabs-container .tab-btn.active-tab {
+            background-color: #27272a !important;
+            color: #f8fafc !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Inactive Tab */
+        .analytics-tabs-container .tab-btn:not(.active-tab) {
+            background-color: transparent;
+            color: #64748b;
+        }
+        .analytics-tabs-container .tab-btn:not(.active-tab):hover {
+            color: #0f172a;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        html.dark .analytics-tabs-container .tab-btn:not(.active-tab) {
+            background-color: transparent !important;
+            color: #94a3b8 !important;
+        }
+        html.dark .analytics-tabs-container .tab-btn:not(.active-tab):hover {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.06) !important;
         }
 
         @media print {
@@ -66,19 +156,29 @@
     @include('sidebar')
 
     {{-- KONTEN UTAMA --}}
-    <main class="ml-64 min-h-screen flex flex-col">
+    <main class="min-h-screen transition-all duration-300 ml-0 lg:ml-64 flex flex-col">
 
         {{-- TOPBAR RESMI --}}
-        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-2xs">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
-                    <span>PETA RESISTENSI</span>
-                    <span>/</span>
-                    <span class="text-teal-600 dark:text-teal-400">Analisis Data</span>
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-3">
+                <button type="button"
+                        onclick="toggleSidebarDrawer()"
+                        class="lg:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition shadow-2xs cursor-pointer focus:outline-none"
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                        <span>PETA RESISTENSI</span>
+                        <span>/</span>
+                        <span class="text-teal-600 dark:text-teal-400">Analisis Data</span>
+                    </div>
+                    <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5 truncate">
+                        <span>📊 Analisis & Visualisasi Grafik Resistensi</span>
+                    </h1>
                 </div>
-                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
-                    <span>📊 Analisis & Visualisasi Grafik Resistensi</span>
-                </h1>
             </div>
 
             <div class="flex items-center gap-3">
@@ -282,8 +382,84 @@
                 </form>
             </div>
 
-            {{-- SECTION GRAFIK UTAMA (GRID 2 KOLOM) --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- SMART INSIGHT EPIDEMIOLOGIS BANNER --}}
+            <div class="rounded-2xl border border-teal-200/90 bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-indigo-500/10 p-4 sm:p-5 shadow-2xs no-print">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal-600 text-white shadow-xs font-black text-xl">
+                            💡
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="text-sm font-black text-slate-900 dark:text-white">
+                                    Smart Epidemiological Summary
+                                </h3>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-300">
+                                    Diagnostik WHO
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
+                                @if ($persenResisten >= 50)
+                                    Peringatan Dini: Mayoritas populasi vektor menunjukkan resistensi aktif pada <strong>{{ $persenResisten }}%</strong> dari total pengujian. Disarankan segera mengevaluasi dan merotasi bahan aktif insektisida.
+                                @elseif ($persenToleran >= 25)
+                                    Perhatian: Terdeteksi <strong>{{ $persenToleran }}%</strong> vektor berstatus toleran/terduga resisten. Bioassay konfirmasi berkala wajib dilaksanakan untuk deteksi dini resistensi meluas.
+                                @else
+                                    Status Efektif: Sebanyak <strong>{{ $persenRentan }}%</strong> populasi vektor berstatus rentan terhadap bahan insektisida pengujian.
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                        <div class="stat-pill-box flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs shadow-2xs transition">
+                            <span class="stat-label font-bold">Total Uji:</span>
+                            <span class="stat-val-default font-black">{{ number_format($totalPemeriksaan) }}</span>
+                        </div>
+                        <div class="stat-pill-box flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs shadow-2xs transition">
+                            <span class="stat-label font-bold">Spesimen:</span>
+                            <span class="stat-val-teal font-black">{{ number_format($totalSampel) }} ekor</span>
+                        </div>
+                        <div class="stat-pill-box flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs shadow-2xs transition">
+                            <span class="stat-label font-bold">Wilayah:</span>
+                            <span class="stat-val-indigo font-black">{{ $totalProvinsi }} Prov</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- SEGMENTED ANALYTICS TABS NAVIGATION --}}
+            <div class="no-print space-y-2.5 pb-1">
+                {{-- WADAH TAB SEJAJAR DAN SEBARIS (TIDAK WRAP) --}}
+                <div class="overflow-x-auto custom-scrollbar pb-1">
+                    <div class="analytics-tabs-container inline-flex items-center p-1.5 rounded-2xl border shadow-inner gap-1.5 whitespace-nowrap">
+                        <button type="button" onclick="switchAnalisisTab('semua')" id="btn-tab-semua"
+                                class="tab-btn active-tab px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">
+                            📑 Semua Analisis
+                        </button>
+                        <button type="button" onclick="switchAnalisisTab('tren')" id="btn-tab-tren"
+                                class="tab-btn px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">
+                            📈 Tren & Global
+                        </button>
+                        <button type="button" onclick="switchAnalisisTab('insek')" id="btn-tab-insek"
+                                class="tab-btn px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">
+                            🧪 Efikasi Insektisida
+                        </button>
+                        <button type="button" onclick="switchAnalisisTab('vektor')" id="btn-tab-vektor"
+                                class="tab-btn px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">
+                            🦟 Vektor & Wilayah
+                        </button>
+                    </div>
+                </div>
+
+                {{-- KETERANGAN TOMBOL PNG DIPINDAHKAN TEPAT DI BAWAH KOTAK TABS --}}
+                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5 pl-1">
+                    <span>📷</span>
+                    <span>Tiap kartu grafik memiliki tombol <strong class="text-slate-700 dark:text-slate-200">PNG</strong> untuk unduh gambar instan</span>
+                </div>
+            </div>
+
+            {{-- TAB 1: SECTION GRAFIK TREN & DISTRIBUSI GLOBAL --}}
+            <div id="section-tren" class="analisis-tab-section grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {{-- GRAFIK 1: TREN TAHUNAN STATUS RESISTENSI (SPAN 2 KOLOM) --}}
                 <div class="chart-card lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
@@ -296,9 +472,20 @@
                                 </h3>
                                 <p class="text-xs text-slate-500 mt-0.5">Perkembangan jumlah uji Resisten, Toleran, dan Rentan dari tahun ke tahun</p>
                             </div>
-                            <span class="rounded-lg bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700 border border-blue-200/60">
-                                2021 – 2026
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-lg bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700 border border-blue-200/60 dark:bg-blue-950/40 dark:border-blue-800">
+                                    2021 – 2026
+                                </span>
+                                <button type="button" 
+                                        onclick="downloadChartAsPNG('chartTrenTahun', 'grafik-tren-tahunan-resistensi')" 
+                                        class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                        title="Unduh Grafik sebagai Gambar PNG">
+                                    <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span>PNG</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="mt-4 relative h-[310px] w-full">
                             <canvas id="chartTrenTahun"></canvas>
@@ -317,12 +504,23 @@
                 {{-- GRAFIK 2: PROPORSI KESELURUHAN STATUS RESISTENSI (DONUT) --}}
                 <div class="chart-card rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
                     <div>
-                        <div class="border-b border-slate-100 pb-3">
-                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                <span>🎯</span>
-                                <span>Proporsi Status Resistensi</span>
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Persentase keseluruhan kategori resistensi</p>
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    <span>🎯</span>
+                                    <span>Proporsi Status Resistensi</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Persentase keseluruhan kategori resistensi</p>
+                            </div>
+                            <button type="button" 
+                                    onclick="downloadChartAsPNG('chartStatusDonut', 'grafik-proporsi-status-resistensi')" 
+                                    class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                    title="Unduh Grafik sebagai Gambar PNG">
+                                <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <span>PNG</span>
+                            </button>
                         </div>
                         <div class="mt-4 relative h-[210px] w-full flex items-center justify-center">
                             <canvas id="chartStatusDonut"></canvas>
@@ -377,135 +575,180 @@
 
             </div>
 
-            {{-- SECTION GRAFIK KEDUA (GRID 2 KOLOM) --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {{-- TAB 2: SECTION ANALISIS VEKTOR & SEBARAN WILAYAH --}}
+            <div id="section-vektor" class="analisis-tab-section space-y-6">
 
                 {{-- GRAFIK 3: RESISTENSI PER SPESIES NYAMUK (GROUPED BAR) --}}
                 <div class="chart-card rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                    <div class="border-b border-slate-100 pb-3">
-                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                            <span>🦟</span>
-                            <span>Status Resistensi per Spesies Vektor</span>
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Tingkat resistensi pada jenis nyamuk yang paling sering diuji</p>
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                <span>🦟</span>
+                                <span>Status Resistensi per Spesies Vektor</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Tingkat resistensi pada jenis nyamuk yang paling sering diuji</p>
+                        </div>
+                        <button type="button" 
+                                onclick="downloadChartAsPNG('chartNyamukBar', 'grafik-resistensi-per-spesies-nyamuk')" 
+                                class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                title="Unduh Grafik sebagai Gambar PNG">
+                            <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>PNG</span>
+                        </button>
                     </div>
-                    <div class="mt-4 relative h-[300px] w-full">
+                    <div class="mt-4 relative h-[310px] w-full">
                         <canvas id="chartNyamukBar"></canvas>
                     </div>
                 </div>
 
+                {{-- SECTION GRAFIK WILAYAH & METODE (GRID 2 KOLOM PROPORSIONAL) --}}
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                    {{-- GRAFIK 5: TOP 10 WILAYAH KASUS RESISTEN (SPAN 7 KOLOM) --}}
+                    <div class="chart-card lg:col-span-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+                            <div class="min-w-0 pr-2">
+                                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    <span>🗺️</span>
+                                    <span>10 Provinsi dengan Temuan Resisten Tertinggi</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Prioritas daerah untuk kewaspadaan dan evaluasi strategi intervensi vektor</p>
+                            </div>
+                            <div class="shrink-0 flex items-center gap-2">
+                                <span class="inline-flex items-center justify-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700 border border-rose-300 ring-4 ring-rose-500/10 shadow-xs whitespace-nowrap text-center tracking-wide">
+                                    <span class="relative flex h-2 w-2 shrink-0">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
+                                    </span>
+                                    <span class="text-center">Peringatan Dini</span>
+                                </span>
+                                <button type="button" 
+                                        onclick="downloadChartAsPNG('chartProvinsiBar', 'grafik-top-10-provinsi-resisten')" 
+                                        class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                        title="Unduh Grafik sebagai Gambar PNG">
+                                    <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span>PNG</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 relative h-[290px] w-full">
+                            <canvas id="chartProvinsiBar"></canvas>
+                        </div>
+                    </div>
+
+                    {{-- GRAFIK 6: DISTRIBUSI METODE UJI LABORATORIUM (SPAN 5 KOLOM) --}}
+                    <div class="chart-card lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div>
+                                    <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                        <span>⚗️</span>
+                                        <span>Metode Pengujian Laboratorium</span>
+                                    </h3>
+                                    <p class="text-xs text-slate-500 mt-0.5">Proporsi metode bioassay dan standar uji yang digunakan</p>
+                                </div>
+                                <button type="button" 
+                                        onclick="downloadChartAsPNG('chartMetodePie', 'grafik-metode-pengujian-laboratorium')" 
+                                        class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                        title="Unduh Grafik sebagai Gambar PNG">
+                                    <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span>PNG</span>
+                                </button>
+                            </div>
+
+                            {{-- DIAGRAM DONUT TEBAL & JELAS DENGAN COUNTER TENGAH --}}
+                            <div class="mt-4 relative h-[210px] w-full flex items-center justify-center">
+                                <canvas id="chartMetodePie"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Uji</span>
+                                    <span class="text-xl font-black text-slate-800 leading-none mt-0.5">{{ number_format($totalPemeriksaan, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+
+                            {{-- DAFTAR RINCIAN METODE: RATA KIRI, RAPI, TIDAK TERPOTONG --}}
+                            <div class="mt-4 pt-3 border-t border-slate-100 space-y-2 text-left">
+                                @php
+                                    $colorsMetode = [
+                                        '#2563eb', // Blue-600
+                                        '#0284c7', // Sky-600
+                                        '#10b981', // Emerald-500
+                                        '#f59e0b', // Amber-500
+                                        '#8b5cf6', // Purple-500
+                                        '#f43f5e', // Rose-500
+                                        '#64748b'  // Slate-500
+                                    ];
+                                    $totalMetodeCount = array_sum($chartMetodeData);
+                                @endphp
+                                @foreach ($chartMetodeLabels as $i => $metode)
+                                    @php
+                                        $val = $chartMetodeData[$i] ?? 0;
+                                        $pct = $totalMetodeCount > 0 ? round(($val / $totalMetodeCount) * 100, 1) : 0;
+                                        $color = $colorsMetode[$i % count($colorsMetode)];
+                                    @endphp
+                                    <div class="flex items-start justify-between gap-2.5 text-xs p-1.5 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
+                                        <div class="flex items-start gap-2.5 min-w-0 flex-1 text-left">
+                                            <span class="h-3 w-3 rounded-full shrink-0 mt-0.5 shadow-2xs" style="background-color: {{ $color }}"></span>
+                                            <span class="font-bold text-slate-700 text-left leading-snug break-words" title="{{ $metode }}">{{ $metode }}</span>
+                                        </div>
+                                        <div class="text-right shrink-0 flex items-center gap-1.5 font-mono whitespace-nowrap pt-0.5">
+                                            <span class="font-extrabold text-slate-900 text-xs">{{ $val }} uji</span>
+                                            <span class="text-[11px] font-semibold text-slate-400">({{ $pct }}%)</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- FOOTER KETERANGAN RATA KIRI --}}
+                        <div class="mt-3 pt-2 text-left text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                            <svg class="h-3.5 w-3.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Standar WHO Bioassay & CDC Bottle Test</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- TAB 3: SECTION ANALISIS EFIKASI INSEKTISIDA & MATRIKS --}}
+            <div id="section-insek" class="analisis-tab-section space-y-6">
+
                 {{-- GRAFIK 4: RESISTENSI PER INSEKTISIDA (HORIZONTAL BAR) --}}
                 <div class="chart-card rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                    <div class="border-b border-slate-100 pb-3">
-                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                            <span>🧪</span>
-                            <span>Tingkat Resistensi per Insektisida</span>
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Perbandingan resistensi terhadap senyawa insektisida utama</p>
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                <span>🧪</span>
+                                <span>Tingkat Resistensi per Insektisida</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Perbandingan resistensi terhadap senyawa insektisida utama</p>
+                        </div>
+                        <button type="button" 
+                                onclick="downloadChartAsPNG('chartInsektisidaBar', 'grafik-tingkat-resistensi-per-insektisida')" 
+                                class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 transition shadow-2xs cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                                title="Unduh Grafik sebagai Gambar PNG">
+                            <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>PNG</span>
+                        </button>
                     </div>
-                    <div class="mt-4 relative h-[300px] w-full">
+                    <div class="mt-4 relative h-[310px] w-full">
                         <canvas id="chartInsektisidaBar"></canvas>
                     </div>
                 </div>
 
-            </div>
-
-            {{-- SECTION GRAFIK KETIGA (GRID 2 KOLOM PROPORSIONAL) --}}
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                {{-- GRAFIK 5: TOP 10 WILAYAH KASUS RESISTEN (SPAN 7 KOLOM) --}}
-                <div class="chart-card lg:col-span-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                    <div class="border-b border-slate-100 pb-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
-                        <div class="min-w-0 pr-2">
-                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                <span>🗺️</span>
-                                <span>10 Provinsi dengan Temuan Resisten Tertinggi</span>
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Prioritas daerah untuk kewaspadaan dan evaluasi strategi intervensi vektor</p>
-                        </div>
-                        <div class="shrink-0 flex items-center justify-center">
-                            <span class="inline-flex items-center justify-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1 text-xs font-black text-rose-700 border border-rose-300 ring-4 ring-rose-500/10 shadow-xs whitespace-nowrap text-center tracking-wide">
-                                <span class="relative flex h-2 w-2 shrink-0">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
-                                </span>
-                                <span class="text-center">Peringatan Dini</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="mt-4 relative h-[290px] w-full">
-                        <canvas id="chartProvinsiBar"></canvas>
-                    </div>
-                </div>
-
-                {{-- GRAFIK 6: DISTRIBUSI METODE UJI LABORATORIUM (SPAN 5 KOLOM) --}}
-                <div class="chart-card lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
-                    <div>
-                        <div class="border-b border-slate-100 pb-3">
-                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                <span>⚗️</span>
-                                <span>Metode Pengujian Laboratorium</span>
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Proporsi metode bioassay dan standar uji yang digunakan</p>
-                        </div>
-
-                        {{-- DIAGRAM DONUT TEBAL & JELAS DENGAN COUNTER TENGAH --}}
-                        <div class="mt-4 relative h-[210px] w-full flex items-center justify-center">
-                            <canvas id="chartMetodePie"></canvas>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Uji</span>
-                                <span class="text-xl font-black text-slate-800 leading-none mt-0.5">{{ number_format($totalPemeriksaan, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-
-                        {{-- DAFTAR RINCIAN METODE: RATA KIRI, RAPI, TIDAK TERPOTONG --}}
-                        <div class="mt-4 pt-3 border-t border-slate-100 space-y-2 text-left">
-                            @php
-                                $colorsMetode = [
-                                    '#2563eb', // Blue-600
-                                    '#0284c7', // Sky-600
-                                    '#10b981', // Emerald-500
-                                    '#f59e0b', // Amber-500
-                                    '#8b5cf6', // Purple-500
-                                    '#f43f5e', // Rose-500
-                                    '#64748b'  // Slate-500
-                                ];
-                                $totalMetodeCount = array_sum($chartMetodeData);
-                            @endphp
-                            @foreach ($chartMetodeLabels as $i => $metode)
-                                @php
-                                    $val = $chartMetodeData[$i] ?? 0;
-                                    $pct = $totalMetodeCount > 0 ? round(($val / $totalMetodeCount) * 100, 1) : 0;
-                                    $color = $colorsMetode[$i % count($colorsMetode)];
-                                @endphp
-                                <div class="flex items-start justify-between gap-2.5 text-xs p-1.5 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
-                                    <div class="flex items-start gap-2.5 min-w-0 flex-1 text-left">
-                                        <span class="h-3 w-3 rounded-full shrink-0 mt-0.5 shadow-2xs" style="background-color: {{ $color }}"></span>
-                                        <span class="font-bold text-slate-700 text-left leading-snug break-words" title="{{ $metode }}">{{ $metode }}</span>
-                                    </div>
-                                    <div class="text-right shrink-0 flex items-center gap-1.5 font-mono whitespace-nowrap pt-0.5">
-                                        <span class="font-extrabold text-slate-900 text-xs">{{ $val }} uji</span>
-                                        <span class="text-[11px] font-semibold text-slate-400">({{ $pct }}%)</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- FOOTER KETERANGAN RATA KIRI --}}
-                    <div class="mt-3 pt-2 text-left text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
-                        <svg class="h-3.5 w-3.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Standar WHO Bioassay & CDC Bottle Test</span>
-                    </div>
-                </div>
-
-            </div>
-
-            {{-- TABEL MATRIKS ANALISIS: EFEKTIVITAS INSEKTISIDA VS VEKTOR --}}
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-white">
+                {{-- TABEL MATRIKS ANALISIS: EFEKTIVITAS INSEKTISIDA VS VEKTOR --}}
+                <div class="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+                    <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-white">
                     <div>
                         <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                             <span>🔬</span>
@@ -610,6 +853,7 @@
                     </table>
                 </div>
             </div>
+            </div>
 
             {{-- KOTAK KETERANGAN KRITERIA STATUS RESISTENSI STANDAR KEMENKES RI / WHO --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
@@ -657,6 +901,94 @@
         const chartGridColor = isDarkInit ? 'rgba(51, 65, 85, 0.6)' : '#f1f5f9';
         Chart.defaults.font.family = "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif";
         Chart.defaults.color = chartTextColor;
+
+        // Plugin Kustom Chart.js: Menampilkan Nilai Angka Data (Labels) di atas Batang, Titik Garis, & Irisan Donut
+        const chartValueLabelsPlugin = {
+            id: 'chartValueLabels',
+            afterDatasetsDraw(chart) {
+                const ctx = chart.ctx;
+                const isDark = document.documentElement.classList.contains('dark');
+                const chartType = chart.config.type;
+                const isHorizontal = chart.config.options?.indexAxis === 'y';
+
+                chart.data.datasets.forEach((dataset, datasetIndex) => {
+                    const meta = chart.getDatasetMeta(datasetIndex);
+                    if (!meta || meta.hidden) return;
+
+                    meta.data.forEach((element, index) => {
+                        const val = dataset.data[index];
+                        if (val === null || val === undefined || Number(val) === 0) return;
+                        const numVal = Number(val);
+
+                        ctx.save();
+                        if (chartType === 'doughnut' || chartType === 'pie') {
+                            // Tampilkan angka & persentase di tengah irisan donut / pie
+                            const total = dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
+                            if (total > 0) {
+                                const pct = Math.round((numVal / total) * 100);
+                                if (pct >= 4) {
+                                    const angle = (element.startAngle + element.endAngle) / 2;
+                                    const radius = (element.innerRadius + element.outerRadius) / 2;
+                                    const x = element.x + Math.cos(angle) * radius;
+                                    const y = element.y + Math.sin(angle) * radius;
+
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
+                                    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+                                    ctx.shadowBlur = 4;
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.fillText(numVal, x, y - 5);
+                                    ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
+                                    ctx.fillText(`(${pct}%)`, x, y + 6);
+                                }
+                            }
+                        } else if (isHorizontal) {
+                            // Bar Horizontal: Tampilkan nilai di sebelah kanan batang
+                            ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+                            ctx.textAlign = 'left';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = isDark ? '#f1f5f9' : '#0f172a';
+                            ctx.fillText(numVal, element.x + 4, element.y);
+                        } else if (chartType === 'line') {
+                            // Line Chart: Tampilkan angka dalam pill badge halus di atas titik
+                            const text = String(numVal);
+                            ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+                            const textWidth = ctx.measureText(text).width;
+                            const pillX = element.x - textWidth / 2 - 3;
+                            const pillY = element.y - 18;
+
+                            ctx.fillStyle = isDark ? 'rgba(20, 20, 23, 0.9)' : 'rgba(255, 255, 255, 0.92)';
+                            ctx.beginPath();
+                            if (ctx.roundRect) {
+                                ctx.roundRect(pillX, pillY, textWidth + 6, 12, 3);
+                            } else {
+                                ctx.rect(pillX, pillY, textWidth + 6, 12);
+                            }
+                            ctx.fill();
+
+                            ctx.strokeStyle = dataset.borderColor || (isDark ? '#475569' : '#cbd5e1');
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = dataset.borderColor || (isDark ? '#f1f5f9' : '#0f172a');
+                            ctx.fillText(text, element.x, pillY + 6);
+                        } else {
+                            // Bar Vertikal: Tampilkan nilai tepat di atas batang
+                            ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillStyle = isDark ? '#f1f5f9' : '#0f172a';
+                            ctx.fillText(numVal, element.x, element.y - 2);
+                        }
+                        ctx.restore();
+                    });
+                });
+            }
+        };
+        Chart.register(chartValueLabelsPlugin);
 
         // 1. GRAFIK TREN TAHUNAN STATUS RESISTENSI
         const ctxTren = document.getElementById('chartTrenTahun').getContext('2d');
@@ -735,7 +1067,8 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#f1f5f9' },
+                        grace: '12%',
+                        grid: { color: chartGridColor },
                         ticks: { font: { size: 11 } }
                     },
                     x: {
@@ -836,7 +1169,8 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#f1f5f9' },
+                        grace: '12%',
+                        grid: { color: chartGridColor },
                         ticks: { font: { size: 11 } }
                     },
                     x: {
@@ -903,7 +1237,8 @@
                     x: {
                         stacked: false,
                         beginAtZero: true,
-                        grid: { color: '#f1f5f9' },
+                        grace: '12%',
+                        grid: { color: chartGridColor },
                         ticks: { font: { size: 10 } }
                     },
                     y: {
@@ -947,7 +1282,8 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#f1f5f9' },
+                        grace: '12%',
+                        grid: { color: chartGridColor },
                         ticks: { font: { size: 11 } }
                     },
                     x: {
@@ -1022,6 +1358,129 @@
                 }
             });
         }
+
+        // -------------------------------------------------------------
+        // FITUR UNDUH GRAFIK INSTAN SEBAGAI GAMBAR PNG BERESOLUSI TINGGI
+        // -------------------------------------------------------------
+        window.downloadChartAsPNG = function(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                console.warn('Canvas not found:', chartId);
+                return;
+            }
+
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // Format judul rapi untuk banner PNG
+            const titleMap = {
+                'chartTrenTahun': 'Tren Tahunan Hasil Uji Resistensi Vektor',
+                'chartStatusDonut': 'Proporsi Status Kerentanan Vektor (WHO / Kemenkes RI)',
+                'chartNyamukBar': 'Distribusi Resistensi per Spesies Vektor Nyamuk',
+                'chartInsektisidaBar': 'Tingkat Kerentanan / Resistensi per Insektisida',
+                'chartProvinsiBar': 'Top 10 Provinsi Kasus Vektor Resisten Terbanyak',
+                'chartMetodePie': 'Proporsi Penggunaan Metode Pengujian Laboratorium'
+            };
+            const displayTitle = titleMap[chartId] || (filename || chartId).replace(/[-_]/g, ' ').toUpperCase();
+
+            // Setup dimensi canvas ekspor dengan header resmi
+            const headerHeight = 52;
+            const padding = 20;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width + (padding * 2);
+            tempCanvas.height = canvas.height + headerHeight + (padding * 2);
+            const tempCtx = tempCanvas.getContext('2d');
+
+            // Latar belakang solid agar gambar tidak transparan ketika disalin ke Word / PPT
+            tempCtx.fillStyle = isDark ? '#141417' : '#ffffff';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+            // Watermark & Identitas Resmi BBLKL Kemenkes RI
+            tempCtx.fillStyle = isDark ? '#2dd4bf' : '#0d9488';
+            tempCtx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
+            tempCtx.fillText('PETA RESISTENSI • BBLKL KEMENKES RI', padding, padding + 14);
+
+            // Judul Grafik Utama
+            tempCtx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+            tempCtx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+            tempCtx.fillText(displayTitle, padding, padding + 32);
+
+            // Tanggal Ekspor di sebelah kanan
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            tempCtx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+            tempCtx.font = '500 11px "Plus Jakarta Sans", sans-serif';
+            tempCtx.textAlign = 'right';
+            tempCtx.fillText(`Diunduh: ${dateStr}`, tempCanvas.width - padding, padding + 22);
+            tempCtx.textAlign = 'left';
+
+            // Garis pemisah halus antara header dan grafik
+            tempCtx.strokeStyle = isDark ? '#27272a' : '#e2e8f0';
+            tempCtx.lineWidth = 1;
+            tempCtx.beginPath();
+            tempCtx.moveTo(padding, padding + 42);
+            tempCtx.lineTo(tempCanvas.width - padding, padding + 42);
+            tempCtx.stroke();
+
+            // Salin grafik lengkap beserta nilai data (datalabels)
+            tempCtx.drawImage(canvas, padding, padding + headerHeight);
+
+            // Unduh otomatis
+            const dataUrl = tempCanvas.toDataURL('image/png', 1.0);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            const todayStr = now.toISOString().slice(0, 10);
+            a.download = (filename || chartId) + '-' + todayStr + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        // -------------------------------------------------------------
+        // NAVIGASI TAB SEGMENTED ANALISIS (SEMUA, TREN, INSEK, VEKTOR)
+        // -------------------------------------------------------------
+        window.switchAnalisisTab = function(tab) {
+            const tabs = ['semua', 'tren', 'insek', 'vektor'];
+            const sections = {
+                'tren': document.getElementById('section-tren'),
+                'vektor': document.getElementById('section-vektor'),
+                'insek': document.getElementById('section-insek')
+            };
+
+            // Atur visibilitas section
+            if (tab === 'semua') {
+                Object.values(sections).forEach(sec => {
+                    if (sec) sec.style.display = '';
+                });
+            } else {
+                Object.keys(sections).forEach(key => {
+                    if (sections[key]) {
+                        sections[key].style.display = (key === tab) ? '' : 'none';
+                    }
+                });
+            }
+
+            // Update style tombol aktif
+            tabs.forEach(t => {
+                const btn = document.getElementById('btn-tab-' + t);
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = 'tab-btn active-tab px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0';
+                    } else {
+                        btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs font-bold cursor-pointer whitespace-nowrap shrink-0';
+                    }
+                }
+            });
+
+            // Trigger resize agar Chart.js merender ulang kanvas yang sebelumnya tersembunyi
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+                if (window.Chart && window.Chart.instances) {
+                    Object.values(window.Chart.instances).forEach(c => {
+                        if (c && typeof c.resize === 'function') c.resize();
+                    });
+                }
+            }, 60);
+        };
 
         // Sinkronisasi Grafik saat Ganti Mode Gelap / Terang
         window.addEventListener('themeChanged', function(e) {

@@ -191,6 +191,11 @@ class DataUjiResistensiController extends Controller
                 'publication' => $validated['publikasi'] ?? null,
             ]);
 
+            // Auto-register parameter ke Master Data Kategori jika belum terdaftar
+            KategoriUji::firstOrCreateCategory('nyamuk', $validated['jenis_nyamuk']);
+            KategoriUji::firstOrCreateCategory('insektisida', $validated['insektisida']);
+            KategoriUji::firstOrCreateCategory('metode', $validated['metode']);
+
             return redirect()
                 ->route('input', ['bulan' => $bulan, 'tahun' => $tahun])
                 ->with('success', 'Data uji resistensi berhasil ditambahkan.');
@@ -242,6 +247,11 @@ class DataUjiResistensiController extends Controller
                     'mutation' => $row['mutasi'] ?? null,
                     'publication' => $row['publikasi'] ?? null,
                 ]);
+
+                // Auto-register parameter ke Master Data Kategori jika belum terdaftar
+                KategoriUji::firstOrCreateCategory('nyamuk', $row['jenis_nyamuk']);
+                KategoriUji::firstOrCreateCategory('insektisida', $row['insektisida']);
+                KategoriUji::firstOrCreateCategory('metode', $row['metode']);
             }
         });
 
@@ -299,6 +309,11 @@ class DataUjiResistensiController extends Controller
             'publication' => $validated['publikasi'] ?? null,
         ]);
 
+        // Auto-register parameter ke Master Data Kategori jika belum terdaftar
+        KategoriUji::firstOrCreateCategory('nyamuk', $validated['jenis_nyamuk']);
+        KategoriUji::firstOrCreateCategory('insektisida', $validated['insektisida']);
+        KategoriUji::firstOrCreateCategory('metode', $validated['metode']);
+
         return redirect()
             ->route('input', ['bulan' => $validated['bulan'], 'tahun' => $validated['tahun']])
             ->with('success', 'Data uji resistensi berhasil diperbarui.');
@@ -321,6 +336,9 @@ class DataUjiResistensiController extends Controller
         $totalSampel = (int) DataUjiResistensi::sum('sample_count');
         $totalProvinsi = DataUjiResistensi::whereNotNull('provinsi_id')->distinct()->count('provinsi_id');
         $totalKabupaten = DataUjiResistensi::whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id');
+        $totalResisten = DataUjiResistensi::where('status', 'Resisten')->count();
+        $totalToleran = DataUjiResistensi::whereIn('status', ['Toleran', 'Toleran/Terduga Resisten', 'Terduga Resisten'])->count();
+        $totalRentan = DataUjiResistensi::where('status', 'Rentan')->count();
 
         // 2. Ambil data dengan memilih hanya kolom yang diperlukan untuk rendering peta & tabel
         $data = DataUjiResistensi::select([
@@ -392,6 +410,9 @@ class DataUjiResistensiController extends Controller
             'totalSampel',
             'totalProvinsi',
             'totalKabupaten',
+            'totalResisten',
+            'totalToleran',
+            'totalRentan',
             'dataTerbaru'
         ));
     }

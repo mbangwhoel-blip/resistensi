@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Export Data Hasil Uji Resistensi - SIMPEL BBLKL</title>
+    <title>Export Data Hasil Uji Resistensi - PETA RESISTENSI</title>
 
     {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
     @include('dark_mode_head')
@@ -60,19 +60,29 @@
     @include('sidebar')
 
     {{-- KONTEN UTAMA --}}
-    <main class="ml-64 min-h-screen flex flex-col">
+    <main class="min-h-screen transition-all duration-300 ml-0 lg:ml-64 flex flex-col">
 
         {{-- TOPBAR RESMI --}}
-        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-2xs">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
-                    <span>SIMPEL BBLKL</span>
-                    <span>/</span>
-                    <span class="text-blue-600">Export Data</span>
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-3">
+                <button type="button"
+                        onclick="toggleSidebarDrawer()"
+                        class="lg:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition shadow-2xs cursor-pointer focus:outline-none"
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                        <span>PETA RESISTENSI</span>
+                        <span>/</span>
+                        <span class="text-blue-600">Export Data</span>
+                    </div>
+                    <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5 truncate">
+                        <span>📦 Export Data Hasil Uji Resistensi</span>
+                    </h1>
                 </div>
-                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
-                    <span>📦 Export Data Hasil Uji Resistensi</span>
-                </h1>
             </div>
 
             <div class="flex items-center gap-3">

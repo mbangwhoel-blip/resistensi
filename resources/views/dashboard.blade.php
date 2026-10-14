@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Dashboard - SIMPEL BBLKL</title>
+    <title>Dashboard - PETA RESISTENSI</title>
 
     {{-- DARK MODE INITIALIZATION & GLOBAL STYLES --}}
     @include('dark_mode_head')
@@ -1016,6 +1016,137 @@
             font-weight: 800 !important;
         }
 
+        /* ======================================================== */
+        /* TINGKAT WILAYAH SEGMENTED PILLS - NYAMAN DI MATA         */
+        /* ======================================================== */
+        .level-pill-container {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        html.dark .level-pill-container {
+            background-color: #141417 !important;
+            border: 1px solid #27272a !important;
+        }
+
+        .level-pill-option {
+            color: #64748b;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+        .level-pill-option:hover {
+            color: #0f172a;
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Light Mode Aktif: Soft Card Bersih */
+        .level-pill-option:has(input:checked) {
+            background-color: #ffffff !important;
+            color: #0f766e !important; /* Teal-700 */
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+            font-weight: 800 !important;
+        }
+
+        /* Dark Mode Inaktif */
+        html.dark .level-pill-option {
+            color: #a1a1aa !important;
+        }
+        html.dark .level-pill-option:hover {
+            color: #f4f4f5 !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Dark Mode Aktif: NYAMAN DI MATA (TIDAK SILAU) - Deep Teal Glass */
+        html.dark .level-pill-option:has(input:checked) {
+            background-color: rgba(13, 148, 136, 0.22) !important;
+            color: #2dd4bf !important;
+            border: 1px solid rgba(45, 212, 191, 0.5) !important;
+            box-shadow: 0 2px 10px -2px rgba(13, 148, 136, 0.35) !important;
+            font-weight: 800 !important;
+        }
+        html.dark .level-pill-option:has(input:checked) * {
+            color: #2dd4bf !important;
+        }
+
+        /* ======================================================== */
+        /* RESET FILTER & RESET PETA - AKSI CEPAT DENGAN WARNA JELAS*/
+        /* ======================================================== */
+        /* Reset Filter (Amber Glow di Dark Mode) */
+        .btn-reset-filter {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-reset-filter svg {
+            color: #d97706;
+            transition: color 0.2s ease-in-out;
+        }
+        .btn-reset-filter:hover {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            color: #ffffff;
+        }
+        .btn-reset-filter:hover svg {
+            color: #ffffff;
+        }
+
+        html.dark .btn-reset-filter {
+            background-color: rgba(245, 158, 11, 0.16) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #fde047 !important;
+            box-shadow: 0 2px 8px -1px rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .btn-reset-filter svg {
+            color: #fbbf24 !important;
+        }
+        html.dark .btn-reset-filter:hover {
+            background-color: #d97706 !important;
+            border-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+        html.dark .btn-reset-filter:hover svg {
+            color: #ffffff !important;
+        }
+
+        /* Reset Peta (Teal Glow di Dark Mode) */
+        .btn-reset-peta {
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-reset-peta svg {
+            color: #0d9488;
+            transition: color 0.2s ease-in-out;
+        }
+        .btn-reset-peta:hover {
+            background-color: #0d9488;
+            border-color: #0d9488;
+            color: #ffffff;
+        }
+        .btn-reset-peta:hover svg {
+            color: #ffffff;
+        }
+
+        html.dark .btn-reset-peta {
+            background-color: rgba(13, 148, 136, 0.18) !important;
+            border: 1px solid rgba(20, 184, 166, 0.5) !important;
+            color: #2dd4bf !important;
+            box-shadow: 0 2px 8px -1px rgba(13, 148, 136, 0.25) !important;
+        }
+        html.dark .btn-reset-peta svg {
+            color: #2dd4bf !important;
+        }
+        html.dark .btn-reset-peta:hover {
+            background-color: #0d9488 !important;
+            border-color: #14b8a6 !important;
+            color: #ffffff !important;
+        }
+        html.dark .btn-reset-peta:hover svg {
+            color: #ffffff !important;
+        }
+
     </style>
 </head>
 
@@ -1025,42 +1156,61 @@
     @include('sidebar')
 
     {{-- KONTEN DASHBOARD --}}
-    <main class="ml-64 min-h-screen">
+    <main class="min-h-screen transition-all duration-300 ml-0 lg:ml-64 bg-slate-50 dark:bg-zinc-950">
 
-        {{-- TOPBAR DENGAN PROFIL --}}
-        <header class="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-8 py-3.5 gap-4 shadow-xs">
-            <div class="min-w-0 flex flex-col justify-center">
-                <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug whitespace-nowrap">
-                    Sistem Informasi Resistensi Insektisida Indonesia
-                </h1>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">
-                    Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL)
-                </p>
+        {{-- TOPBAR DENGAN PROFIL & RESPONSIVE TOGGLE --}}
+        <header class="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 gap-3 shadow-2xs">
+            <div class="min-w-0 flex items-center gap-3">
+                {{-- TOMBOL TOGGLE SIDEBAR MOBILE --}}
+                <button type="button"
+                        onclick="toggleSidebarDrawer()"
+                        class="lg:hidden flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-zinc-800 dark:bg-zinc-800/80 dark:text-zinc-200 transition shadow-2xs cursor-pointer focus:outline-none"
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs sm:text-[13px] font-black text-slate-800 dark:text-zinc-200 tracking-wider uppercase">
+                            PETA RESISTENSI
+                        </span>
+                        <span class="hidden sm:inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300 px-2.5 py-0.5 text-[10px] font-extrabold tracking-wide uppercase shrink-0">
+                            BBLKL Kemenkes RI
+                        </span>
+                    </div>
+                    <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-snug truncate mt-0.5" title="Sistem Informasi Resistensi Insektisida Indonesia">
+                        Sistem Informasi Resistensi Insektisida Indonesia
+                    </h1>
+                </div>
             </div>
 
-            <div class="flex items-center gap-3 shrink-0">
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 {{-- PROFIL PENGGUNA & TOMBOL TEMA TERPADU --}}
                 @include('header_profile')
             </div>
         </header>
 
         {{-- ISI DASHBOARD --}}
-        <section class="p-5 sm:p-6">
+        <section class="p-4 sm:p-6 lg:p-7 space-y-5">
 
-            {{-- HEADER SELAMAT DATANG SEJAJAR DENGAN KOTAK PENCARIAN --}}
-            <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+            {{-- HERO HEADER & PENCARIAN CEPAT GLOBAL --}}
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-teal-900/5 to-transparent dark:from-emerald-950/30 dark:via-zinc-900/40 p-4 sm:p-5 rounded-2xl border border-emerald-100/80 dark:border-emerald-900/30 shadow-2xs">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800">
-                        Selamat Datang 👋
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">
-                        Ringkasan hasil uji resistensi vektor laboratorium BBLKL
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                            Surveilans Vektor Nasional 👋
+                        </h2>
+                    </div>
+                    <p class="text-xs sm:text-[13px] text-slate-600 dark:text-zinc-400 mt-1">
+                        Monitoring data uji bioassay & kerentanan vektor nyamuk terhadap insektisida di seluruh Indonesia
                     </p>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    {{-- KOTAK PENCARIAN DI DASHBOARD (SEJAJAR DENGAN SELAMAT DATANG) --}}
-                    <div class="relative w-64 sm:w-72 lg:w-80">
+                <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                    {{-- KOTAK PENCARIAN GLOBAL TERPADU --}}
+                    <div class="relative w-full sm:w-80 lg:w-96">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -1069,12 +1219,12 @@
                         <input type="text"
                                id="headerSearch"
                                oninput="handleSearch(this.value)"
-                               placeholder="Cari wilayah, alamat, nyamuk, insektisida..."
-                               class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-8 py-2 text-xs text-slate-700 transition focus:border-blue-500 focus:outline-none shadow-2xs">
+                               placeholder="Cari wilayah, nyamuk, insektisida..."
+                               class="w-full rounded-xl border border-slate-200/90 bg-white/90 pl-10 pr-8 py-2.5 text-xs text-slate-700 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none shadow-2xs dark:bg-zinc-800/90 dark:border-zinc-700 dark:text-zinc-200 dark:focus:border-emerald-500 dark:focus:ring-emerald-950 transition">
                         <button type="button"
                                 id="headerClearBtn"
                                 onclick="clearSearch()"
-                                class="absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400 hover:text-slate-600 hidden cursor-pointer font-bold text-xs"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-rose-500 hidden cursor-pointer font-bold text-xs"
                                 title="Hapus kata kunci">
                             ✕
                         </button>
@@ -1082,95 +1232,135 @@
                 </div>
             </div>
 
-            {{-- STATISTIK KARTU UTAMA --}}
-            <div class="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-4">
+            {{-- STATISTIK KARTU UTAMA DENGAN EXECUTIVE RATIO HEALTH INDEX --}}
+            @php
+                $totCalc = ($totalPemeriksaan > 0) ? $totalPemeriksaan : 1;
+                $resCount = $totalResisten ?? 0;
+                $tolCount = $totalToleran ?? 0;
+                $renCount = $totalRentan ?? 0;
+                $pctRes = round(($resCount / $totCalc) * 100, 1);
+                $pctTol = round(($tolCount / $totCalc) * 100, 1);
+                $pctRen = round(($renCount / $totCalc) * 100, 1);
+            @endphp
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-                {{-- TOTAL PEMERIKSAAN --}}
-                <div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-                    <div class="flex items-center justify-between">
+                {{-- KARTU 1: TOTAL PENGUJIAN --}}
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs hover:shadow-xs transition dark:bg-zinc-900/90 dark:border-zinc-800">
+                    <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-xs text-slate-500 font-medium">
-                                Total Pengujian
-                            </p>
-                            <h3 class="mt-1 text-2xl font-bold text-slate-800">
-                                {{ $totalPemeriksaan }}
+                            <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/50">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Data Terverifikasi
+                            </span>
+                            <h3 class="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                                {{ number_format($totalPemeriksaan) }}
                             </h3>
-                            <p class="mt-1 text-[11px] font-medium text-emerald-600">
-                                Data hasil uji tersimpan
+                            <p class="mt-1 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                                Total Pengujian Lab
                             </p>
                         </div>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-xs">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" />
                             </svg>
                         </div>
                     </div>
+                    <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
+                        <span>Database Nasional</span>
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400">Aktif & Terpadu</span>
+                    </div>
                 </div>
 
-                {{-- TOTAL SAMPEL --}}
-                <div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-                    <div class="flex items-center justify-between">
+                {{-- KARTU 2: TOTAL SPESIMEN NYAMUK --}}
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs hover:shadow-xs transition dark:bg-zinc-900/90 dark:border-zinc-800">
+                    <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-xs text-slate-500 font-medium">
-                                Total Sampel Diperiksa
-                            </p>
-                            <h3 class="mt-1 text-2xl font-bold text-slate-800">
+                            <span class="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-100 dark:border-blue-900/50">
+                                🔬 Uji Bioassay & CDC
+                            </span>
+                            <h3 class="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                                 {{ number_format($totalSampel) }}
                             </h3>
-                            <p class="mt-1 text-[11px] font-medium text-indigo-600">
-                                Vektor nyamuk diuji
+                            <p class="mt-1 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                                Ekor Nyamuk Diuji
                             </p>
                         </div>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-xs">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                             </svg>
                         </div>
                     </div>
-                </div>
-
-                {{-- WILAYAH PROVINSI --}}
-                <div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-slate-500 font-medium">
-                                Wilayah Provinsi
-                            </p>
-                            <h3 class="mt-1 text-2xl font-bold text-slate-800">
-                                {{ $totalProvinsi }}
-                            </h3>
-                            <p class="mt-1 text-[11px] font-medium text-emerald-600">
-                                Provinsi terdata
-                            </p>
-                        </div>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21s7-5.4 7-11a7 7 0 10-14 0c0 5.6 7 11 7 11z" />
-                                <circle cx="12" cy="10" r="2.5" />
-                            </svg>
-                        </div>
+                    <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
+                        <span>Populasi Vektor</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">Spesimen Hidup</span>
                     </div>
                 </div>
 
-                {{-- KOTA / KABUPATEN --}}
-                <div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-                    <div class="flex items-center justify-between">
+                {{-- KARTU 3: CAKUPAN WILAYAH --}}
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs hover:shadow-xs transition dark:bg-zinc-900/90 dark:border-zinc-800">
+                    <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-xs text-slate-500 font-medium">
-                                Kota / Kabupaten
-                            </p>
-                            <h3 class="mt-1 text-2xl font-bold text-slate-800">
-                                {{ $totalKabupaten }}
-                            </h3>
-                            <p class="mt-1 text-[11px] font-medium text-amber-600">
-                                Titik kab/kota terpantau
+                            <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-100 dark:border-amber-900/50">
+                                🗺️ Sebaran Wilayah
+                            </span>
+                            <div class="mt-2.5 flex items-baseline gap-1.5">
+                                <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ $totalKabupaten }}</span>
+                                <span class="text-xs font-bold text-slate-500">Kab/Kota</span>
+                            </div>
+                            <p class="mt-1 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                                di {{ $totalProvinsi }} Provinsi Indonesia
                             </p>
                         </div>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-xs">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
+                        </div>
+                    </div>
+                    <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
+                        <span>Titik Pengamatan</span>
+                        <span class="font-bold text-amber-600 dark:text-amber-400">{{ $totalProvinsi }} / 38 Provinsi</span>
+                    </div>
+                </div>
+
+                {{-- KARTU 4: EXECUTIVE HEALTH INDEX (RASIO STATUS KERENTANAN) --}}
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs hover:shadow-xs transition dark:bg-zinc-900/90 dark:border-zinc-800">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300 border border-teal-100 dark:border-teal-900/50">
+                            📊 Indeks Kerentanan Vektor
+                        </span>
+                        <span class="text-[10px] font-bold text-slate-400">WHO Standard</span>
+                    </div>
+
+                    {{-- STACKED MULTI-SEGMENT PROGRESS BAR --}}
+                    <div class="mt-3">
+                        <div class="flex h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-zinc-800 p-0.5 ring-1 ring-slate-200/50 dark:ring-zinc-700">
+                            @if ($pctRen > 0)
+                                <div class="bg-emerald-500 rounded-l-full transition-all duration-500" style="width: {{ $pctRen }}%;" title="Rentan: {{ $pctRen }}% ({{ $renCount }} uji)"></div>
+                            @endif
+                            @if ($pctTol > 0)
+                                <div class="bg-amber-500 transition-all duration-500" style="width: {{ $pctTol }}%;" title="Toleran: {{ $pctTol }}% ({{ $tolCount }} uji)"></div>
+                            @endif
+                            @if ($pctRes > 0)
+                                <div class="bg-rose-500 rounded-r-full transition-all duration-500" style="width: {{ $pctRes }}%;" title="Resisten: {{ $pctRes }}% ({{ $resCount }} uji)"></div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- MINI CHIPS STATISTIK RESISTENSI --}}
+                    <div class="mt-3 grid grid-cols-3 gap-1.5 text-center text-[10.5px]">
+                        <div class="rounded-lg bg-emerald-50/70 p-1 border border-emerald-200/60 dark:bg-emerald-950/30 dark:border-emerald-900/50">
+                            <span class="font-bold text-emerald-700 dark:text-emerald-400">{{ $pctRen }}%</span>
+                            <div class="text-[9.5px] text-slate-500 dark:text-zinc-400 leading-tight">🟢 Rentan</div>
+                        </div>
+                        <div class="rounded-lg bg-amber-50/70 p-1 border border-amber-200/60 dark:bg-amber-950/30 dark:border-amber-900/50">
+                            <span class="font-bold text-amber-700 dark:text-amber-400">{{ $pctTol }}%</span>
+                            <div class="text-[9.5px] text-slate-500 dark:text-zinc-400 leading-tight">🟡 Toleran</div>
+                        </div>
+                        <div class="rounded-lg bg-rose-50/70 p-1 border border-rose-200/60 dark:bg-rose-950/30 dark:border-rose-900/50">
+                            <span class="font-bold text-rose-700 dark:text-rose-400">{{ $pctRes }}%</span>
+                            <div class="text-[9.5px] text-slate-500 dark:text-zinc-400 leading-tight">🔴 Resisten</div>
                         </div>
                     </div>
                 </div>
@@ -1184,192 +1374,215 @@
                 $daftarTahun = $daftarTahun ?? [2026, 2025, 2024];
             @endphp
 
-            @if (!$isViewer)
             {{-- ================================================= --}}
-            {{-- PANEL FILTER UTAMA (SESUAI GAMBAR 2: INDIKATOR, PERIODE, LEVEL) --}}
-            {{-- TAMPIL HANYA UNTUK SELAIN ROLE VIEWER & DEFAULTNYA MENUTUP --}}
+            {{-- UNIFIED SMART FILTER CONSOLE (SaaS GRADE CONSOLE) --}}
             {{-- ================================================= --}}
-            <div class="mt-4 rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
-                {{-- Header Filter dengan Tombol Collapse --}}
-                <div id="filterPanelHeader" class="group flex items-center justify-between px-5 py-3.5 bg-white hover:bg-slate-50/70 select-none cursor-pointer transition" onclick="toggleFilterPanel()">
+            <div class="rounded-2xl border border-slate-200/80 bg-white shadow-2xs dark:bg-zinc-900/90 dark:border-zinc-800 overflow-hidden">
+                {{-- Header Filter Console --}}
+                <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-100 dark:border-zinc-800 bg-slate-50/60 dark:bg-zinc-800/40">
                     <div class="flex items-center gap-2.5">
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 tracking-wider uppercase">
-                            FILTER
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300 font-bold text-xs shadow-2xs">
+                            ⚙️
                         </span>
-                        <span class="rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
-                            Nasional • Provinsi • Kab / Kota
-                        </span>
-                    </div>
-                    <button type="button" class="h-7 w-7 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-xs transition-all cursor-pointer" title="Buka/Tutup Filter">
-                        <svg id="filterCollapseIcon" class="h-4 w-4 transition-transform duration-200" style="transform: rotate(180deg);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
-                        </svg>
-                    </button>
-                </div>
-
-                {{-- Form Filter (Default Menutup / Hidden) --}}
-                <div id="filterPanelBody" class="hidden p-5 space-y-4">
-                    {{-- Row 1: Indikator --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300">Indikator</label>
-                        <div class="md:col-span-10">
-                            <select id="filterIndikator" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs transition">
-                                <option value="Peta Endemisitas & Resistensi">Peta Endemisitas & Resistensi (Semua Indikator)</option>
-                                <option value="Peta Uji Resistensi Insektisida">Peta Uji Resistensi Insektisida</option>
-                                <option value="Peta Endemisitas">Peta Endemisitas</option>
-                            </select>
+                        <div>
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-zinc-200">
+                                Panel Filter Surveilans & Peta
+                            </h3>
+                            <p class="text-[11px] text-slate-500 dark:text-zinc-400">
+                                Saring visualisasi peta dan tabel pemeriksaan secara serempak
+                            </p>
                         </div>
                     </div>
 
-                    {{-- Row 2: Periode Laporan --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300">Periode Laporan</label>
-                        <div class="md:col-span-10">
-                            <select id="filterPeriodeTahun" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs transition">
-                                <option value="">Semua Periode (Pilih Tahun)</option>
-                                @foreach ($daftarTahun as $thn)
-                                    <option value="{{ $thn }}">{{ $thn }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    {{-- Row 3: Level --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
-                        <label class="md:col-span-2 text-xs font-bold text-slate-700 dark:text-zinc-300 pt-1.5">Level</label>
-                        <div class="md:col-span-10 space-y-3">
-                            {{-- Radio Pilihan Level --}}
-                            <div class="flex flex-wrap items-center gap-6 text-xs text-slate-700 dark:text-zinc-300 font-semibold">
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="levelFilter" value="nasional" checked onchange="handleLevelChange('nasional')" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300">
-                                    <span>Nasional</span>
-                                </label>
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="levelFilter" value="provinsi" onchange="handleLevelChange('provinsi')" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300">
-                                    <span>Provinsi</span>
-                                </label>
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="levelFilter" value="kabupaten" onchange="handleLevelChange('kabupaten')" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300">
-                                    <span>Kabupaten / Kota</span>
-                                </label>
-                            </div>
-
-                            {{-- Pilihan Dropdown Provinsi & Kabupaten --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div class="relative">
-                                    <select id="filterProvinsiSelect" onchange="handleProvinsiFilterChange(this.value)" disabled class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs disabled:opacity-60 disabled:cursor-not-allowed transition">
-                                        <option value="">-- Pilih Provinsi --</option>
-                                        @foreach ($provinsis as $prov)
-                                            <option value="{{ $prov->id }}">{{ $prov->nama_provinsi }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="relative">
-                                    <select id="filterKabupatenSelect" disabled class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2 text-xs text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none shadow-2xs disabled:opacity-60 disabled:cursor-not-allowed transition">
-                                        <option value="">-- Pilih Kabupaten / Kota --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {{-- Tombol Terapkan & Reset (Dipindahkan Tepat di Bawah Kotak Pilih Provinsi) --}}
-                            <div class="pt-1 flex items-center gap-2.5">
-                                <button type="button" onclick="applyRegionalFilter()" class="inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 px-6 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    <span>Terapkan</span>
-                                </button>
-                                <button type="button" onclick="resetAllFilters()" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-2xs transition cursor-pointer">
-                                    <span>Reset</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
-
-            {{-- KETERANGAN STATUS FILTER DI ATAS PETA (SESUAI GAMBAR 1 - TAMPIL UNTUK SEMUA ROLE TERMASUK VIEWER) --}}
-            <div class="mt-4 mb-2 px-1 text-slate-800 dark:text-slate-100">
-                <h4 id="activeFilterTitle" class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
-                    Peta Endemisitas & Resistensi
-                </h4>
-                <div id="activeFilterLevel" class="text-xs font-semibold text-slate-700 dark:text-zinc-300 mt-0.5">
-                    Level: NASIONAL (Seluruh Indonesia)
-                </div>
-                <div id="activeFilterPeriode" class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                    Periode Laporan: Semua Periode
-                </div>
-            </div>
-
-            {{-- ================================================= --}}
-            {{-- MAP SEBARAN PEMERIKSAAN DENGAN FILTER SEJAJAR --}}
-            {{-- ================================================= --}}
-            <div class="mt-2 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs">
-
-                {{-- FILTER TOOLBAR DI ATAS PETA (SESUAI GAMBAR 1 - TAMPIL UNTUK SEMUA ROLE TERMASUK VIEWER) --}}
-                <div class="mb-3.5 flex flex-wrap items-center gap-2.5 border-b border-slate-100 dark:border-zinc-800 pb-3.5">
-
-                    {{-- JENIS NYAMUK --}}
-                    <div class="flex-1 min-w-[150px]">
-                        <select id="filterJenisNyamuk" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
-                            <option value="">Semua Nyamuk</option>
-                            @foreach ($daftarNyamuk as $nyamuk)
-                                <option value="{{ $nyamuk }}">{{ $nyamuk }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- INSEKTISIDA --}}
-                    <div class="flex-1 min-w-[150px]">
-                        <select id="filterInsektisida" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
-                            <option value="">Semua Insektisida</option>
-                            @foreach ($daftarInsektisida as $ins)
-                                <option value="{{ $ins }}">{{ $ins }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- METODE --}}
-                    <div class="flex-1 min-w-[140px]">
-                        <select id="filterMetode" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
-                            <option value="">Semua Metode</option>
-                            @foreach ($daftarMetode as $met)
-                                <option value="{{ $met }}">{{ $met }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- STATUS RESISTENSI --}}
-                    <div class="flex-1 min-w-[150px]">
-                        <select id="filterStatus" onchange="applyFilters()" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-2xs focus:border-teal-500 focus:outline-none cursor-pointer transition">
-                            <option value="">Semua Status</option>
-                            <option value="Resisten">🔴 Resisten</option>
-                            <option value="Toleran">🟡 Toleran</option>
-                            <option value="Rentan">🟢 Rentan</option>
-                        </select>
-                    </div>
-
-                    {{-- TOMBOL RESET FILTER & RESET PETA --}}
-                    <div class="shrink-0 flex items-center gap-2">
-                        <button type="button" onclick="resetAllFilters()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:text-slate-800 px-3 py-2 text-xs font-semibold text-slate-600 transition shadow-2xs cursor-pointer whitespace-nowrap" title="Reset Semua Filter">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    {{-- Tombol Aksi Cepat: Reset & Reset Peta --}}
+                    <div class="flex items-center gap-2">
+                        <button type="button"
+                                onclick="resetAllFilters()"
+                                class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
+                                title="Kembalikan semua filter ke pengaturan awal">
+                            <svg class="h-3.5 w-3.5 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                             <span>Reset Filter</span>
                         </button>
-                        <button type="button" onclick="resetMapView()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 px-3 py-2 text-xs font-semibold text-blue-700 transition shadow-2xs cursor-pointer whitespace-nowrap group" title="Kembalikan Tampilan Peta ke Posisi Awal (Seluruh Indonesia)">
-                            <svg class="h-3.5 w-3.5 text-blue-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="button"
+                                onclick="resetMapView()"
+                                class="btn-reset-peta inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
+                                title="Kembalikan fokus peta ke seluruh wilayah Indonesia">
+                            <svg class="h-3.5 w-3.5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
                             <span>Reset Peta</span>
                         </button>
                     </div>
-
                 </div>
 
-                {{-- MAP CONTAINER --}}
-                <div id="map"></div>
+                {{-- Badan Filter Console --}}
+                <div class="p-4 sm:p-5 space-y-4">
+                    {{-- BARIS 1: LEVEL CAKUPAN WILAYAH & PERIODE LAPORAN --}}
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-end">
+                        {{-- Segmented Pills Level --}}
+                        <div class="lg:col-span-4">
+                            <label class="block text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">
+                                Tingkat Wilayah
+                            </label>
+                            <div class="level-pill-container flex items-center rounded-xl p-1 text-xs font-bold h-[38px]">
+                                <label class="level-pill-option flex-1 text-center py-1.5 px-2 rounded-lg cursor-pointer select-none">
+                                    <input type="radio" name="levelFilter" value="nasional" checked onchange="handleLevelChange('nasional')" class="sr-only">
+                                    <span>🌐 Nasional</span>
+                                </label>
+                                <label class="level-pill-option flex-1 text-center py-1.5 px-2 rounded-lg cursor-pointer select-none">
+                                    <input type="radio" name="levelFilter" value="provinsi" onchange="handleLevelChange('provinsi')" class="sr-only">
+                                    <span>📍 Provinsi</span>
+                                </label>
+                                <label class="level-pill-option flex-1 text-center py-1.5 px-2 rounded-lg cursor-pointer select-none">
+                                    <input type="radio" name="levelFilter" value="kabupaten" onchange="handleLevelChange('kabupaten')" class="sr-only">
+                                    <span>🏙️ Kab / Kota</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Dropdown Provinsi --}}
+                        <div class="lg:col-span-3">
+                            <label for="filterProvinsiSelect" class="block text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">
+                                Provinsi
+                            </label>
+                            <select id="filterProvinsiSelect" onchange="handleProvinsiFilterChange(this.value)" disabled class="w-full h-[38px] rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 focus:bg-white focus:border-emerald-500 focus:outline-none shadow-2xs disabled:opacity-60 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">-- Pilih Provinsi --</option>
+                                @foreach ($provinsis as $prov)
+                                    <option value="{{ $prov->id }}">{{ $prov->nama_provinsi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Dropdown Kabupaten / Kota --}}
+                        <div class="lg:col-span-3">
+                            <label for="filterKabupatenSelect" class="block text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">
+                                Kabupaten / Kota
+                            </label>
+                            <select id="filterKabupatenSelect" disabled class="w-full h-[38px] rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 focus:bg-white focus:border-emerald-500 focus:outline-none shadow-2xs disabled:opacity-60 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">-- Pilih Kab / Kota --</option>
+                            </select>
+                        </div>
+
+                        {{-- Tombol Terapkan Wilayah --}}
+                        <div class="lg:col-span-2">
+                            <label class="block text-[11px] font-bold invisible select-none mb-1.5 opacity-0 pointer-events-none" aria-hidden="true">
+                                Aksi
+                            </label>
+                            <button type="button"
+                                    onclick="applyRegionalFilter()"
+                                    class="w-full h-[38px] inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-2 px-4 text-xs shadow-xs transition cursor-pointer">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Terapkan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- BARIS 2: PARAMETER UJI LAB (NYAMUK, INSEKTISIDA, METODE, STATUS, PERIODE, INDIKATOR) --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 pt-3 border-t border-slate-100 dark:border-zinc-800/80">
+                        {{-- SPESIES NYAMUK --}}
+                        <div>
+                            <label for="filterJenisNyamuk" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Spesies Nyamuk
+                            </label>
+                            <select id="filterJenisNyamuk" onchange="applyFilters()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">Semua Nyamuk</option>
+                                @foreach ($daftarNyamuk as $nyamuk)
+                                    <option value="{{ $nyamuk }}">{{ $nyamuk }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- INSEKTISIDA --}}
+                        <div>
+                            <label for="filterInsektisida" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Insektisida
+                            </label>
+                            <select id="filterInsektisida" onchange="applyFilters()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">Semua Insektisida</option>
+                                @foreach ($daftarInsektisida as $ins)
+                                    <option value="{{ $ins }}">{{ $ins }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- METODE --}}
+                        <div>
+                            <label for="filterMetode" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Metode Uji
+                            </label>
+                            <select id="filterMetode" onchange="applyFilters()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">Semua Metode</option>
+                                @foreach ($daftarMetode as $met)
+                                    <option value="{{ $met }}">{{ $met }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- STATUS RESISTENSI --}}
+                        <div>
+                            <label for="filterStatus" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Status Resistensi
+                            </label>
+                            <select id="filterStatus" onchange="applyFilters()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">Semua Status</option>
+                                <option value="Resisten">🔴 Resisten (&lt; 90%)</option>
+                                <option value="Toleran">🟡 Toleran (90 - 97%)</option>
+                                <option value="Rentan">🟢 Rentan (≥ 98%)</option>
+                            </select>
+                        </div>
+
+                        {{-- PERIODE TAHUN --}}
+                        <div>
+                            <label for="filterPeriodeTahun" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Periode Tahun
+                            </label>
+                            <select id="filterPeriodeTahun" onchange="applyRegionalFilter()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="">Semua Periode</option>
+                                @foreach ($daftarTahun as $thn)
+                                    <option value="{{ $thn }}">{{ $thn }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- INDIKATOR --}}
+                        <div>
+                            <label for="filterIndikator" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Indikator
+                            </label>
+                            <select id="filterIndikator" onchange="applyRegionalFilter()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
+                                <option value="Peta Resistensi">Semua Indikator</option>
+                                <option value="Peta Uji Resistensi Insektisida">Uji Resistensi</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- STATUS FILTER AKTIF BADGE BAR --}}
+                    <div class="pt-2.5 border-t border-slate-100 dark:border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+                                📌 <strong id="activeFilterTitle">Peta Endemisitas & Resistensi</strong>
+                            </span>
+                            <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+                                📍 <span id="activeFilterLevel">Level: NASIONAL (Seluruh Indonesia)</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+                                🗓️ <span id="activeFilterPeriode">Periode: Semua Periode</span>
+                            </span>
+                        </div>
+                        <span class="text-[11px] text-slate-400 italic">Filter terhubung otomatis dengan peta & tabel</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ================================================= --}}
+            {{-- GEOSPATIAL INTELLIGENCE MAP CONTAINER             --}}
+            {{-- ================================================= --}}
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-2xs dark:bg-zinc-900/90 dark:border-zinc-800">
+                <div id="map" class="shadow-inner"></div>
 
                 {{-- KETERANGAN & LEGENDA PETA LENGKAP DI BAWAH PETA --}}
                 <div class="mt-3.5 rounded-xl border border-slate-200/90 bg-slate-50/70 p-3 text-xs dark:bg-slate-800/60 dark:border-slate-700/80">
@@ -1437,7 +1650,7 @@
             {{-- ================================================= --}}
             {{-- DATA PEMERIKSAAN TERBARU --}}
             {{-- ================================================= --}}
-            <div id="tablePemeriksaanSection" class="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xs scroll-mt-6">
+            <div id="tablePemeriksaanSection" class="mt-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-2xs dark:bg-zinc-900/90 dark:border-zinc-800 scroll-mt-6">
 
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
                     <div class="flex items-center gap-2">
@@ -1517,33 +1730,33 @@
                                         {{ $index + 1 }}
                                     </td>
                                     <td class="px-2 py-2 text-xs">
-                                        <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
+                                        <div class="font-semibold text-slate-800 dark:text-slate-100 leading-tight break-words whitespace-normal" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                             {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                         </div>
-                                        <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
                                             {{ $item->provinsi->nama_provinsi ?? '-' }}
                                         </div>
                                     </td>
                                     <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
                                         @if (!empty($item->alamat))
-                                            <div class="inline-flex items-start gap-1 font-medium text-slate-700 max-w-[180px] 2xl:max-w-xs" title="{{ $item->alamat }}">
+                                            <div class="inline-flex items-start gap-1 font-medium text-slate-700 dark:text-slate-300 max-w-[200px] 2xl:max-w-xs break-words whitespace-normal leading-snug" title="{{ $item->alamat }}">
                                                 <span class="text-teal-600 dark:text-teal-400 shrink-0 mt-0.5 text-[11px]">📍</span>
-                                                <span class="break-words leading-tight">{{ $item->alamat }}</span>
+                                                <span class="break-words whitespace-normal leading-tight">{{ $item->alamat }}</span>
                                             </div>
                                         @else
                                             <span class="italic text-slate-400">Belum diisi</span>
                                         @endif
                                     </td>
-                                    <td class="px-2 py-2 text-center whitespace-nowrap">
-                                        <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-1.5 py-0.5 text-[10.5px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 whitespace-nowrap">
+                                    <td class="px-2 py-2 text-center">
+                                        <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-1.5 py-0.5 text-[10.5px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 break-words whitespace-normal leading-tight">
                                             {{ $item->jenis_nyamuk }}
                                         </span>
                                     </td>
                                     <td class="px-2 py-2 text-xs">
-                                        <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap" title="{{ $item->insektisida ?? '-' }}">
+                                        <div class="font-semibold text-slate-800 dark:text-slate-100 leading-tight break-words whitespace-normal" title="{{ $item->insektisida ?? '-' }}">
                                             {{ $item->insektisida ?? '-' }}
                                         </div>
-                                        <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5" title="{{ $item->metode ?? '-' }}">
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ $item->metode ?? '-' }}">
                                             {{ $item->metode ?? '-' }}
                                         </div>
                                     </td>
