@@ -305,12 +305,10 @@
             font-size: 7pt;
         }
         .chem-name-col {
-            width: 25%;
-            font-weight: 700;
-            color: #0f172a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            width: 26%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .chem-bar-col {
             flex: 1;
@@ -680,8 +678,8 @@
                     @foreach(array_slice($matriksInsektisida, 0, 7) as $m)
                         <div class="chem-chart-row">
                             <div class="chem-name-col" title="{{ $m['nama'] }} ({{ $m['golongan_nama'] }})">
-                                {{ $m['nama'] }}
-                                <span style="font-size: 5.6pt; color: #64748b; font-weight: normal;">[{{ $m['golongan_nama'] }}]</span>
+                                <span style="font-weight: 800; color: #0f172a; line-height: 1.15; white-space: nowrap;">{{ $m['nama'] }}</span>
+                                <span style="font-size: 5.6pt; color: #64748b; font-weight: 700; margin-top: 1px;">{{ $m['golongan_nama'] }}</span>
                             </div>
                             <div class="chem-bar-col">
                                 @if($m['persen_resisten'] > 0)

@@ -341,14 +341,17 @@
 
                         <div class="space-y-2.5">
                             @foreach($matriksInsektisida as $m)
-                                <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 rounded-xl border border-slate-100 dark:border-zinc-800/80 bg-slate-50/60 dark:bg-zinc-800/40">
-                                    <div class="w-full sm:w-56 shrink-0 flex items-center justify-between sm:justify-start gap-2">
-                                        <span class="text-xs font-extrabold text-slate-900 dark:text-white truncate" title="{{ $m['nama'] }}">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-zinc-800/80 bg-slate-50/60 dark:bg-zinc-800/40 hover:bg-slate-50 dark:hover:bg-zinc-800/70 transition">
+                                    {{-- IDENTITAS BAHAN AKTIF (NAMA LENGKAP TIDAK TERPOTONG & GOLONGAN SEJAJAR DI BAWAHNYA) --}}
+                                    <div class="w-full sm:w-56 md:w-64 shrink-0 flex flex-col justify-center">
+                                        <span class="text-xs font-black text-slate-900 dark:text-white leading-tight break-words" title="{{ $m['nama'] }}">
                                             {{ $m['nama'] }}
                                         </span>
-                                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-zinc-700 text-slate-600 dark:text-zinc-300 whitespace-nowrap">
-                                            {{ $m['golongan_nama'] }}
-                                        </span>
+                                        <div class="mt-1 flex items-center">
+                                            <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200/80 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300 whitespace-nowrap shadow-2xs">
+                                                {{ $m['golongan_nama'] }}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div class="flex-1 bg-slate-200 dark:bg-zinc-700 rounded-lg h-5 overflow-hidden flex p-0.5 gap-0.5 shadow-inner">
