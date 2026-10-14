@@ -62,3 +62,12 @@ UPDATE data_uji_resistensis SET kabupaten_id = 433 WHERE id = 317;
 
 -- 4. Perluas kolom role tabel users agar mendukung nama role baru
 ALTER TABLE users MODIFY role VARCHAR(50) NOT NULL DEFAULT 'petugas';
+
+-- 5. Sinkronisasi Data Uji Kabupaten Madiun ke Provinsi Jawa Timur (ID 15)
+UPDATE data_uji_resistensis SET provinsi_id = 15 WHERE kabupaten_id = 191;
+
+-- 6. Penyelarasan Wilayah Pemekaran Papua (DOB)
+UPDATE kabupatens SET provinsi_id = 35 WHERE id = 385; -- Mimika -> Papua Tengah
+UPDATE kabupatens SET provinsi_id = 36 WHERE id = 392; -- Boven Digoel -> Papua Selatan
+UPDATE data_uji_resistensis SET provinsi_id = 35 WHERE kabupaten_id = 385;
+UPDATE data_uji_resistensis SET provinsi_id = 36 WHERE kabupaten_id = 392;

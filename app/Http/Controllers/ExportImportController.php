@@ -929,9 +929,11 @@ class ExportImportController extends Controller
                 $mutasiVal = isset($colIndex['mutasi']) && isset($row[$colIndex['mutasi']]) ? trim($row[$colIndex['mutasi']]) : null;
                 $publikasiVal = isset($colIndex['publikasi']) && isset($row[$colIndex['publikasi']]) ? trim($row[$colIndex['publikasi']]) : null;
 
-                // Simpan Data Uji Resistensi
+                // Simpan Data Uji Resistensi (prioritaskan provinsi asli kabupaten jika terhubung ke master data)
+                $finalProvId = ($kabObj && $kabObj->provinsi_id) ? $kabObj->provinsi_id : ($provObj ? $provObj->id : null);
+
                 DataUjiResistensi::create([
-                    'provinsi_id' => $provObj ? $provObj->id : null,
+                    'provinsi_id' => $finalProvId,
                     'kabupaten_id' => $kabObj ? $kabObj->id : null,
                     'address' => $alamat ?: null,
                     'mosquito_type' => $nyamuk,

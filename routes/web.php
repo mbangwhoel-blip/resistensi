@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\AnalisisController;
+use App\Http\Controllers\RekomendasiKebijakanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -177,6 +178,40 @@ Route::get('/sync-db', function () {
         }
     }
 
+    // 10. Penyelarasan Wilayah Pemekaran Papua (DOB) di Master Tabel Kabupatens
+    $papuaDOBUpdates = 0;
+    $mimika = \App\Models\Kabupaten::find(385);
+    if ($mimika && $mimika->provinsi_id != 35) {
+        $mimika->provinsi_id = 35;
+        $mimika->save();
+        $papuaDOBUpdates++;
+    }
+    $boven = \App\Models\Kabupaten::find(392);
+    if ($boven && $boven->provinsi_id != 36) {
+        $boven->provinsi_id = 36;
+        $boven->save();
+        $papuaDOBUpdates++;
+    }
+    if ($papuaDOBUpdates > 0) {
+        $actions[] = "Tabel kabupatens: {$papuaDOBUpdates} kabupaten pemekaran Papua diselaraskan ke provinsinya";
+    }
+
+    // 11. Penyelarasan Otomatis data_uji_resistensis.provinsi_id mengikuti master kabupatens (termasuk Kab Madiun -> Jatim)
+    $mismatches = \Illuminate\Support\Facades\DB::table('data_uji_resistensis')
+        ->join('kabupatens', 'data_uji_resistensis.kabupaten_id', '=', 'kabupatens.id')
+        ->whereColumn('data_uji_resistensis.provinsi_id', '!=', 'kabupatens.provinsi_id')
+        ->select('data_uji_resistensis.id', 'kabupatens.provinsi_id as master_prov_id')
+        ->get();
+
+    $syncCount = 0;
+    foreach ($mismatches as $mis) {
+        \App\Models\DataUjiResistensi::where('id', $mis->id)->update(['provinsi_id' => $mis->master_prov_id]);
+        $syncCount++;
+    }
+    if ($syncCount > 0) {
+        $actions[] = "Tabel data_uji_resistensis: {$syncCount} data uji diselaraskan provinsi_id nya agar 100% inline dengan kabupaten";
+    }
+
     $msg = count($actions) > 0 
         ? "Berhasil menyinkronkan " . count($actions) . " perubahan:<br>- " . implode("<br>- ", $actions)
         : "Semua struktur kolom dan data wilayah sudah 100% sinkron dan termutakhir!";
@@ -236,6 +271,12 @@ Route::middleware('auth')->group(function () {
 
     // Analisis Data Hasil Uji Resistensi (Grafik & Statistik Interaktif)
     Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis.index');
+
+    // Rekomendasi Kebijakan Otomatis (Policy Brief & Insecticide Rotation Decision Support)
+    Route::prefix('rekomendasi-kebijakan')->name('rekomendasi.')->group(function () {
+        Route::get('/', [RekomendasiKebijakanController::class, 'index'])->name('index');
+        Route::get('/preview', [RekomendasiKebijakanController::class, 'preview'])->name('preview');
+    });
 
     // Export Data (Khusus Pengguna Non-Viewer)
     Route::middleware('not_viewer')->prefix('export')->name('export.')->group(function () {

@@ -282,14 +282,11 @@ class LaporanController extends Controller
     {
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten']);
 
-        // Filter Provinsi
-        if ($request->filled('provinsi_id') && $request->provinsi_id !== 'Semua') {
-            $query->where('provinsi_id', $request->provinsi_id);
-        }
-
-        // Filter Kabupaten
+        // Filter Wilayah (Kabupaten spesifik atau Provinsi)
         if ($request->filled('kabupaten_id') && $request->kabupaten_id !== 'Semua') {
             $query->where('kabupaten_id', $request->kabupaten_id);
+        } elseif ($request->filled('provinsi_id') && $request->provinsi_id !== 'Semua') {
+            $query->where('provinsi_id', $request->provinsi_id);
         }
 
         // Filter Tahun
