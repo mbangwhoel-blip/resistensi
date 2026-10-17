@@ -803,117 +803,128 @@
 </head>
 <body>
 
-    {{-- TOOLBAR ATAS (HANYA DITAMPILKAN DI LAYAR, DISEMBUNYIKAN SAAT CETAK) --}}
-    <div class="no-print sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xl">
-        <div class="flex items-center gap-3">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-600 text-white font-black text-sm shadow-sm shrink-0">
-                🛡️
-            </span>
-            <div>
-                <h1 class="text-sm font-extrabold text-white leading-tight">
-                    Pratinjau Dokumen Rekomendasi Kebijakan Vektor
-                </h1>
-                <p class="text-[11px] text-slate-400">
-                    Cakupan: <strong class="text-teal-300">{{ $namaWilayah }}</strong> &bull; Periode: {{ $tahunFilter }} &bull; Target: {{ $nyamukFilter }}
-                </p>
+    {{-- TOOLBAR ATAS RAPI & RINGKAS (STICKY, 2-TIER TERSTRUKTUR, TIDAK WRAP BERANTAKAN) --}}
+    <div class="no-print sticky top-0 z-50 shadow-xl bg-slate-900 border-b border-slate-800">
+        {{-- BARIS 1: NAVIGASI KEMBALI, JUDUL DOKUMEN & AKSI PENGESAHAN/CETAK --}}
+        <div class="px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 border-b border-slate-800/80 bg-slate-900/95 backdrop-blur-md">
+            {{-- SISI KIRI: TOMBOL KEMBALI + JUDUL DOKUMEN & CAKUPAN --}}
+            <div class="flex items-center gap-3 min-w-0">
+                <a href="{{ route('rekomendasi.index', request()->all()) }}"
+                   class="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/90 hover:bg-slate-700 px-3 py-1.5 text-xs font-bold text-slate-200 hover:text-white transition shadow-2xs shrink-0 cursor-pointer"
+                   title="Kembali ke Dashboard Rekomendasi Kebijakan">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span>Kembali</span>
+                </a>
+
+                <div class="h-5 w-px bg-slate-700 shrink-0 hidden sm:block"></div>
+
+                <div class="min-w-0">
+                    <h1 class="text-xs sm:text-sm font-extrabold text-white truncate leading-tight flex items-center gap-1.5">
+                        <span class="text-teal-400">🛡️</span>
+                        <span>Pratinjau Dokumen Rekomendasi Kebijakan</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400 truncate">
+                        Cakupan: <strong class="text-teal-300">{{ $namaWilayah }}</strong> &bull; Periode: {{ $tahunFilter }} &bull; Target: {{ $nyamukFilter }}
+                    </p>
+                </div>
+            </div>
+
+            {{-- SISI KANAN: STATUS DRAFT/SAH + APPROVE + CETAK DOKUMEN --}}
+            <div class="flex items-center gap-2 shrink-0">
+                {{-- STATUS PENGESAHAN DOKUMEN --}}
+                @if($isApproved)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold shrink-0">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span class="hidden sm:inline">Disahkan Kepala BBLKL</span>
+                        <span class="sm:hidden">SAH</span>
+                    </span>
+                    <button type="button"
+                            onclick="openApproveModal()"
+                            class="inline-flex items-center gap-1 rounded-xl border border-emerald-700 bg-emerald-800/80 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-emerald-200 transition cursor-pointer">
+                        <span>Perbarui</span>
+                    </button>
+                    <form method="POST" action="{{ route('rekomendasi.revoke') }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengesahan rekomendasi kebijakan ini? Status dokumen akan kembali menjadi DRAFT.')">
+                        @csrf
+                        <input type="hidden" name="approval_id" value="{{ $approval->id }}">
+                        <input type="hidden" name="doc_hash" value="{{ $docHash }}">
+                        <input type="hidden" name="scope_hash" value="{{ $scopeHash }}">
+                        <button type="submit"
+                                class="inline-flex items-center gap-1 rounded-xl border border-rose-800 bg-rose-950/60 hover:bg-rose-900 px-2.5 py-1.5 text-xs font-bold text-rose-300 transition cursor-pointer"
+                                title="Batalkan / Cabut Pengesahan">
+                            <span>Cabut</span>
+                        </button>
+                    </form>
+                @else
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold shrink-0">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span>STATUS: DRAFT</span>
+                    </span>
+                    <button type="button"
+                            onclick="openApproveModal()"
+                            class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-md transition cursor-pointer active:scale-95">
+                        <span>✍️ Approve (Kepala BBLKL)</span>
+                    </button>
+                @endif
+
+                {{-- TOMBOL CETAK / SIMPAN PDF BROWSER --}}
+                <button type="button"
+                        onclick="window.print()"
+                        class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-md transition cursor-pointer active:scale-95">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span class="hidden sm:inline">Cetak Dokumen</span>
+                    <span class="sm:hidden">Cetak</span>
+                    <span class="text-[10px] text-teal-200 font-normal hidden md:inline">(Ctrl+P)</span>
+                </button>
             </div>
         </div>
 
-        {{-- SWITCHER TAB ANTAR TIGA BENTUK TEMPLATE LAPORAN --}}
-        <div class="inline-flex p-1 bg-slate-800/90 rounded-xl border border-slate-700/80">
-            {{-- TAB 1: STANDAR TEKNIS KEMENKES RI --}}
-            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes'])) }}"
-               class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $activeTemplate === 'kemenkes' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
-               title="Beralih ke format Rekomendasi Standar Teknis Kemenkes RI">
-                <span>📋 Standar Teknis Kemenkes RI</span>
-                @if($activeTemplate === 'kemenkes')
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                @endif
-            </a>
+        {{-- BARIS 2: TAB SWITCHER 4 FORMAT TEMPLATE LAPORAN (TERPUSAT, RAPI, RINGKAS) --}}
+        <div class="px-4 py-1.5 bg-slate-900/95 backdrop-blur-md flex items-center justify-center overflow-x-auto">
+            <div class="inline-flex p-1 bg-slate-800/90 rounded-xl border border-slate-700/80 shadow-inner">
+                {{-- TAB 1: STANDAR TEKNIS KEMENKES RI --}}
+                <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes'])) }}"
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap {{ $activeTemplate === 'kemenkes' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
+                   title="Beralih ke format Rekomendasi Standar Teknis Kemenkes RI">
+                    <span>📋 Standar Teknis Kemenkes RI</span>
+                    @if($activeTemplate === 'kemenkes')
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                    @endif
+                </a>
 
-            {{-- TAB 2: POLICY BRIEF EKSEKUTIF (FORMAT AWAL) --}}
-            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'eksekutif'])) }}"
-               class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $activeTemplate === 'eksekutif' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
-               title="Beralih ke format Policy Brief Eksekutif (Format Awal)">
-                <span>📑 Policy Brief Eksekutif</span>
-                @if($activeTemplate === 'eksekutif')
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                @endif
-            </a>
+                {{-- TAB 2: POLICY BRIEF EKSEKUTIF --}}
+                <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'eksekutif'])) }}"
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap {{ $activeTemplate === 'eksekutif' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
+                   title="Beralih ke format Policy Brief Eksekutif (Format Awal)">
+                    <span>📑 Policy Brief Eksekutif</span>
+                    @if($activeTemplate === 'eksekutif')
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                    @endif
+                </a>
 
-            {{-- TAB 3: REKOMENDASI TEKNIS LABORATORIUM (WHO MANUAL 2022) --}}
-            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'laboratorium'])) }}"
-               class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $activeTemplate === 'laboratorium' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
-               title="Beralih ke format Rekomendasi Teknis Laboratorium (WHO Manual 2022)">
-                <span>🔬 Rekm. Teknis Lab</span>
-                @if($activeTemplate === 'laboratorium')
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-violet-300 animate-pulse"></span>
-                @endif
-            </a>
+                {{-- TAB 3: REKOMENDASI TEKNIS LABORATORIUM --}}
+                <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'laboratorium'])) }}"
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap {{ $activeTemplate === 'laboratorium' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
+                   title="Beralih ke format Rekomendasi Teknis Laboratorium (WHO Manual 2022)">
+                    <span>🔬 Rekm. Teknis Lab</span>
+                    @if($activeTemplate === 'laboratorium')
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-violet-300 animate-pulse"></span>
+                    @endif
+                </a>
 
-            {{-- TAB 4: POLICY BRIEF AGREGAT WILAYAH (FORMAT DINKES PROV / KLASTER) --}}
-            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'agregat'])) }}"
-               class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ $activeTemplate === 'agregat' ? 'bg-cyan-700 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
-               title="Beralih ke format Policy Brief Agregat Wilayah & Klaster Kerentanan">
-                <span>📊 Policy Brief Agregat</span>
-                @if($activeTemplate === 'agregat')
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse"></span>
-                @endif
-            </a>
-        </div>
-
-        <div class="flex items-center gap-2 flex-wrap">
-            {{-- STATUS PENGESAHAN DOKUMEN --}}
-            @if($isApproved)
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold shrink-0">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>Disahkan Kepala BBLKL</span>
-                </span>
-                <button type="button"
-                        onclick="openApproveModal()"
-                        class="inline-flex items-center gap-1 rounded-xl border border-emerald-700 bg-emerald-800/80 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-emerald-200 transition cursor-pointer">
-                    <span>Perbarui</span>
-                </button>
-                <form method="POST" action="{{ route('rekomendasi.revoke') }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengesahan rekomendasi kebijakan ini? Status dokumen akan kembali menjadi DRAFT.')">
-                    @csrf
-                    <input type="hidden" name="approval_id" value="{{ $approval->id }}">
-                    <input type="hidden" name="doc_hash" value="{{ $docHash }}">
-                    <input type="hidden" name="scope_hash" value="{{ $scopeHash }}">
-                    <button type="submit"
-                            class="inline-flex items-center gap-1 rounded-xl border border-rose-800 bg-rose-950/60 hover:bg-rose-900 px-3 py-1.5 text-xs font-bold text-rose-300 transition cursor-pointer">
-                        <span>Cabut</span>
-                    </button>
-                </form>
-            @else
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold shrink-0">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span>STATUS: DRAFT</span>
-                </span>
-                <button type="button"
-                        onclick="openApproveModal()"
-                        class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-md transition cursor-pointer active:scale-95">
-                    <span>✍️ Approve (Kepala BBLKL)</span>
-                </button>
-            @endif
-
-            {{-- TOMBOL KEMBALI KE DASHBOARD --}}
-            <a href="{{ route('rekomendasi.index', request()->all()) }}"
-               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3.5 py-1.5 text-xs font-bold text-slate-200 hover:bg-slate-700 hover:text-white transition cursor-pointer">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Kembali</span>
-            </a>
-
-            {{-- TOMBOL CETAK / SIMPAN PDF BROWSER --}}
-            <button type="button"
-                    onclick="window.print()"
-                    class="inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-500 px-4 py-1.5 text-xs font-bold text-white shadow-md transition cursor-pointer active:scale-95">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                </svg>
-                <span>Cetak Dokumen (Ctrl+P)</span>
-            </button>
+                {{-- TAB 4: POLICY BRIEF AGREGAT WILAYAH --}}
+                <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'agregat'])) }}"
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap {{ $activeTemplate === 'agregat' ? 'bg-cyan-700 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/60' }}"
+                   title="Beralih ke format Policy Brief Agregat Wilayah &amp; Klaster Kerentanan">
+                    <span>📊 Policy Brief Agregat</span>
+                    @if($activeTemplate === 'agregat')
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse"></span>
+                    @endif
+                </a>
+            </div>
         </div>
     </div>
 
@@ -2300,7 +2311,7 @@
                                 <tr>
                                     <td style="text-align:left; font-weight:700; color:#1e293b; padding-left:2px;">
                                         <span>{{ $kab['kode'] }}</span>
-                                        <span style="font-weight:400; color:#64748b; font-size:6.2pt; display:block; line-height:1;">{{ Str::limit($kab['kab_name'], 15) }}</span>
+                                        <span style="font-weight:400; color:#64748b; font-size:6.2pt; display:block; line-height:1;">{{ \Illuminate\Support\Str::limit((string)($kab['kab_name'] ?? ''), 15) }}</span>
                                     </td>
                                     <td>
                                         @php $s1 = $kab['statuses']['deltamethrin'] ?? 'TD'; @endphp

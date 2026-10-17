@@ -169,8 +169,13 @@ class RekomendasiKebijakanController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->preparePolicyData($request);
-        return view('rekomendasi_kebijakan', $data);
+        try {
+            $data = $this->preparePolicyData($request);
+            return view('rekomendasi_kebijakan', $data);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Rekomendasi Kebijakan index error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return redirect()->route('dashboard')->with('error', 'Gagal memuat modul Rekomendasi Kebijakan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -178,8 +183,13 @@ class RekomendasiKebijakanController extends Controller
      */
     public function preview(Request $request)
     {
-        $data = $this->preparePolicyData($request);
-        return view('rekomendasi_kebijakan_preview', $data);
+        try {
+            $data = $this->preparePolicyData($request);
+            return view('rekomendasi_kebijakan_preview', $data);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Rekomendasi Kebijakan preview error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return redirect()->route('rekomendasi.index')->with('error', 'Gagal memuat dokumen cetak rekomendasi: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -187,8 +197,19 @@ class RekomendasiKebijakanController extends Controller
      */
     protected function preparePolicyData(Request $request): array
     {
-        // Verifikasi hak akses admin atau kepala/pimpinan
-        if (!auth()->check() || (!auth()->user()->isAdmin() && !auth()->user()->canApproveRekomendasi())) {
+        // Verifikasi hak akses admin atau kepala/pimpinan (dengan fallback aman)
+        $user = auth()->user();
+        if (!$user) {
+            abort(403, 'Akses Ditolak: Anda belum login.');
+        }
+
+        $userRole = strtolower((string)($user->role ?? ''));
+        $isAdmin = method_exists($user, 'isAdmin') ? $user->isAdmin() : ($userRole === 'admin');
+        $canApprove = method_exists($user, 'canApproveRekomendasi')
+            ? $user->canApproveRekomendasi()
+            : ($isAdmin || in_array($userRole, ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']));
+
+        if (!$isAdmin && !$canApprove) {
             abort(403, 'Akses Ditolak: Modul Rekomendasi Kebijakan hanya dapat diakses oleh Administrator atau Kepala/Pimpinan.');
         }
 
@@ -663,19 +684,65 @@ class RekomendasiKebijakanController extends Controller
                 ->get();
         }
 
-        // 10. Status Persetujuan / Approval Kepala/Pimpinan BBLKL
-        $docHash   = RekomendasiApproval::makeDocHash($tahunFilter, $nyamukFilter, $provinsiFilter, $kabupatenFilter, $activeTemplate);
-        $scopeHash = RekomendasiApproval::makeScopeHash($tahunFilter, $nyamukFilter, $provinsiFilter, $kabupatenFilter);
+        // 10. Status Persetujuan / Approval Kepala/Pimpinan BBLKL (dengan auto-create table & fallback aman)
+        $docHash   = md5($tahunFilter . '|' . $nyamukFilter . '|' . $provinsiFilter . '|' . $kabupatenFilter . '|' . $activeTemplate);
+        $scopeHash = md5($tahunFilter . '|' . $nyamukFilter . '|' . $provinsiFilter . '|' . $kabupatenFilter);
+        $approval = null;
+        $isApproved = false;
+        $approvalStatus = 'draft';
 
-        $approval = RekomendasiApproval::where(function($q) use ($docHash, $scopeHash) {
-            $q->where('doc_hash', $docHash)
-              ->orWhere(function($sub) use ($scopeHash) {
-                  $sub->where('filter_scope', $scopeHash)->where('template', 'all');
-              });
-        })->where('status', 'approved')->latest('approved_at')->first();
+        try {
+            // Otomatis buat tabel rekomendasi_approvals jika belum ada di database
+            if (!\Illuminate\Support\Facades\Schema::hasTable('rekomendasi_approvals')) {
+                DB::statement("CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
+                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    `doc_hash` varchar(64) NOT NULL,
+                    `filter_scope` varchar(64) NOT NULL,
+                    `template` varchar(50) NOT NULL DEFAULT 'all',
+                    `tahun` varchar(20) NOT NULL DEFAULT 'Semua',
+                    `jenis_nyamuk` varchar(100) NOT NULL DEFAULT 'Semua',
+                    `provinsi_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `kabupaten_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `nama_wilayah` varchar(255) DEFAULT NULL,
+                    `status` varchar(20) NOT NULL DEFAULT 'draft',
+                    `user_id` bigint(20) unsigned DEFAULT NULL,
+                    `approver_name` varchar(150) DEFAULT NULL,
+                    `approver_nip` varchar(50) DEFAULT NULL,
+                    `approver_jabatan` varchar(255) DEFAULT NULL,
+                    `nomor_surat` varchar(100) DEFAULT NULL,
+                    `notes` text DEFAULT NULL,
+                    `verification_token` varchar(64) DEFAULT NULL,
+                    `approved_at` timestamp NULL DEFAULT NULL,
+                    `created_at` timestamp NULL DEFAULT NULL,
+                    `updated_at` timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `rekomendasi_approvals_doc_hash_index` (`doc_hash`),
+                    KEY `rekomendasi_approvals_filter_scope_index` (`filter_scope`),
+                    KEY `rekomendasi_approvals_status_index` (`status`),
+                    KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            }
 
-        $isApproved     = !is_null($approval);
-        $approvalStatus = $isApproved ? 'approved' : 'draft';
+            if (class_exists(\App\Models\RekomendasiApproval::class)) {
+                $docHash   = RekomendasiApproval::makeDocHash($tahunFilter, $nyamukFilter, $provinsiFilter, $kabupatenFilter, $activeTemplate);
+                $scopeHash = RekomendasiApproval::makeScopeHash($tahunFilter, $nyamukFilter, $provinsiFilter, $kabupatenFilter);
+
+                $approval = RekomendasiApproval::where(function($q) use ($docHash, $scopeHash) {
+                    $q->where('doc_hash', $docHash)
+                      ->orWhere(function($sub) use ($scopeHash) {
+                          $sub->where('filter_scope', $scopeHash)->where('template', 'all');
+                      });
+                })->where('status', 'approved')->latest('approved_at')->first();
+
+                $isApproved     = !is_null($approval);
+                $approvalStatus = $isApproved ? 'approved' : 'draft';
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('RekomendasiApproval query failed: ' . $e->getMessage());
+            $approval = null;
+            $isApproved = false;
+            $approvalStatus = 'draft';
+        }
 
         // Ambil data default BBLKL & Penanggung Jawab dari Master Instansi / User
         $bblkl = Instansi::where('unit_code', 'BBLKL-01')
@@ -684,8 +751,10 @@ class RekomendasiKebijakanController extends Controller
             ->first();
 
         $currentUser = auth()->user();
+        $isKepala = $currentUser ? (method_exists($currentUser, 'isKepala') ? $currentUser->isKepala() : in_array(strtolower((string)($currentUser->role ?? '')), ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'])) : false;
+
         $defaultKepalaNama = $approval ? $approval->approver_name : (
-            ($currentUser && $currentUser->isKepala()) ? $currentUser->name : ($bblkl->person_in_charge ?? 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan')
+            $isKepala ? $currentUser->name : ($bblkl->person_in_charge ?? 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan')
         );
         $defaultKepalaNip = $approval ? $approval->approver_nip : '19720315 199803 1 002';
         $defaultKepalaJabatan = $approval ? $approval->approver_jabatan : 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL) Salatiga';
@@ -753,16 +822,6 @@ class RekomendasiKebijakanController extends Controller
      */
     protected function buildAgregatPolicyData($query, $provinsiFilter, $selectedProvinsi, $namaWilayah, $tahunFilter, $nyamukFilter): array
     {
-        // 1. Total Kabupaten/Kota dalam Cakupan Wilayah
-        if ($provinsiFilter !== 'Semua' && !empty($provinsiFilter)) {
-            $totalKabupatenDiWilayah = Kabupaten::where('provinsi_id', $provinsiFilter)->count();
-        } else {
-            $totalKabupatenDiWilayah = Kabupaten::count();
-        }
-        if ($totalKabupatenDiWilayah <= 0) {
-            $totalKabupatenDiWilayah = 35; // Fallback standar provinsi (e.g. Jawa Tengah)
-        }
-
         // 2. 4 Insektisida Kunci sesuai Contoh Policy Brief Agregat:
         //    Deltamethrin (3A), Malathion (1B), Pirimiphos-methyl (1B), Bendiocarb (1A)
         $targetInsektisida = [
@@ -808,255 +867,275 @@ class RekomendasiKebijakanController extends Controller
             ],
         ];
 
-        // 3. Ambil data uji lengkap dalam cakupan query yang memiliki kabupaten_id
-        $ujiRecords = (clone $query)
-            ->whereNotNull('data_uji_resistensis.kabupaten_id')
-            ->select([
-                'data_uji_resistensis.kabupaten_id',
-                'data_uji_resistensis.insecticide',
-                'data_uji_resistensis.status',
-                'data_uji_resistensis.sample_count',
-            ])
-            ->get();
-
-        // Ambil daftar kabupaten dalam wilayah
-        $kabupatenQuery = Kabupaten::query();
-        if ($provinsiFilter !== 'Semua' && !empty($provinsiFilter)) {
-            $kabupatenQuery->where('provinsi_id', $provinsiFilter);
-        }
-        $daftarKabupatenObj = $kabupatenQuery->orderBy('name', 'asc')->get()->keyBy('id');
-
-        // Petakan pengujian per kabupaten
-        $kabMap = [];
-        foreach ($ujiRecords as $rec) {
-            $kId = $rec->kabupaten_id;
-            if (!isset($kabMap[$kId])) {
-                $rawKabName = $daftarKabupatenObj[$kId]->name ?? ("Kabupaten #" . $kId);
-                $kabMap[$kId] = [
-                    'kab_id'   => $kId,
-                    'kab_name' => $rawKabName,
-                    'total_uji'=> 0,
-                    'ins'      => [
-                        'deltamethrin' => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
-                        'malathion'    => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
-                        'pirimiphos'   => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
-                        'bendiocarb'   => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
-                    ],
-                ];
+        try {
+            // 1. Total Kabupaten/Kota dalam Cakupan Wilayah
+            if ($provinsiFilter !== 'Semua' && !empty($provinsiFilter)) {
+                $totalKabupatenDiWilayah = Kabupaten::where('provinsi_id', $provinsiFilter)->count();
+            } else {
+                $totalKabupatenDiWilayah = Kabupaten::count();
             }
-            $kabMap[$kId]['total_uji']++;
+            if ($totalKabupatenDiWilayah <= 0) {
+                $totalKabupatenDiWilayah = 35; // Fallback standar provinsi (e.g. Jawa Tengah)
+            }
 
-            $rawIns = strtolower(trim($rec->insecticide ?? ''));
-            $matchedKey = null;
-            foreach ($targetInsektisida as $tgt) {
-                foreach ($tgt['keywords'] as $kw) {
-                    if (str_contains($rawIns, $kw)) {
-                        $matchedKey = $tgt['key'];
-                        break 2;
+            // 3. Ambil data uji lengkap dalam cakupan query yang memiliki kabupaten_id
+            $ujiRecords = (clone $query)
+                ->whereNotNull('data_uji_resistensis.kabupaten_id')
+                ->select([
+                    'data_uji_resistensis.kabupaten_id',
+                    'data_uji_resistensis.insecticide',
+                    'data_uji_resistensis.status',
+                    'data_uji_resistensis.sample_count',
+                ])
+                ->get();
+
+            // Ambil daftar kabupaten dalam wilayah
+            $kabupatenQuery = Kabupaten::query();
+            if ($provinsiFilter !== 'Semua' && !empty($provinsiFilter)) {
+                $kabupatenQuery->where('provinsi_id', $provinsiFilter);
+            }
+            $daftarKabupatenObj = $kabupatenQuery->orderBy('name', 'asc')->get()->keyBy('id');
+
+            // Petakan pengujian per kabupaten
+            $kabMap = [];
+            foreach ($ujiRecords as $rec) {
+                $kId = $rec->kabupaten_id;
+                if (!isset($kabMap[$kId])) {
+                    $rawKabName = $daftarKabupatenObj[$kId]->name ?? ("Kabupaten #" . $kId);
+                    $kabMap[$kId] = [
+                        'kab_id'   => $kId,
+                        'kab_name' => $rawKabName,
+                        'total_uji'=> 0,
+                        'ins'      => [
+                            'deltamethrin' => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
+                            'malathion'    => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
+                            'pirimiphos'   => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
+                            'bendiocarb'   => ['resisten' => 0, 'toleran' => 0, 'rentan' => 0, 'total' => 0],
+                        ],
+                    ];
+                }
+                $kabMap[$kId]['total_uji']++;
+
+                $rawIns = strtolower(trim((string)($rec->insecticide ?? '')));
+                $matchedKey = null;
+                foreach ($targetInsektisida as $tgt) {
+                    foreach ($tgt['keywords'] as $kw) {
+                        if (str_contains($rawIns, $kw)) {
+                            $matchedKey = $tgt['key'];
+                            break 2;
+                        }
+                    }
+                }
+
+                if ($matchedKey) {
+                    $st = strtolower(trim((string)($rec->status ?? '')));
+                    $kabMap[$kId]['ins'][$matchedKey]['total']++;
+                    if ($st === 'resisten') {
+                        $kabMap[$kId]['ins'][$matchedKey]['resisten']++;
+                    } elseif (str_contains($st, 'toleran') || str_contains($st, 'terduga')) {
+                        $kabMap[$kId]['ins'][$matchedKey]['toleran']++;
+                    } elseif ($st === 'rentan') {
+                        $kabMap[$kId]['ins'][$matchedKey]['rentan']++;
                     }
                 }
             }
 
-            if ($matchedKey) {
-                $st = strtolower(trim($rec->status ?? ''));
-                $kabMap[$kId]['ins'][$matchedKey]['total']++;
-                if ($st === 'resisten') {
-                    $kabMap[$kId]['ins'][$matchedKey]['resisten']++;
-                } elseif (str_contains($st, 'toleran') || str_contains($st, 'terduga')) {
-                    $kabMap[$kId]['ins'][$matchedKey]['toleran']++;
-                } elseif ($st === 'rentan') {
-                    $kabMap[$kId]['ins'][$matchedKey]['rentan']++;
+            // 4. Hitung Status Matriks Tiap Kabupaten
+            $matriksKabupaten = [];
+            $counter = 1;
+            foreach ($kabMap as $kId => $kData) {
+                $rowStatus = [];
+                $testedCount = 0;
+                foreach ($targetInsektisida as $tgt) {
+                    $stat = $kData['ins'][$tgt['key']];
+                    if ($stat['total'] === 0) {
+                        $code = 'TD';
+                    } elseif ($stat['resisten'] > 0 && ($stat['resisten'] >= ($stat['total'] * 0.5) || $stat['resisten'] >= $stat['rentan'])) {
+                        $code = 'RT';
+                        $testedCount++;
+                    } elseif ($stat['resisten'] > 0) {
+                        $code = 'DR';
+                        $testedCount++;
+                    } elseif ($stat['toleran'] > 0 && $stat['toleran'] >= ($stat['total'] * 0.5)) {
+                        $code = 'KR';
+                        $testedCount++;
+                    } elseif ($stat['rentan'] > 0) {
+                        $code = 'RN';
+                        $testedCount++;
+                    } else {
+                        $code = 'TD';
+                    }
+                    $rowStatus[$tgt['key']] = $code;
                 }
-            }
-        }
 
-        // 4. Hitung Status Matriks Tiap Kabupaten
-        // Kode Status:
-        // - RT: Resisten Terkonfirmasi (resisten >= 50% atau hanya resisten)
-        // - DR: Dugaan Resisten (ada resisten tapi < 50%)
-        // - KR: Kemungkinan Resisten (toleran dominan / >= 50%)
-        // - RN: Rentan (rentan >= 80% atau mutlak rentan)
-        // - TD: Tidak Cukup Data / Tidak Diuji
-        $matriksKabupaten = [];
-        $counter = 1;
-        foreach ($kabMap as $kId => $kData) {
-            $rowStatus = [];
-            $testedCount = 0;
-            foreach ($targetInsektisida as $tgt) {
-                $stat = $kData['ins'][$tgt['key']];
-                if ($stat['total'] === 0) {
-                    $code = 'TD';
-                } elseif ($stat['resisten'] > 0 && ($stat['resisten'] >= ($stat['total'] * 0.5) || $stat['resisten'] >= $stat['rentan'])) {
-                    $code = 'RT';
-                    $testedCount++;
-                } elseif ($stat['resisten'] > 0) {
-                    $code = 'DR';
-                    $testedCount++;
-                } elseif ($stat['toleran'] > 0 && $stat['toleran'] >= ($stat['total'] * 0.5)) {
-                    $code = 'KR';
-                    $testedCount++;
-                } elseif ($stat['rentan'] > 0) {
-                    $code = 'RN';
-                    $testedCount++;
-                } else {
-                    $code = 'TD';
-                }
-                $rowStatus[$tgt['key']] = $code;
+                $matriksKabupaten[] = [
+                    'kode'         => sprintf('K-%02d', $counter++),
+                    'kab_id'       => $kId,
+                    'kab_name'     => $kData['kab_name'],
+                    'statuses'     => $rowStatus,
+                    'tested_count' => $testedCount,
+                ];
             }
 
-            $matriksKabupaten[] = [
-                'kode'         => sprintf('K-%02d', $counter++),
-                'kab_id'       => $kId,
-                'kab_name'     => $kData['kab_name'],
-                'statuses'     => $rowStatus,
-                'tested_count' => $testedCount,
-            ];
-        }
-
-        // Urutkan kabupaten berdata
-        usort($matriksKabupaten, fn($a, $b) => strcmp($a['kab_name'], $b['kab_name']));
-        // Re-index kode K-01, K-02...
-        foreach ($matriksKabupaten as $idx => &$row) {
-            $row['kode'] = sprintf('K-%02d', $idx + 1);
-        }
-        unset($row);
-
-        $jumlahKabupatenBerdata = count($matriksKabupaten);
-        $jumlahKabupatenTanpaData = max(0, $totalKabupatenDiWilayah - $jumlahKabupatenBerdata);
-        $persenKabupatenBerdata = $totalKabupatenDiWilayah > 0 ? round(($jumlahKabupatenBerdata / $totalKabupatenDiWilayah) * 100) : 0;
-        $persenKabupatenTanpaData = max(0, 100 - $persenKabupatenBerdata);
-
-        // 5. Pengelompokan Klaster Kerentanan & Implikasinya
-        $klaster1Kab = [];
-        $klaster2Kab = [];
-        $klaster3Kab = [];
-        $klaster4Kab = [];
-
-        foreach ($matriksKabupaten as $k) {
-            $s = $k['statuses'];
-            $delta = $s['deltamethrin'] ?? 'TD';
-            $mala  = $s['malathion'] ?? 'TD';
-            $piri  = $s['pirimiphos'] ?? 'TD';
-            $bendi = $s['bendiocarb'] ?? 'TD';
-
-            // Klaster 3: Malathion RT atau DR (Multi-Resisten Organofosfat)
-            if ($mala === 'RT' || $mala === 'DR') {
-                $klaster3Kab[] = $k['kode'];
+            // Urutkan kabupaten berdata
+            usort($matriksKabupaten, fn($a, $b) => strcmp((string)($a['kab_name'] ?? ''), (string)($b['kab_name'] ?? '')));
+            // Re-index kode K-01, K-02...
+            foreach ($matriksKabupaten as $idx => &$row) {
+                $row['kode'] = sprintf('K-%02d', $idx + 1);
             }
-            // Klaster 2: Piretroid RT; Malathion KR
-            elseif ($delta === 'RT' && $mala === 'KR') {
-                $klaster2Kab[] = $k['kode'];
-            }
-            // Klaster 1: Piretroid RT; Organofosfat RN
-            elseif ($delta === 'RT' && ($mala === 'RN' || $piri === 'RN')) {
-                $klaster1Kab[] = $k['kode'];
-            }
-            // Klaster 4: Deltamethrin KR / Bahan lain belum diuji
-            elseif ($delta === 'KR' || ($delta === 'RT' && $mala === 'TD' && $piri === 'TD')) {
-                $klaster4Kab[] = $k['kode'];
-            }
-            else {
-                if ($delta === 'RN' || $mala === 'RN' || $piri === 'RN') {
+            unset($row);
+
+            $jumlahKabupatenBerdata = count($matriksKabupaten);
+            $jumlahKabupatenTanpaData = max(0, $totalKabupatenDiWilayah - $jumlahKabupatenBerdata);
+            $persenKabupatenBerdata = $totalKabupatenDiWilayah > 0 ? round(($jumlahKabupatenBerdata / $totalKabupatenDiWilayah) * 100) : 0;
+            $persenKabupatenTanpaData = max(0, 100 - $persenKabupatenBerdata);
+
+            // 5. Pengelompokan Klaster Kerentanan & Implikasinya
+            $klaster1Kab = [];
+            $klaster2Kab = [];
+            $klaster3Kab = [];
+            $klaster4Kab = [];
+
+            foreach ($matriksKabupaten as $k) {
+                $s = $k['statuses'];
+                $delta = $s['deltamethrin'] ?? 'TD';
+                $mala  = $s['malathion'] ?? 'TD';
+                $piri  = $s['pirimiphos'] ?? 'TD';
+                $bendi = $s['bendiocarb'] ?? 'TD';
+
+                if ($mala === 'RT' || $mala === 'DR') {
+                    $klaster3Kab[] = $k['kode'];
+                } elseif ($delta === 'RT' && $mala === 'KR') {
+                    $klaster2Kab[] = $k['kode'];
+                } elseif ($delta === 'RT' && ($mala === 'RN' || $piri === 'RN')) {
                     $klaster1Kab[] = $k['kode'];
-                } else {
+                } elseif ($delta === 'KR' || ($delta === 'RT' && $mala === 'TD' && $piri === 'TD')) {
                     $klaster4Kab[] = $k['kode'];
+                } else {
+                    if ($delta === 'RN' || $mala === 'RN' || $piri === 'RN') {
+                        $klaster1Kab[] = $k['kode'];
+                    } else {
+                        $klaster4Kab[] = $k['kode'];
+                    }
                 }
             }
-        }
 
-        $klasterList = [];
-        if (!empty($klaster1Kab)) {
-            $klasterList[] = [
-                'nomor'     => 1,
-                'judul'     => 'Klaster 1 • ' . implode(', ', $klaster1Kab),
-                'ringkasan' => 'Piretroid RT; organofosfat RN',
-                'deskripsi' => 'Piretroid tidak direkomendasikan. Organofosfat dapat dipertimbangkan untuk fokus KLB; pantau tekanan seleksi.',
-                'kabupaten' => $klaster1Kab,
-            ];
-        }
-        if (!empty($klaster2Kab)) {
-            $klasterList[] = [
-                'nomor'     => 2,
-                'judul'     => 'Klaster 2 • ' . implode(', ', $klaster2Kab),
-                'ringkasan' => 'Piretroid RT; malathion KR',
-                'deskripsi' => 'Konfirmasi malathion sebelum pengadaan. Pirimiphos-methyl satu kelompok dengan malathion: pantau resistensi silang.',
-                'kabupaten' => $klaster2Kab,
-            ];
-        }
-        if (!empty($klaster3Kab)) {
-            $klasterList[] = [
-                'nomor'     => 3,
-                'judul'     => 'Klaster 3 • ' . implode(', ', $klaster3Kab),
-                'ringkasan' => 'Malathion RT atau DR',
-                'deskripsi' => 'Belum ada pilihan kimia terkonfirmasi di wilayah ini. Prioritaskan non-kimia (PSN 3M-Plus, biolarvasida Bti) dan uji kelompok MoA lain.',
-                'kabupaten' => $klaster3Kab,
-            ];
-        }
-        if (!empty($klaster4Kab)) {
-            $klasterList[] = [
-                'nomor'     => 4,
-                'judul'     => 'Klaster 4 • ' . implode(', ', $klaster4Kab),
-                'ringkasan' => 'Deltamethrin KR; bahan lain belum diuji',
-                'deskripsi' => 'Uji lanjut dan konfirmasi bioassay sebelum penetapan keputusan pengadaan.',
-                'kabupaten' => $klaster4Kab,
-            ];
-        }
-
-        if (empty($klasterList)) {
-            $klasterList[] = [
-                'nomor'     => 1,
-                'judul'     => 'Klaster 1 • Wilayah Terpantau',
-                'ringkasan' => 'Data surveilans terbatas',
-                'deskripsi' => 'Diperlukan surveilans tambahan pada kabupaten prioritas sebelum penetapan alokasi pengadaan.',
-                'kabupaten' => [],
-            ];
-        }
-
-        // 6. Hitung Data Grafik Batang Bertumpuk (Stacked Bar) per Bahan Aktif
-        $barDataList = [];
-        foreach ($targetInsektisida as $tgt) {
-            $kKey = $tgt['key'];
-            $rtCount = 0;
-            $drCount = 0;
-            $krCount = 0;
-            $rnCount = 0;
-            foreach ($matriksKabupaten as $kRow) {
-                $code = $kRow['statuses'][$kKey] ?? 'TD';
-                if ($code === 'RT') $rtCount++;
-                elseif ($code === 'DR') $drCount++;
-                elseif ($code === 'KR') $krCount++;
-                elseif ($code === 'RN') $rnCount++;
+            $klasterList = [];
+            if (!empty($klaster1Kab)) {
+                $klasterList[] = [
+                    'nomor'     => 1,
+                    'judul'     => 'Klaster 1 • ' . implode(', ', $klaster1Kab),
+                    'ringkasan' => 'Piretroid RT; organofosfat RN',
+                    'deskripsi' => 'Piretroid tidak direkomendasikan. Organofosfat dapat dipertimbangkan untuk fokus KLB; pantau tekanan seleksi.',
+                    'kabupaten' => $klaster1Kab,
+                ];
             }
-            $berdataCount = $rtCount + $drCount + $krCount + $rnCount;
-            $tanpaDataCount = max(0, $totalKabupatenDiWilayah - $berdataCount);
+            if (!empty($klaster2Kab)) {
+                $klasterList[] = [
+                    'nomor'     => 2,
+                    'judul'     => 'Klaster 2 • ' . implode(', ', $klaster2Kab),
+                    'ringkasan' => 'Piretroid RT; malathion KR',
+                    'deskripsi' => 'Konfirmasi malathion sebelum pengadaan. Pirimiphos-methyl satu kelompok dengan malathion: pantau resistensi silang.',
+                    'kabupaten' => $klaster2Kab,
+                ];
+            }
+            if (!empty($klaster3Kab)) {
+                $klasterList[] = [
+                    'nomor'     => 3,
+                    'judul'     => 'Klaster 3 • ' . implode(', ', $klaster3Kab),
+                    'ringkasan' => 'Malathion RT atau DR',
+                    'deskripsi' => 'Belum ada pilihan kimia terkonfirmasi di wilayah ini. Prioritaskan non-kimia (PSN 3M-Plus, biolarvasida Bti) dan uji kelompok MoA lain.',
+                    'kabupaten' => $klaster3Kab,
+                ];
+            }
+            if (!empty($klaster4Kab)) {
+                $klasterList[] = [
+                    'nomor'     => 4,
+                    'judul'     => 'Klaster 4 • ' . implode(', ', $klaster4Kab),
+                    'ringkasan' => 'Deltamethrin KR; bahan lain belum diuji',
+                    'deskripsi' => 'Uji lanjut dan konfirmasi bioassay sebelum penetapan keputusan pengadaan.',
+                    'kabupaten' => $klaster4Kab,
+                ];
+            }
 
-            $barDataList[] = [
-                'nama'             => $tgt['label'],
-                'rt'               => $rtCount,
-                'dr'               => $drCount,
-                'kr'               => $krCount,
-                'rn'               => $rnCount,
-                'tanpa_data'       => $tanpaDataCount,
-                'berdata'          => $berdataCount,
-                'total_kab'        => $totalKabupatenDiWilayah,
+            if (empty($klasterList)) {
+                $klasterList[] = [
+                    'nomor'     => 1,
+                    'judul'     => 'Klaster 1 • Wilayah Terpantau',
+                    'ringkasan' => 'Data surveilans terbatas',
+                    'deskripsi' => 'Diperlukan surveilans tambahan pada kabupaten prioritas sebelum penetapan alokasi pengadaan.',
+                    'kabupaten' => [],
+                ];
+            }
+
+            // 6. Hitung Data Grafik Batang Bertumpuk (Stacked Bar) per Bahan Aktif
+            $barDataList = [];
+            foreach ($targetInsektisida as $tgt) {
+                $kKey = $tgt['key'];
+                $rtCount = 0;
+                $drCount = 0;
+                $krCount = 0;
+                $rnCount = 0;
+                foreach ($matriksKabupaten as $kRow) {
+                    $code = $kRow['statuses'][$kKey] ?? 'TD';
+                    if ($code === 'RT') $rtCount++;
+                    elseif ($code === 'DR') $drCount++;
+                    elseif ($code === 'KR') $krCount++;
+                    elseif ($code === 'RN') $rnCount++;
+                }
+                $berdataCount = $rtCount + $drCount + $krCount + $rnCount;
+                $tanpaDataCount = max(0, $totalKabupatenDiWilayah - $berdataCount);
+
+                $barDataList[] = [
+                    'nama'             => $tgt['label'],
+                    'rt'               => $rtCount,
+                    'dr'               => $drCount,
+                    'kr'               => $krCount,
+                    'rn'               => $rnCount,
+                    'tanpa_data'       => $tanpaDataCount,
+                    'berdata'          => $berdataCount,
+                    'total_kab'        => $totalKabupatenDiWilayah,
+                ];
+            }
+
+            // 7. Opsi Keputusan untuk Pejabat
+            $kabupatenPrioritasCount = max(5, min(15, $jumlahKabupatenTanpaData));
+
+            return [
+                'totalKabupatenDiWilayah'   => $totalKabupatenDiWilayah,
+                'jumlahKabupatenBerdata'     => $jumlahKabupatenBerdata,
+                'jumlahKabupatenTanpaData'   => $jumlahKabupatenTanpaData,
+                'persenKabupatenBerdata'    => $persenKabupatenBerdata,
+                'persenKabupatenTanpaData'  => $persenKabupatenTanpaData,
+                'targetInsektisida'         => $targetInsektisida,
+                'matriksKabupaten'          => $matriksKabupaten,
+                'klasterList'               => $klasterList,
+                'barDataList'               => $barDataList,
+                'kabupatenPrioritasCount'   => $kabupatenPrioritasCount,
+            ];
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('buildAgregatPolicyData fallback: ' . $e->getMessage());
+            return [
+                'totalKabupatenDiWilayah'   => 35,
+                'jumlahKabupatenBerdata'     => 0,
+                'jumlahKabupatenTanpaData'   => 35,
+                'persenKabupatenBerdata'    => 0,
+                'persenKabupatenTanpaData'  => 100,
+                'targetInsektisida'         => $targetInsektisida,
+                'matriksKabupaten'          => [],
+                'klasterList'               => [
+                    [
+                        'nomor'     => 1,
+                        'judul'     => 'Klaster 1 • Wilayah Terpantau',
+                        'ringkasan' => 'Data surveilans terbatas',
+                        'deskripsi' => 'Diperlukan surveilans tambahan pada kabupaten prioritas sebelum penetapan alokasi pengadaan.',
+                        'kabupaten' => [],
+                    ]
+                ],
+                'barDataList'               => [],
+                'kabupatenPrioritasCount'   => 5,
             ];
         }
-
-        // 7. Opsi Keputusan untuk Pejabat
-        $kabupatenPrioritasCount = max(5, min(15, $jumlahKabupatenTanpaData));
-
-        return [
-            'totalKabupatenDiWilayah'   => $totalKabupatenDiWilayah,
-            'jumlahKabupatenBerdata'     => $jumlahKabupatenBerdata,
-            'jumlahKabupatenTanpaData'   => $jumlahKabupatenTanpaData,
-            'persenKabupatenBerdata'    => $persenKabupatenBerdata,
-            'persenKabupatenTanpaData'  => $persenKabupatenTanpaData,
-            'targetInsektisida'         => $targetInsektisida,
-            'matriksKabupaten'          => $matriksKabupaten,
-            'klasterList'               => $klasterList,
-            'barDataList'               => $barDataList,
-            'kabupatenPrioritasCount'   => $kabupatenPrioritasCount,
-        ];
     }
 
     /**
@@ -1064,7 +1143,18 @@ class RekomendasiKebijakanController extends Controller
      */
     public function approve(Request $request)
     {
-        if (!auth()->check() || (!auth()->user()->isAdmin() && !auth()->user()->canApproveRekomendasi())) {
+        $user = auth()->user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda belum login.');
+        }
+
+        $userRole = strtolower((string)($user->role ?? ''));
+        $isAdmin = method_exists($user, 'isAdmin') ? $user->isAdmin() : ($userRole === 'admin');
+        $canApprove = method_exists($user, 'canApproveRekomendasi')
+            ? $user->canApproveRekomendasi()
+            : ($isAdmin || in_array($userRole, ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']));
+
+        if (!$isAdmin && !$canApprove) {
             return redirect()->back()->with('error', 'Akses Ditolak: Hanya Administrator atau Kepala/Pimpinan yang dapat mengesahkan rekomendasi kebijakan.');
         }
 
@@ -1087,43 +1177,85 @@ class RekomendasiKebijakanController extends Controller
             'lingkup_approval.required' => 'Pilih lingkup pengesahan template.',
         ]);
 
-        $targetTemplate = $validated['lingkup_approval'] === 'semua_template' ? 'all' : $validated['template'];
-        $docHash   = RekomendasiApproval::makeDocHash($validated['tahun'], $validated['jenis_nyamuk'], $validated['provinsi_id'], $validated['kabupaten_id'], $targetTemplate);
-        $scopeHash = RekomendasiApproval::makeScopeHash($validated['tahun'], $validated['jenis_nyamuk'], $validated['provinsi_id'], $validated['kabupaten_id']);
+        try {
+            // Pastikan tabel rekomendasi_approvals sudah ada
+            if (!\Illuminate\Support\Facades\Schema::hasTable('rekomendasi_approvals')) {
+                DB::statement("CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
+                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    `doc_hash` varchar(64) NOT NULL,
+                    `filter_scope` varchar(64) NOT NULL,
+                    `template` varchar(50) NOT NULL DEFAULT 'all',
+                    `tahun` varchar(20) NOT NULL DEFAULT 'Semua',
+                    `jenis_nyamuk` varchar(100) NOT NULL DEFAULT 'Semua',
+                    `provinsi_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `kabupaten_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `nama_wilayah` varchar(255) DEFAULT NULL,
+                    `status` varchar(20) NOT NULL DEFAULT 'draft',
+                    `user_id` bigint(20) unsigned DEFAULT NULL,
+                    `approver_name` varchar(150) DEFAULT NULL,
+                    `approver_nip` varchar(50) DEFAULT NULL,
+                    `approver_jabatan` varchar(255) DEFAULT NULL,
+                    `nomor_surat` varchar(100) DEFAULT NULL,
+                    `notes` text DEFAULT NULL,
+                    `verification_token` varchar(64) DEFAULT NULL,
+                    `approved_at` timestamp NULL DEFAULT NULL,
+                    `created_at` timestamp NULL DEFAULT NULL,
+                    `updated_at` timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `rekomendasi_approvals_doc_hash_index` (`doc_hash`),
+                    KEY `rekomendasi_approvals_filter_scope_index` (`filter_scope`),
+                    KEY `rekomendasi_approvals_status_index` (`status`),
+                    KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            }
 
-        $token = 'BBLKL-APP-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8)) . '-' . date('Y');
+            $targetTemplate = $validated['lingkup_approval'] === 'semua_template' ? 'all' : $validated['template'];
+            
+            if (class_exists(\App\Models\RekomendasiApproval::class)) {
+                $docHash   = RekomendasiApproval::makeDocHash($validated['tahun'], $validated['jenis_nyamuk'], $validated['provinsi_id'], $validated['kabupaten_id'], $targetTemplate);
+                $scopeHash = RekomendasiApproval::makeScopeHash($validated['tahun'], $validated['jenis_nyamuk'], $validated['provinsi_id'], $validated['kabupaten_id']);
+            } else {
+                $docHash   = md5($validated['tahun'] . '|' . $validated['jenis_nyamuk'] . '|' . $validated['provinsi_id'] . '|' . $validated['kabupaten_id'] . '|' . $targetTemplate);
+                $scopeHash = md5($validated['tahun'] . '|' . $validated['jenis_nyamuk'] . '|' . $validated['provinsi_id'] . '|' . $validated['kabupaten_id']);
+            }
 
-        $nomorSurat = trim($validated['nomor_surat'] ?? '');
-        if (empty($nomorSurat)) {
-            $nomorSurat = 'LT-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($docHash), 0, 7));
+            $token = 'BBLKL-APP-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8)) . '-' . date('Y');
+
+            $nomorSurat = trim($validated['nomor_surat'] ?? '');
+            if (empty($nomorSurat)) {
+                $nomorSurat = 'LT-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($docHash), 0, 7));
+            }
+
+            RekomendasiApproval::updateOrCreate(
+                [
+                    'doc_hash' => $docHash,
+                ],
+                [
+                    'filter_scope'       => $scopeHash,
+                    'template'           => $targetTemplate,
+                    'tahun'              => $validated['tahun'],
+                    'jenis_nyamuk'       => $validated['jenis_nyamuk'],
+                    'provinsi_id'        => $validated['provinsi_id'],
+                    'kabupaten_id'       => $validated['kabupaten_id'],
+                    'nama_wilayah'       => $validated['nama_wilayah'] ?? null,
+                    'status'             => 'approved',
+                    'user_id'            => auth()->id(),
+                    'approver_name'      => $validated['approver_name'],
+                    'approver_nip'       => $validated['approver_nip'] ?? null,
+                    'approver_jabatan'   => $validated['approver_jabatan'],
+                    'nomor_surat'        => $nomorSurat,
+                    'notes'              => $validated['notes'] ?? null,
+                    'verification_token' => $token,
+                    'approved_at'        => now(),
+                ]
+            );
+
+            $msg = "Rekomendasi Kebijakan berhasil DISETUJUI & DISAHKAN oleh Kepala/Pimpinan BBLKL (" . $validated['approver_name'] . "). Tanda DRAFT pada dokumen cetak telah dicabut secara resmi.";
+            return redirect()->back()->with('success', $msg);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Approval failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memproses persetujuan dokumen: ' . $e->getMessage());
         }
-
-        RekomendasiApproval::updateOrCreate(
-            [
-                'doc_hash' => $docHash,
-            ],
-            [
-                'filter_scope'       => $scopeHash,
-                'template'           => $targetTemplate,
-                'tahun'              => $validated['tahun'],
-                'jenis_nyamuk'       => $validated['jenis_nyamuk'],
-                'provinsi_id'        => $validated['provinsi_id'],
-                'kabupaten_id'       => $validated['kabupaten_id'],
-                'nama_wilayah'       => $validated['nama_wilayah'] ?? null,
-                'status'             => 'approved',
-                'user_id'            => auth()->id(),
-                'approver_name'      => $validated['approver_name'],
-                'approver_nip'       => $validated['approver_nip'] ?? null,
-                'approver_jabatan'   => $validated['approver_jabatan'],
-                'nomor_surat'        => $nomorSurat,
-                'notes'              => $validated['notes'] ?? null,
-                'verification_token' => $token,
-                'approved_at'        => now(),
-            ]
-        );
-
-        $msg = "Rekomendasi Kebijakan berhasil DISETUJUI & DISAHKAN oleh Kepala/Pimpinan BBLKL (" . $validated['approver_name'] . "). Tanda DRAFT pada dokumen cetak telah dicabut secara resmi.";
-        return redirect()->back()->with('success', $msg);
     }
 
     /**
@@ -1131,30 +1263,48 @@ class RekomendasiKebijakanController extends Controller
      */
     public function revoke(Request $request)
     {
-        if (!auth()->check() || (!auth()->user()->isAdmin() && !auth()->user()->canApproveRekomendasi())) {
+        $user = auth()->user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda belum login.');
+        }
+
+        $userRole = strtolower((string)($user->role ?? ''));
+        $isAdmin = method_exists($user, 'isAdmin') ? $user->isAdmin() : ($userRole === 'admin');
+        $canApprove = method_exists($user, 'canApproveRekomendasi')
+            ? $user->canApproveRekomendasi()
+            : ($isAdmin || in_array($userRole, ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']));
+
+        if (!$isAdmin && !$canApprove) {
             return redirect()->back()->with('error', 'Akses Ditolak: Hanya Administrator atau Kepala/Pimpinan yang dapat membatalkan pengesahan rekomendasi.');
         }
 
-        $approvalId = $request->input('approval_id');
-        $docHash    = $request->input('doc_hash');
-        $scopeHash  = $request->input('scope_hash');
+        try {
+            $approvalId = $request->input('approval_id');
+            $docHash    = $request->input('doc_hash');
+            $scopeHash  = $request->input('scope_hash');
 
-        if ($approvalId) {
-            $appr = RekomendasiApproval::find($approvalId);
-            if ($appr) {
-                $appr->delete();
+            if (\Illuminate\Support\Facades\Schema::hasTable('rekomendasi_approvals')) {
+                if ($approvalId) {
+                    $appr = RekomendasiApproval::find($approvalId);
+                    if ($appr) {
+                        $appr->delete();
+                    }
+                } elseif ($docHash || $scopeHash) {
+                    RekomendasiApproval::where(function($q) use ($docHash, $scopeHash) {
+                        if ($docHash) {
+                            $q->where('doc_hash', $docHash);
+                        }
+                        if ($scopeHash) {
+                            $q->orWhere('filter_scope', $scopeHash);
+                        }
+                    })->delete();
+                }
             }
-        } elseif ($docHash || $scopeHash) {
-            RekomendasiApproval::where(function($q) use ($docHash, $scopeHash) {
-                if ($docHash) {
-                    $q->where('doc_hash', $docHash);
-                }
-                if ($scopeHash) {
-                    $q->orWhere('filter_scope', $scopeHash);
-                }
-            })->delete();
-        }
 
-        return redirect()->back()->with('success', 'Pengesahan rekomendasi kebijakan berhasil dibatalkan. Dokumen dikembalikan ke status DRAFT.');
+            return redirect()->back()->with('success', 'Pengesahan rekomendasi kebijakan berhasil dibatalkan. Dokumen dikembalikan ke status DRAFT.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Revoke approval failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal membatalkan pengesahan: ' . $e->getMessage());
+        }
     }
 }
