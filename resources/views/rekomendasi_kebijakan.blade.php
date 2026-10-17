@@ -84,6 +84,26 @@
         {{-- ISI UTAMA MODUL REKOMENDASI KEBIJAKAN --}}
         <main class="flex-1 p-4 sm:p-6 lg:p-7 space-y-6">
 
+            {{-- FLASH NOTIFIKASI SUKSES / ERROR --}}
+            @if(session('success'))
+                <div class="flex items-center justify-between rounded-2xl bg-emerald-50 border border-emerald-300 p-4 text-emerald-900 shadow-sm dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-200">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-xs">✓</span>
+                        <p class="text-xs sm:text-sm font-semibold leading-relaxed">{{ session('success') }}</p>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-emerald-700 hover:text-emerald-900 text-xl font-bold px-2 cursor-pointer">&times;</button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="flex items-center justify-between rounded-2xl bg-rose-50 border border-rose-300 p-4 text-rose-900 shadow-sm dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-200">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-600 text-white font-bold text-sm shadow-xs">✕</span>
+                        <p class="text-xs sm:text-sm font-semibold leading-relaxed">{{ session('error') }}</p>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-rose-700 hover:text-rose-900 text-xl font-bold px-2 cursor-pointer">&times;</button>
+                </div>
+            @endif
+
             {{-- 1. KARTU FILTER WILAYAH, PERIODE, & SPESIES NYAMUK --}}
             <div class="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-2xs dark:bg-zinc-900/90 dark:border-zinc-800">
                 <form method="GET" action="{{ route('rekomendasi.index') }}" id="policyFilterForm" class="space-y-4">
@@ -94,19 +114,53 @@
                                 Parameter Evaluasi Kebijakan
                             </h3>
                         </div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            {{-- TOMBOL CETAK / EKSPOR POLICY BRIEF RESMI --}}
-                            <a href="{{ route('rekomendasi.preview', request()->all()) }}"
+                        <div class="flex items-center gap-2 flex-wrap">
+                            {{-- TEMPLATE 1: STANDAR TEKNIS KEMENKES RI (SESUAI PERMENKES 2/2023 & JUKNIS PVT) --}}
+                            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes'])) }}"
                                target="_blank"
-                               class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer">
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer"
+                               title="Cetak format Rekomendasi Standar Teknis Kemenkes RI & WHO">
                                 <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <span>Cetak Policy Brief</span>
+                                <span>Cetak Standar Teknis Kemenkes</span>
                             </a>
 
-                            <span class="text-[11px] text-slate-500 dark:text-zinc-400 font-medium">
-                                Evaluasi Cakupan: <strong class="text-teal-700 dark:text-teal-400">{{ $namaWilayah }}</strong>
+                            {{-- TEMPLATE 2: POLICY BRIEF EKSEKUTIF (FORMAT AWAL DIPERTAHANKAN) --}}
+                            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'eksekutif'])) }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-2xs transition active:scale-95 cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                               title="Cetak format Policy Brief Eksekutif (Format Awal)">
+                                <svg class="h-3.5 w-3.5 text-slate-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                                <span>Cetak Policy Brief Eksekutif</span>
+                            </a>
+
+                            {{-- TEMPLATE 3: REKOMENDASI TEKNIS LABORATORIUM (SESUAI WHO MANUAL 2022) --}}
+                            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'laboratorium'])) }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer"
+                               title="Cetak Rekomendasi Teknis Laboratorium – WHO Manual 2022, per spesies, saintifik">
+                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                <span>Cetak Rekm. Teknis Lab</span>
+                            </a>
+
+                            {{-- TEMPLATE 4: POLICY BRIEF AGREGAT WILAYAH (FORMAT DINKES PROV / KLASTER KERENTANAN) --}}
+                            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'agregat'])) }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-cyan-700 hover:bg-cyan-800 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer"
+                               title="Cetak format Policy Brief Agregat Wilayah & Klaster Kerentanan">
+                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
+                                <span>Cetak Policy Brief Agregat</span>
+                            </a>
+
+                            <span class="text-[11px] text-slate-500 dark:text-zinc-400 font-medium ml-1">
+                                Cakupan: <strong class="text-teal-700 dark:text-teal-400">{{ $namaWilayah }}</strong>
                             </span>
                         </div>
                     </div>
@@ -185,6 +239,88 @@
                         </div>
                     </div>
                 </form>
+            </div>
+
+            {{-- 1.5 KARTU STATUS PERSETUJUAN / PENGESAHAN KEPALA BBLKL --}}
+            <div class="rounded-2xl border {{ $isApproved ? 'border-emerald-300 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-white dark:from-emerald-950/30 dark:via-zinc-900/60 dark:to-zinc-900 dark:border-emerald-800' : 'border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50/50 to-white dark:from-amber-950/30 dark:via-zinc-900/60 dark:to-zinc-900 dark:border-amber-800' }} p-4 sm:p-5 shadow-2xs transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3.5">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl {{ $isApproved ? 'bg-emerald-600 text-white shadow-emerald-200 dark:shadow-none shadow-md' : 'bg-amber-500 text-white shadow-amber-200 dark:shadow-none shadow-md' }} text-xl">
+                            {{ $isApproved ? '🛡️' : '📝' }}
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase {{ $isApproved ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-900/60 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-900/60 dark:text-amber-200' }}">
+                                    <span class="h-2 w-2 rounded-full {{ $isApproved ? 'bg-emerald-600' : 'bg-amber-600 animate-pulse' }}"></span>
+                                    {{ $isApproved ? 'RESMI: TELAH DISAHKAN KEPALA BBLKL' : 'STATUS: DRAFT REKOMENDASI (BELUM DISETUJUI)' }}
+                                </span>
+                                @if($isApproved)
+                                    <span class="text-xs font-mono font-bold text-emerald-800 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-900/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                                        No. Reg: {{ $approval->nomor_surat }}
+                                    </span>
+                                @else
+                                    <span class="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-900/30 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
+                                        Watermark Cetak: <strong>DRAFT</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <h4 class="text-sm font-bold {{ $isApproved ? 'text-emerald-950 dark:text-emerald-200' : 'text-amber-950 dark:text-amber-200' }}">
+                                @if($isApproved)
+                                    Dokumen Rekomendasi Kebijakan Resmi BBLKL Kemenkes RI
+                                @else
+                                    Laporan Rekomendasi Masih Berupa DRAFT (Watermark 'DRAFT' Aktif)
+                                @endif
+                            </h4>
+                            <p class="text-xs {{ $isApproved ? 'text-emerald-800 dark:text-emerald-300/90' : 'text-amber-800 dark:text-amber-300/90' }} leading-relaxed">
+                                @if($isApproved)
+                                    Telah disetujui & disahkan oleh <strong>{{ $approval->approver_name }}</strong> (NIP. {{ $approval->approver_nip ?? '-' }}) &bull; {{ $approval->approver_jabatan }} pada {{ \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y, HH:mm') }} WIB. Seluruh template dokumen cetak berstatus resmi (tanda DRAFT dicabut).
+                                @else
+                                    Laporan rekomendasi untuk cakupan <strong>{{ $namaWilayah }}</strong> (Periode: {{ $tahunFilter }}, Spesies: {{ $nyamukFilter }}) belum disahkan oleh Kepala/Pimpinan BBLKL. Pada pratinjau & cetak dokumen akan tercetak watermark <strong>"DRAFT"</strong>.
+                                @endif
+                            </p>
+                            @if($isApproved && !empty($approval->notes))
+                                <div class="mt-2 text-xs italic bg-white/80 dark:bg-zinc-900/60 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 text-emerald-900 dark:text-emerald-200">
+                                    <strong class="font-semibold not-italic">Catatan / Arahan Pimpinan:</strong> "{{ $approval->notes }}"
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0 self-end md:self-center">
+                        @if(!$isApproved)
+                            <button type="button"
+                                    onclick="openApproveModal()"
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition active:scale-95 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>✍️ Approve / Sahkan (Kepala BBLKL)</span>
+                            </button>
+                        @else
+                            <button type="button"
+                                    onclick="openApproveModal()"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 font-bold text-xs transition active:scale-95 cursor-pointer dark:bg-zinc-800 dark:border-emerald-700 dark:text-emerald-300">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                <span>Perbarui Pengesahan</span>
+                            </button>
+                            <form method="POST" action="{{ route('rekomendasi.revoke') }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengesahan rekomendasi kebijakan ini? Status dokumen akan kembali menjadi DRAFT.')">
+                                @csrf
+                                <input type="hidden" name="approval_id" value="{{ $approval->id }}">
+                                <input type="hidden" name="doc_hash" value="{{ $docHash }}">
+                                <input type="hidden" name="scope_hash" value="{{ $scopeHash }}">
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-700 font-bold text-xs transition active:scale-95 cursor-pointer dark:bg-zinc-800 dark:border-rose-900 dark:text-rose-300">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Batalkan Pengesahan</span>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
             </div>
 
             {{-- 2. HERO STATUS KESIAPSIAGAAN VEKTOR & PERINGATAN RISIKO --}}
@@ -709,7 +845,167 @@
 
     </div>
 
-    {{-- SCRIPT JAVASCRIPT DINAMIS LOAD KABUPATEN --}}
+    {{-- MODAL PENGESAHAN / APPROVAL KEPALA BBLKL --}}
+    <div id="approveModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden dark:bg-zinc-900 dark:border-zinc-800 animate-in fade-in zoom-in duration-150">
+
+            {{-- HEADER MODAL --}}
+            <div class="flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-4 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 text-white font-black text-lg">
+                        🛡️
+                    </span>
+                    <div>
+                        <h3 class="text-base font-extrabold leading-tight">
+                            Pengesahan Dokumen Rekomendasi Kebijakan
+                        </h3>
+                        <p class="text-xs text-emerald-100 mt-0.5">
+                            Keluaran Resmi Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL)
+                        </p>
+                    </div>
+                </div>
+                <button type="button"
+                        onclick="closeApproveModal()"
+                        class="flex h-8 w-8 items-center justify-center rounded-lg text-white/80 hover:bg-white/20 hover:text-white transition cursor-pointer">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- FORM BODY --}}
+            <form method="POST" action="{{ route('rekomendasi.approve') }}" class="p-6 space-y-4">
+                @csrf
+                <input type="hidden" name="tahun" value="{{ $tahunFilter }}">
+                <input type="hidden" name="jenis_nyamuk" value="{{ $nyamukFilter }}">
+                <input type="hidden" name="provinsi_id" value="{{ $provinsiFilter }}">
+                <input type="hidden" name="kabupaten_id" value="{{ $kabupatenFilter }}">
+                <input type="hidden" name="template" value="{{ $activeTemplate }}">
+                <input type="hidden" name="nama_wilayah" value="{{ $namaWilayah }}">
+
+                {{-- INFO CAKUPAN LAPORAN --}}
+                <div class="rounded-xl border border-teal-200 bg-teal-50/70 p-3.5 dark:bg-teal-950/30 dark:border-teal-800">
+                    <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+                        <div>
+                            <span class="text-teal-700 dark:text-teal-400 font-bold uppercase tracking-wider block text-[10px]">Cakupan Dokumen:</span>
+                            <strong class="text-slate-900 dark:text-white text-sm">{{ $namaWilayah }}</strong>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-slate-500 dark:text-zinc-400 text-[11px]">Periode: <strong>{{ $tahunFilter }}</strong> &bull; Spesies: <strong>{{ $nyamukFilter }}</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- PILIHAN LINGKUP TEMPLATE --}}
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
+                        Lingkup Pengesahan Dokumen *
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="flex items-start gap-2.5 p-3 rounded-xl border border-teal-300 bg-teal-50/40 dark:bg-zinc-800 dark:border-teal-700 cursor-pointer hover:bg-teal-50">
+                            <input type="radio" name="lingkup_approval" value="semua_template" checked class="mt-0.5 text-teal-600 focus:ring-teal-500">
+                            <div>
+                                <span class="text-xs font-bold text-slate-800 dark:text-zinc-100 block">Seluruh 4 Format Template (Direkomendasikan)</span>
+                                <span class="text-[11px] text-slate-500 dark:text-zinc-400 block mt-0.5">Sahkan format Kemenkes RI, Policy Brief Eksekutif, Rekomendasi Teknis Laboratorium, &amp; Policy Brief Agregat Wilayah sekaligus.</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="lingkup_approval" value="template_ini" class="mt-0.5 text-teal-600 focus:ring-teal-500">
+                            <div>
+                                <span class="text-xs font-bold text-slate-800 dark:text-zinc-100 block">Hanya Format Template Ini</span>
+                                <span class="text-[11px] text-slate-500 dark:text-zinc-400 block mt-0.5">Format: <strong>{{ strtoupper($activeTemplate) }}</strong></span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- NAMA & NIP PIMPINAN --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1">
+                            Nama Kepala / Pimpinan BBLKL *
+                        </label>
+                        <input type="text"
+                               name="approver_name"
+                               required
+                               value="{{ $defaultKepalaNama }}"
+                               placeholder="Nama Lengkap & Gelar Pimpinan"
+                               class="w-full h-10 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 text-xs font-medium text-slate-800 dark:text-zinc-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1">
+                            NIP Kepala / Pimpinan
+                        </label>
+                        <input type="text"
+                               name="approver_nip"
+                               value="{{ $defaultKepalaNip }}"
+                               placeholder="NIP. 19xxxxxxxxxxxxxx"
+                               class="w-full h-10 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 text-xs font-medium text-slate-800 dark:text-zinc-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                    </div>
+                </div>
+
+                {{-- JABATAN & NOMOR SURAT --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1">
+                            Jabatan Resmi *
+                        </label>
+                        <input type="text"
+                               name="approver_jabatan"
+                               required
+                               value="{{ $defaultKepalaJabatan }}"
+                               placeholder="Jabatan Resmi Pimpinan"
+                               class="w-full h-10 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 text-xs font-medium text-slate-800 dark:text-zinc-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1">
+                            Nomor Surat / Disposisi Rekomendasi
+                        </label>
+                        <input type="text"
+                               name="nomor_surat"
+                               value="{{ $defaultNomorSurat }}"
+                               placeholder="Contoh: LT-VEC/BBLKL/2026/0417"
+                               class="w-full h-10 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 text-xs font-mono font-medium text-slate-800 dark:text-zinc-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                    </div>
+                </div>
+
+                {{-- CATATAN / INSTRUKSI PENGESAHAN --}}
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1">
+                        Catatan / Arahan Pimpinan (Opsional)
+                    </label>
+                    <textarea name="notes"
+                              rows="3"
+                              placeholder="Contoh: Rekomendasi teknis kebijakan pengendalian vektor ini disahkan untuk diteruskan kepada Dinas Kesehatan setempat dan Dirjen P2P Kemenkes RI sebagai dasar rotasi insektisida..."
+                              class="w-full rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 text-xs text-slate-800 dark:text-zinc-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs leading-relaxed">{{ $approval->notes ?? 'Rekomendasi teknis kebijakan pengendalian vektor ini telah diperiksa, diverifikasi, dan disahkan sebagai rujukan operasional penanggulangan resistensi vektor di wilayah bersangkutan.' }}</textarea>
+                </div>
+
+                {{-- KETERANGAN RESMI --}}
+                <div class="flex items-start gap-2 text-[11px] text-slate-500 dark:text-zinc-400">
+                    <span class="text-teal-600 font-bold">ℹ️</span>
+                    <span>Dengan menekan tombol Setujui &amp; Sahkan, watermark <strong>"DRAFT"</strong> pada dokumen cetak akan dicabut dan digantikan dengan tanda tangan digital &amp; stempel pengesahan elektronik resmi Kepala BBLKL.</span>
+                </div>
+
+                {{-- ACTION BUTTONS --}}
+                <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-zinc-800">
+                    <button type="button"
+                            onclick="closeApproveModal()"
+                            class="px-4 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold shadow-md transition active:scale-95 cursor-pointer">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>✅ Setujui &amp; Sahkan Rekomendasi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- SCRIPT JAVASCRIPT DINAMIS LOAD KABUPATEN & MODAL --}}
     <script>
         function loadKabupatenOptions(provinsiId) {
             const kabSelect = document.getElementById('kabupaten_id');
@@ -733,7 +1029,25 @@
                 })
                 .catch(err => console.error('Gagal memuat kabupaten:', err));
         }
+
+        function openApproveModal() {
+            const modal = document.getElementById('approveModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeApproveModal() {
+            const modal = document.getElementById('approveModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Tutup modal dengan escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeApproveModal();
+            }
+        });
     </script>
 
 </body>
 </html>
+

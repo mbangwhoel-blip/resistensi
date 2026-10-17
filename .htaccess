@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ----------------------------------------------------------------------
+    # 1. BLOKIR AKSES LANGSUNG KE FILE SENSITIF (.env, .git, .sql, dll)
+    # ----------------------------------------------------------------------
+    RewriteRule ^\.(.*)$ - [F,L]
+    RewriteRule ^.*\.(env|sql|log|md|json|lock|yml|yaml)$ - [F,L]
+
+    # ----------------------------------------------------------------------
+    # 2. BLOKIR AKSES KE DIREKTORI INTERNAL FRAMEWORK
+    # ----------------------------------------------------------------------
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor) - [F,L]
+
+    # ----------------------------------------------------------------------
+    # 3. ARAHKAN SEMUA TRAFIK KE FOLDER PUBLIC (UNTUK SHARED HOSTING / CPANEL)
+    # ----------------------------------------------------------------------
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

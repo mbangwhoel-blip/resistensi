@@ -69,6 +69,23 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isKepala(): bool
+    {
+        return in_array(strtolower((string)$this->role), [
+            'kepala',
+            'pimpinan',
+            'kepala_balai',
+            'kepala_bblkl',
+            'pimpinan_bblkl'
+        ]);
+    }
+
+    public function canApproveRekomendasi(): bool
+    {
+        return $this->isAdmin() || $this->isKepala();
+    }
+
+
     public function isPetugas(): bool
     {
         return in_array($this->role, [

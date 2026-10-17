@@ -281,3 +281,62 @@
         });
     }
 </script>
+
+{{-- FITUR AUTO-LOGOUT OTOMATIS: 30 MENIT TANPA PERGERAKAN / AKTIVITAS --}}
+@if (Auth::check())
+<script>
+    (function() {
+        // Durasi diam: 30 Menit (30 * 60 * 1000 ms)
+        const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000;
+        const CHECK_INTERVAL_MS = 10 * 1000; // Cek setiap 10 detik
+        const STORAGE_KEY = 'simpel_last_activity_ts';
+        let lastLoggedTs = Date.now();
+
+        // Inisialisasi awal saat halaman dimuat
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const now = Date.now();
+            if (!stored || (now - parseInt(stored, 10)) > INACTIVITY_TIMEOUT_MS) {
+                localStorage.setItem(STORAGE_KEY, now.toString());
+            }
+        } catch(e) {}
+
+        // Fungsi memperbarui timestamp aktivitas pengguna (dengan throttle agar hemat daya CPU)
+        function recordActivity() {
+            const now = Date.now();
+            if (now - lastLoggedTs > 3000) { // Catat maksimal sekali per 3 detik
+                lastLoggedTs = now;
+                try {
+                    localStorage.setItem(STORAGE_KEY, now.toString());
+                } catch(e) {}
+            }
+        }
+
+        // Pantau seluruh interaksi fisik: pergerakan kursor mouse, klik, scroll, ketikan keyboard, sentuhan layar (mobile)
+        const activityEvents = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'wheel'];
+        activityEvents.forEach(function(evt) {
+            window.addEventListener(evt, recordActivity, { passive: true });
+        });
+
+        // Interval pemeriksaan keheningan / tanpa aktivitas secara hening (tanpa popup countdown)
+        const idleChecker = setInterval(function() {
+            try {
+                const lastTs = parseInt(localStorage.getItem(STORAGE_KEY) || Date.now().toString(), 10);
+                const idleDuration = Date.now() - lastTs;
+
+                // Jika sudah melewati 30 menit tanpa ada pergerakan
+                if (idleDuration >= INACTIVITY_TIMEOUT_MS) {
+                    clearInterval(idleChecker);
+                    activityEvents.forEach(function(evt) {
+                        window.removeEventListener(evt, recordActivity);
+                    });
+                    localStorage.removeItem(STORAGE_KEY);
+
+                    // Redirect otomatis ke logout dengan notifikasi sesi berakhir
+                    window.location.href = "{{ route('logout') }}?reason=inactivity";
+                }
+            } catch(e) {}
+        }, CHECK_INTERVAL_MS);
+    })();
+</script>
+@endif

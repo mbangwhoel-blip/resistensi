@@ -80,7 +80,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -129,7 +129,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username,' . $id,
             'email' => 'required|email|max:100|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [

@@ -71,3 +71,33 @@ UPDATE kabupatens SET provinsi_id = 35 WHERE id = 385; -- Mimika -> Papua Tengah
 UPDATE kabupatens SET provinsi_id = 36 WHERE id = 392; -- Boven Digoel -> Papua Selatan
 UPDATE data_uji_resistensis SET provinsi_id = 35 WHERE kabupaten_id = 385;
 UPDATE data_uji_resistensis SET provinsi_id = 36 WHERE kabupaten_id = 392;
+
+-- 7. Tabel Persetujuan / Approval Rekomendasi Kebijakan oleh Kepala/Pimpinan BBLKL
+CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `doc_hash` varchar(64) NOT NULL,
+  `filter_scope` varchar(64) NOT NULL,
+  `template` varchar(50) NOT NULL DEFAULT 'all',
+  `tahun` varchar(20) NOT NULL DEFAULT 'Semua',
+  `jenis_nyamuk` varchar(100) NOT NULL DEFAULT 'Semua',
+  `provinsi_id` varchar(50) NOT NULL DEFAULT 'Semua',
+  `kabupaten_id` varchar(50) NOT NULL DEFAULT 'Semua',
+  `nama_wilayah` varchar(255) DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'draft',
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `approver_name` varchar(150) DEFAULT NULL,
+  `approver_nip` varchar(50) DEFAULT NULL,
+  `approver_jabatan` varchar(255) DEFAULT NULL,
+  `nomor_surat` varchar(100) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `verification_token` varchar(64) DEFAULT NULL,
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rekomendasi_approvals_doc_hash_index` (`doc_hash`),
+  KEY `rekomendasi_approvals_filter_scope_index` (`filter_scope`),
+  KEY `rekomendasi_approvals_status_index` (`status`),
+  KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

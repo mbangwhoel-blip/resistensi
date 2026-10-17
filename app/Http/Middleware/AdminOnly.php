@@ -18,9 +18,20 @@ class AdminOnly
             return redirect()->route('login')->with('error', 'Silakan masuk terlebih dahulu dengan akun Administrator untuk mengakses halaman ini.');
         }
 
-        if (strtolower((string)Auth::user()->role) !== 'admin') {
-            abort(403, 'Akses Ditolak: Anda tidak memiliki izin Administrator untuk mengakses halaman ini.');
+        $userRole = strtolower((string)Auth::user()->role);
+        $allowedRoles = ['admin', 'kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'];
+
+        if (!in_array($userRole, $allowedRoles)) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses Ditolak: Halaman ini hanya dapat diakses oleh Administrator atau Kepala/Pimpinan.'
+                ], 403);
+            }
+
+            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Menu Rekomendasi Kebijakan & Master Data hanya dapat diakses oleh Administrator atau Kepala/Pimpinan BBLKL.');
         }
+
 
         return $next($request);
     }

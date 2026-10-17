@@ -99,9 +99,15 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $isInactivity = $request->query('reason') === 'inactivity';
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if ($isInactivity) {
+            return redirect()->route('login')->with('error', 'Sesi Anda telah berakhir secara otomatis demi keamanan karena tidak ada pergerakan/aktivitas selama 30 menit. Silakan masuk kembali.');
+        }
 
         return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem Peta Resistensi.');
     }
@@ -156,6 +162,19 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request)
     {
+        $ip = $request->ip();
+        $throttleKey = 'reset-password-attempt:' . $ip;
+
+        // Proteksi Brute Force: Batasi maksimal 3 percobaan per 2 menit
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'forgot_identity' => "Terlalu banyak permintaan reset kata sandi. Demi keamanan, silakan tunggu {$seconds} detik sebelum mencoba kembali."
+            ])->withInput();
+        }
+
+        RateLimiter::hit($throttleKey, 120);
+
         $request->validate([
             'forgot_identity' => 'required|string',
             'new_password' => 'required|string|min:6|confirmed',
@@ -177,9 +196,18 @@ class AuthController extends Controller
             ])->withInput();
         }
 
+        // Proteksi Kritis: Akun Administrator DILARANG di-reset via formulir publik
+        if (strtolower((string)$user->role) === 'admin') {
+            return back()->withErrors([
+                'forgot_identity' => 'Demi alasan keamanan tingkat tinggi, kata sandi Administrator tidak dapat diubah melalui formulir publik ini. Silakan hubungi Administrator Utama sistem.'
+            ])->withInput();
+        }
+
         $user->update([
             'password' => Hash::make($request->input('new_password')),
         ]);
+
+        RateLimiter::clear($throttleKey);
 
         return redirect()->route('login')->with('success', "Kata sandi akun {$user->name} berhasil diperbarui! Silakan masuk dengan kata sandi baru.");
     }

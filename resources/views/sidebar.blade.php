@@ -159,7 +159,7 @@
     {{-- NAVIGASI MENU (LEBIH LEGA DAN TETAP FIT 1 LAYAR TANPA PERLU SCROLL) --}}
     @php
         $currentUser = Auth::user();
-        $isAdmin = $currentUser && strtolower((string)$currentUser->role) === 'admin';
+        $isAdmin = $currentUser && in_array(strtolower((string)$currentUser->role), ['admin', 'kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']);
         $isViewer = $currentUser && (strtolower((string)$currentUser->role) === 'viewer' || (method_exists($currentUser, 'isViewer') && $currentUser->isViewer()));
     @endphp
     <nav class="custom-sidebar-nav flex-1 overflow-y-auto px-3 pt-3 pb-4 space-y-3.5 text-xs">
@@ -234,7 +234,8 @@
                     @endif
                 </a>
 
-                {{-- REKOMENDASI KEBIJAKAN OTOMATIS (POLICY BRIEF) --}}
+                {{-- REKOMENDASI KEBIJAKAN OTOMATIS (POLICY BRIEF - KHUSUS ROLE ADMINISTRATOR) --}}
+                @if ($isAdmin)
                 <a href="{{ route('rekomendasi.index') }}"
                    class="nav-menu-link {{ request()->routeIs('rekomendasi.*') ? 'active' : 'inactive' }}">
                     <div class="flex items-center gap-2.5 min-w-0">
@@ -249,6 +250,7 @@
                         <span class="nav-active-dot"></span>
                     @endif
                 </a>
+                @endif
             </div>
         </div>
 
@@ -378,8 +380,8 @@
                 </a>
                 @endif
 
-                {{-- BACKUP & RESTORE (DITAMPILKAN UNTUK NON-VIEWER) --}}
-                @if (!$isViewer)
+                {{-- BACKUP & RESTORE (KHUSUS ADMINISTRATOR) --}}
+                @if ($isAdmin)
                 <a href="{{ route('backup.index') }}"
                    class="nav-menu-link {{ request()->routeIs('backup.*') ? 'active' : 'inactive' }}">
                     <div class="flex items-center gap-2.5 min-w-0">

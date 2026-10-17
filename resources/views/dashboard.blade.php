@@ -1195,6 +1195,34 @@
         {{-- ISI DASHBOARD --}}
         <section class="p-4 sm:p-6 lg:p-7 space-y-5">
 
+            @if (session('error'))
+                <div class="flex items-center justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/40 px-5 py-3.5 text-rose-800 dark:text-rose-300 shadow-sm transition-all" role="alert">
+                    <div class="flex items-center gap-3">
+                        <svg class="h-5 w-5 shrink-0 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span class="font-semibold text-sm">{{ session('error') }}</span>
+                    </div>
+                    <button type="button" onclick="this.closest('[role=alert]').remove()" class="text-rose-500 hover:text-rose-700 dark:hover:text-rose-200">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 px-5 py-3.5 text-emerald-800 dark:text-emerald-300 shadow-sm transition-all" role="alert">
+                    <div class="flex items-center gap-3">
+                        <svg class="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="font-semibold text-sm">{{ session('success') }}</span>
+                    </div>
+                    <button type="button" onclick="this.closest('[role=alert]').remove()" class="text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-200">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            @endif
+
             {{-- HERO HEADER & PENCARIAN CEPAT GLOBAL --}}
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-teal-900/5 to-transparent dark:from-emerald-950/30 dark:via-zinc-900/40 p-4 sm:p-5 rounded-2xl border border-emerald-100/80 dark:border-emerald-900/30 shadow-2xs">
                 <div>
@@ -1393,28 +1421,6 @@
                             </p>
                         </div>
                     </div>
-
-                    {{-- Tombol Aksi Cepat: Reset & Reset Peta --}}
-                    <div class="flex items-center gap-2">
-                        <button type="button"
-                                onclick="resetAllFilters()"
-                                class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
-                                title="Kembalikan semua filter ke pengaturan awal">
-                            <svg class="h-3.5 w-3.5 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            <span>Reset Filter</span>
-                        </button>
-                        <button type="button"
-                                onclick="resetMapView()"
-                                class="btn-reset-peta inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
-                                title="Kembalikan fokus peta ke seluruh wilayah Indonesia">
-                            <svg class="h-3.5 w-3.5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                            </svg>
-                            <span>Reset Peta</span>
-                        </button>
-                    </div>
                 </div>
 
                 {{-- Badan Filter Console --}}
@@ -1560,7 +1566,7 @@
                         </div>
                     </div>
 
-                    {{-- STATUS FILTER AKTIF BADGE BAR --}}
+                    {{-- STATUS FILTER AKTIF BADGE BAR & TOMBOL AKSI CEPAT --}}
                     <div class="pt-2.5 border-t border-slate-100 dark:border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
@@ -1573,7 +1579,28 @@
                                 🗓️ <span id="activeFilterPeriode">Periode: Semua Periode</span>
                             </span>
                         </div>
-                        <span class="text-[11px] text-slate-400 italic">Filter terhubung otomatis dengan peta & tabel</span>
+
+                        {{-- Tombol Aksi Cepat: Reset & Reset Peta --}}
+                        <div class="flex items-center gap-2">
+                            <button type="button"
+                                    onclick="resetAllFilters()"
+                                    class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
+                                    title="Kembalikan semua filter ke pengaturan awal">
+                                <svg class="h-3.5 w-3.5 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Reset Filter</span>
+                            </button>
+                            <button type="button"
+                                    onclick="resetMapView()"
+                                    class="btn-reset-peta inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-2xs cursor-pointer group"
+                                    title="Kembalikan fokus peta ke seluruh wilayah Indonesia">
+                                <svg class="h-3.5 w-3.5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                                <span>Reset Peta</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

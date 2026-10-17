@@ -187,6 +187,7 @@
                         {{-- FILTER ROLE --}}
                         <select name="role" onchange="this.form.submit()" class="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 focus:border-blue-500 focus:bg-white focus:outline-none cursor-pointer shadow-2xs shrink-0">
                             <option value="Semua" {{ $roleFilter === 'Semua' ? 'selected' : '' }}>Semua Role</option>
+                            <option value="kepala" {{ $roleFilter === 'kepala' ? 'selected' : '' }}>Kepala / Pimpinan BBLKL</option>
                             <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Administrator</option>
                             <option value="petugas" {{ $roleFilter === 'petugas' ? 'selected' : '' }}>Petugas Lab</option>
                             <option value="dinas_kesehatan" {{ $roleFilter === 'dinas_kesehatan' ? 'selected' : '' }}>Dinas Kesehatan</option>
@@ -269,7 +270,12 @@
 
                                     {{-- ROLE --}}
                                     <td class="px-2 py-2.5 text-center whitespace-nowrap">
-                                        @if ($u->role === 'admin')
+                                        @if ($u->role === 'kepala' || $u->role === 'pimpinan')
+                                            <span class="inline-flex items-center gap-1 rounded-lg bg-indigo-50 border border-indigo-200 dark:bg-indigo-950/40 dark:border-indigo-800 dark:text-indigo-300 px-2 py-0.5 text-[11px] font-bold text-indigo-700">
+                                                <span>🏛️</span>
+                                                <span>Kepala / Pimpinan</span>
+                                            </span>
+                                        @elseif ($u->role === 'admin')
                                             <span class="inline-flex items-center gap-1 rounded-lg bg-teal-50 border border-teal-200 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 px-2 py-0.5 text-[11px] font-bold text-teal-700">
                                                 <span>🛡️</span>
                                                 <span>Administrator</span>
@@ -443,6 +449,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Role / Hak Akses *</label>
                         <select name="role" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-blue-500 focus:outline-none bg-white">
                             <option value="petugas">Petugas Laboratorium</option>
+                            <option value="kepala">Kepala / Pimpinan BBLKL</option>
                             <option value="admin">Administrator</option>
                             <option value="dinas_kesehatan">Dinas Kesehatan</option>
                             <option value="balai_kekarantinaan_kesehatan">Balai Kekarantinaan Kesehatan</option>
@@ -549,6 +556,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Role / Hak Akses *</label>
                         <select id="editRole" name="role" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-blue-500 focus:outline-none bg-white">
                             <option value="petugas">Petugas Laboratorium</option>
+                            <option value="kepala">Kepala / Pimpinan BBLKL</option>
                             <option value="admin">Administrator</option>
                             <option value="dinas_kesehatan">Dinas Kesehatan</option>
                             <option value="balai_kekarantinaan_kesehatan">Balai Kekarantinaan Kesehatan</option>

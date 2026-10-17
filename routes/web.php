@@ -40,9 +40,9 @@ Route::get('/', function () {
 });
 
 // =========================================================================
-// RUTE SINKRONISASI DATABASE 1-KLIK (AMAN & OTOMATIS)
+// RUTE SINKRONISASI DATABASE 1-KLIK (KHUSUS ROLE ADMINISTRATOR)
 // =========================================================================
-Route::get('/sync-db', function () {
+Route::middleware(['auth', 'admin'])->get('/sync-db', function () {
     $actions = [];
 
     // 1. provinsis
@@ -272,10 +272,12 @@ Route::middleware('auth')->group(function () {
     // Analisis Data Hasil Uji Resistensi (Grafik & Statistik Interaktif)
     Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis.index');
 
-    // Rekomendasi Kebijakan Otomatis (Policy Brief & Insecticide Rotation Decision Support)
-    Route::prefix('rekomendasi-kebijakan')->name('rekomendasi.')->group(function () {
+    // Rekomendasi Kebijakan Otomatis (Policy Brief - Khusus Role Administrator & Kepala/Pimpinan)
+    Route::middleware('admin')->prefix('rekomendasi-kebijakan')->name('rekomendasi.')->group(function () {
         Route::get('/', [RekomendasiKebijakanController::class, 'index'])->name('index');
         Route::get('/preview', [RekomendasiKebijakanController::class, 'preview'])->name('preview');
+        Route::post('/approve', [RekomendasiKebijakanController::class, 'approve'])->name('approve');
+        Route::post('/revoke', [RekomendasiKebijakanController::class, 'revoke'])->name('revoke');
     });
 
     // Export Data (Khusus Pengguna Non-Viewer)
@@ -291,8 +293,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/process', [ExportImportController::class, 'importProcess'])->name('process');
     });
 
-    // Backup & Restore Database (Khusus Pengguna Non-Viewer)
-    Route::middleware('not_viewer')->prefix('backup-restore')->name('backup.')->group(function () {
+    // Backup & Restore Database (Khusus Role Administrator)
+    Route::middleware('admin')->prefix('backup-restore')->name('backup.')->group(function () {
         Route::get('/', [BackupRestoreController::class, 'index'])->name('index');
         Route::post('/create', [BackupRestoreController::class, 'createBackup'])->name('create');
         Route::post('/auto-now', [BackupRestoreController::class, 'runAutoBackupNow'])->name('auto_now');
