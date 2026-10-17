@@ -18,6 +18,8 @@ class DataUjiResistensi extends Model
         'province_id',
         'regency_id',
         'address',
+        'latitude',
+        'longitude',
         'mosquito_type',
         'insecticide',
         'method',
@@ -200,8 +202,31 @@ class DataUjiResistensi extends Model
     }
 
     // =========================================================================
-    // RELASI
+    // RELASI & PENYELARASAN OTOMATIS
     // =========================================================================
+
+    protected static function booted()
+    {
+        static::saving(function ($model) {
+            // Pastikan provinsi_id selalu selaras dengan kabupatennya
+            if ($model->kabupaten_id) {
+                $kab = Kabupaten::find($model->kabupaten_id);
+                if ($kab && $kab->provinsi_id) {
+                    $model->provinsi_id = $kab->provinsi_id;
+                }
+            }
+        });
+    }
+
+    public function getProvinsiAttribute()
+    {
+        // Jika data uji terhubung ke kabupaten, gunakan provinsi dari master kabupaten agar tidak pernah keliru
+        if ($this->kabupaten && $this->kabupaten->provinsi) {
+            return $this->kabupaten->provinsi;
+        }
+
+        return $this->getRelationValue('provinsi');
+    }
 
     public function provinsi()
     {

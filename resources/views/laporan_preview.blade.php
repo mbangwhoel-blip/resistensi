@@ -455,7 +455,7 @@
                         <td style="text-align: center;">{{ $index + 1 }}</td>
                         <td>
                             <strong>{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</strong>
-                            <div style="font-size: 7pt; color: #64748b;">{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</div>
+                            <div style="font-size: 7pt; color: #64748b;">{{ ($row->kabupaten && $row->kabupaten->provinsi) ? $row->kabupaten->provinsi->nama_provinsi : ($row->provinsi ? $row->provinsi->nama_provinsi : '-') }}</div>
                         </td>
                         <td>{{ $row->alamat ? $row->alamat : '-' }}</td>
                         <td style="font-style: italic;">{{ $row->jenis_nyamuk ?: '-' }}</td>

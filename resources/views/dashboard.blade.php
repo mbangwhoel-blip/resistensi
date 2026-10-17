@@ -1760,8 +1760,8 @@
                                         <div class="font-semibold text-slate-800 dark:text-slate-100 leading-tight break-words whitespace-normal" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                             {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                         </div>
-                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
-                                            {{ $item->provinsi->nama_provinsi ?? '-' }}
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ ($item->kabupaten && $item->kabupaten->provinsi) ? $item->kabupaten->provinsi->nama_provinsi : ($item->provinsi->nama_provinsi ?? '-') }}">
+                                            {{ ($item->kabupaten && $item->kabupaten->provinsi) ? $item->kabupaten->provinsi->nama_provinsi : ($item->provinsi->nama_provinsi ?? '-') }}
                                         </div>
                                     </td>
                                     <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
@@ -1772,6 +1772,14 @@
                                             </div>
                                         @else
                                             <span class="italic text-slate-400">Belum diisi</span>
+                                        @endif
+                                        @if ($item->latitude && $item->longitude)
+                                            <div class="mt-0.5">
+                                                <span class="inline-flex items-center gap-1 font-mono text-[9px] text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-1 py-0.2 rounded border border-blue-200 dark:border-blue-900" title="GPS Waypoint: {{ $item->latitude }}, {{ $item->longitude }}">
+                                                    <span>🎯</span>
+                                                    <span>{{ number_format($item->latitude, 4) }}, {{ number_format($item->longitude, 4) }}</span>
+                                                </span>
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-center">
@@ -1819,7 +1827,15 @@
                                                 <span>👁️</span>
                                                 <span>Detail</span>
                                             </button>
-                                            @if ($item->kabupaten && $item->kabupaten->latitude && $item->kabupaten->longitude)
+                                            @if ($item->latitude && $item->longitude)
+                                                <button type="button"
+                                                        onclick="focusOnMap({{ $item->latitude }}, {{ $item->longitude }}, {{ $item->kabupaten_id ?? 0 }}, 15)"
+                                                        class="inline-flex items-center gap-0.5 rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-600 hover:text-white dark:bg-blue-950/40 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-white transition shadow-2xs cursor-pointer"
+                                                        title="Lihat titik GPS Waypoint ini di peta">
+                                                    <span>🎯</span>
+                                                    <span>GPS</span>
+                                                </button>
+                                            @elseif ($item->kabupaten && $item->kabupaten->latitude && $item->kabupaten->longitude)
                                                 <button type="button"
                                                         onclick="focusOnMap({{ $item->kabupaten->latitude }}, {{ $item->kabupaten->longitude }}, {{ $item->kabupaten->id }})"
                                                         class="inline-flex items-center gap-0.5 rounded border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white transition shadow-2xs cursor-pointer"
@@ -2887,15 +2903,35 @@
                                 }
                                 if (info && info.kabupaten) {
                                     showKabupatenDetail(info.kabupaten.id, true);
-                                    layer.openTooltip();
-                                    activeTooltipLayer = layer;
+
+                                    const kabAlamats = info.entries ? [
+                                        ...new Set(
+                                            info.entries.map(item => item.alamat ? item.alamat.trim() : '').filter(a => a !== '')
+                                        )
+                                    ] : [];
+
+                                    if (kabAlamats.length > 0) {
+                                        if (activeTooltipLayer) {
+                                            try { activeTooltipLayer.closeTooltip(); } catch (err) {}
+                                            activeTooltipLayer = null;
+                                        }
+                                        window.focusOnDesaAlamat(kabAlamats[0], info.kabupaten.id);
+                                    } else {
+                                        layer.openTooltip();
+                                        activeTooltipLayer = layer;
+                                        if (KABUPATEN_DARATAN_COORDS[norm]) {
+                                            flyToVisibleCenter([KABUPATEN_DARATAN_COORDS[norm].lat, KABUPATEN_DARATAN_COORDS[norm].lng], 10, { duration: 0.8 });
+                                        } else {
+                                            map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                                        }
+                                    }
                                 } else {
                                     if (!isDetailPinned) infoControl.renderEmpty(rawName);
-                                }
-                                if (KABUPATEN_DARATAN_COORDS[norm]) {
-                                    flyToVisibleCenter([KABUPATEN_DARATAN_COORDS[norm].lat, KABUPATEN_DARATAN_COORDS[norm].lng], 10, { duration: 0.8 });
-                                } else {
-                                    map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                                    if (KABUPATEN_DARATAN_COORDS[norm]) {
+                                        flyToVisibleCenter([KABUPATEN_DARATAN_COORDS[norm].lat, KABUPATEN_DARATAN_COORDS[norm].lng], 10, { duration: 0.8 });
+                                    } else {
+                                        map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                                    }
                                 }
                             }
                         });
@@ -3304,9 +3340,20 @@
                             try { activeTooltipLayer.closeTooltip(); } catch (err) {}
                         }
                         showKabupatenDetail(kabupaten.id, true);
-                        marker.openTooltip();
-                        activeTooltipLayer = marker;
-                        flyToVisibleCenter([lat, lng], 10, { duration: 0.8 });
+
+                        // Jika ada titik lokasi / alamat uji di kabupaten ini:
+                        if (alamats && alamats.length > 0) {
+                            if (activeTooltipLayer) {
+                                try { activeTooltipLayer.closeTooltip(); } catch (err) {}
+                                activeTooltipLayer = null;
+                            }
+                            // Langsung terbangkan peta ke titik lokasi dan munculkan popup rincian lengkap (Gambar 2)
+                            window.focusOnDesaAlamat(alamats[0], kabupaten.id);
+                        } else {
+                            marker.openTooltip();
+                            activeTooltipLayer = marker;
+                            flyToVisibleCenter([lat, lng], 10, { duration: 0.8 });
+                        }
                     });
 
                     marker.on('mouseover', function () {
@@ -3428,7 +3475,7 @@
 
                 tbody.innerHTML = displayItems.map((item, index) => {
                     const rowNumber = startIndex + index + 1;
-                    const prov = escapeHtml(item.provinsi ? item.provinsi.nama_provinsi : '-');
+                    const prov = escapeHtml((item.kabupaten && item.kabupaten.provinsi) ? (item.kabupaten.provinsi.nama_provinsi || item.kabupaten.provinsi.name) : (item.provinsi ? (item.provinsi.nama_provinsi || item.provinsi.name || '-') : '-'));
                     const kab = escapeHtml(item.kabupaten ? item.kabupaten.nama_kabupaten : '-');
                     const rawAlamat = item.alamat || '';
                     const alamat = rawAlamat
@@ -3449,7 +3496,13 @@
                         statusBadge = '<span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Rentan</span>';
                     }
 
-                    const hasCoords = item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude;
+                    const hasItemGps = item.latitude !== null && item.latitude !== undefined && item.latitude !== '' &&
+                                       item.longitude !== null && item.longitude !== undefined && item.longitude !== '';
+                    const hasCoords = hasItemGps || (item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude);
+                    const targetLat = hasItemGps ? Number(item.latitude) : Number(item.kabupaten.latitude);
+                    const targetLng = hasItemGps ? Number(item.longitude) : Number(item.kabupaten.longitude);
+                    const targetZoom = hasItemGps ? 15 : 10;
+
                     const aksiBtn = `
                         <div class="inline-flex items-center justify-center gap-1">
                             <button type="button"
@@ -3461,11 +3514,11 @@
                             </button>
                             ${hasCoords ? `
                                 <button type="button"
-                                        onclick="focusOnMap(${Number(item.kabupaten.latitude)}, ${Number(item.kabupaten.longitude)}, ${Number(item.kabupaten.id)})"
-                                        class="inline-flex items-center gap-0.5 rounded border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700 hover:bg-teal-600 hover:text-white dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white transition shadow-2xs cursor-pointer"
-                                        title="Lihat titik lokasi ini di peta">
-                                    <span>📍</span>
-                                    <span>Peta</span>
+                                        onclick="focusOnMap(${targetLat}, ${targetLng}, ${Number(item.kabupaten_id || 0)}, ${targetZoom})"
+                                        class="inline-flex items-center gap-0.5 rounded border ${hasItemGps ? 'border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:border-blue-800 dark:text-blue-300 hover:bg-blue-600 hover:text-white' : 'border-teal-200 bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-600 hover:text-white'} px-1.5 py-0.5 text-[10px] font-semibold transition shadow-2xs cursor-pointer"
+                                        title="${hasItemGps ? 'Lihat titik GPS Waypoint di peta' : 'Lihat titik lokasi ini di peta'}">
+                                    <span>${hasItemGps ? '🎯' : '📍'}</span>
+                                    <span>${hasItemGps ? 'GPS' : 'Peta'}</span>
                                 </button>
                             ` : ''}
                         </div>
@@ -3478,7 +3531,17 @@
                                 <div class="font-semibold text-slate-800 leading-tight whitespace-nowrap">${kab}</div>
                                 <div class="text-[10px] text-slate-500 font-normal leading-tight whitespace-nowrap mt-0.5">${prov}</div>
                             </td>
-                            <td class="px-2 py-2 text-xs text-slate-700 leading-snug">${alamat}</td>
+                            <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
+                                ${alamat}
+                                ${hasItemGps ? `
+                                    <div class="mt-0.5">
+                                        <span class="inline-flex items-center gap-1 font-mono text-[9px] text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-1 py-0.2 rounded border border-blue-200 dark:border-blue-900" title="GPS Waypoint: ${item.latitude}, ${item.longitude}">
+                                            <span>🎯</span>
+                                            <span>${Number(item.latitude).toFixed(4)}, ${Number(item.longitude).toFixed(4)}</span>
+                                        </span>
+                                    </div>
+                                ` : ''}
+                            </td>
                             <td class="px-2 py-2 text-center whitespace-nowrap">
                                 <span class="inline-block rounded-md bg-teal-50 border border-teal-200 px-1.5 py-0.5 text-[10.5px] font-semibold text-teal-700 dark:bg-teal-950/40 dark:border-teal-800 dark:text-teal-300 whitespace-nowrap">
                                     ${nyamuk}
@@ -3827,6 +3890,12 @@
                     event.stopPropagation();
                 }
 
+                // Tutup tooltip kabupaten jika sedang terbuka agar tampilan popup bersih
+                if (activeTooltipLayer) {
+                    try { activeTooltipLayer.closeTooltip(); } catch (e) {}
+                    activeTooltipLayer = null;
+                }
+
                 // Scroll halus ke peta jika posisi layar berada di luar area peta
                 const mapEl = document.getElementById('map');
                 if (mapEl) {
@@ -3854,11 +3923,24 @@
                 const cacheKey = `${desaName.trim().toLowerCase()}_${String(kabId)}`;
                 let targetLat = null;
                 let targetLng = null;
+                let isExactGps = false;
 
                 const btn = event ? event.currentTarget : null;
                 if (btn) btn.classList.add('opacity-60');
 
-                if (desaCoordsCache[cacheKey]) {
+                // PRIORITAS 1: Cek apakah ada koordinat GPS Waypoint manual yang diinput pada data uji desa ini
+                const entryWithGps = desaEntries.find(d => 
+                    d.latitude !== null && d.latitude !== undefined && d.latitude !== '' &&
+                    d.longitude !== null && d.longitude !== undefined && d.longitude !== '' &&
+                    !isNaN(parseFloat(d.latitude)) && !isNaN(parseFloat(d.longitude))
+                );
+
+                if (entryWithGps) {
+                    targetLat = parseFloat(entryWithGps.latitude);
+                    targetLng = parseFloat(entryWithGps.longitude);
+                    isExactGps = true;
+                    desaCoordsCache[cacheKey] = [targetLat, targetLng];
+                } else if (desaCoordsCache[cacheKey]) {
                     targetLat = desaCoordsCache[cacheKey][0];
                     targetLng = desaCoordsCache[cacheKey][1];
                 } else {
@@ -3952,6 +4034,13 @@
                             <div class="font-extrabold text-slate-800 text-sm leading-tight">${escapeHtml(desaName)}</div>
                             <div class="text-[10.5px] text-slate-500 font-medium">${formatKabKotaShort(kabName)}, ${escapeHtml(provName)}</div>
                         </div>
+                        ${isExactGps ? `
+                        <div class="flex items-center justify-between bg-blue-50/90 dark:bg-blue-950/40 px-2 py-1.5 rounded-lg text-[10px] text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 shadow-2xs">
+                            <span class="font-bold flex items-center gap-1">🎯 <span>GPS Waypoint:</span></span>
+                            <span class="font-mono font-semibold">${targetLat.toFixed(5)}, ${targetLng.toFixed(5)}</span>
+                            <a href="https://www.google.com/maps?q=${targetLat},${targetLng}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 font-bold hover:underline ml-1">Maps ↗</a>
+                        </div>
+                        ` : ''}
                         <div>
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status Resistensi:</div>
                             <div class="flex flex-wrap gap-1">
@@ -4013,7 +4102,8 @@
                 }
 
                 // 4. Terbang dan zoom ke titik desa dengan pergeseran cerdas (tidak bertabrakan dengan card kanan atas)
-                flyToVisibleCenter([targetLat, targetLng], 13, { duration: 1.2 });
+                const zoomTarget = isExactGps ? 15 : 13;
+                flyToVisibleCenter([targetLat, targetLng], zoomTarget, { duration: 1.2 });
 
                 // Buka popup desa otomatis saat kamera tiba di lokasi
                 setTimeout(() => {
@@ -4074,8 +4164,8 @@
                 }
             };
 
-            // Fungsi Klik dari Tabel untuk Fokus ke Titik Lokasi di Peta
-            window.focusOnMap = function(lat, lng, kabId) {
+            // Fungsi Klik dari Tabel untuk Fokus ke Titik Lokasi atau Waypoint GPS di Peta
+            window.focusOnMap = function(lat, lng, kabId, customZoom = null) {
                 // Scroll halus ke elemen peta jika layar berada di bawah
                 const mapEl = document.getElementById('map');
                 if (mapEl) {
@@ -4084,31 +4174,73 @@
 
                 let targetLat = lat;
                 let targetLng = lng;
-                if (kabDataById[kabId] && kabDataById[kabId].kabupaten) {
-                    const k = kabDataById[kabId].kabupaten;
-                    const norm = normalizeKabName(k.nama_kabupaten || '');
-                    if (norm && KABUPATEN_DARATAN_COORDS[norm]) {
-                        targetLat = KABUPATEN_DARATAN_COORDS[norm].lat;
-                        targetLng = KABUPATEN_DARATAN_COORDS[norm].lng;
-                    } else if (norm && geoCentroidsByNorm[norm]) {
-                        targetLat = geoCentroidsByNorm[norm].lat;
-                        targetLng = geoCentroidsByNorm[norm].lng;
+                const isExactGps = customZoom && customZoom >= 13;
+
+                if (!isExactGps) {
+                    if (kabDataById[kabId] && kabDataById[kabId].kabupaten) {
+                        const k = kabDataById[kabId].kabupaten;
+                        const norm = normalizeKabName(k.nama_kabupaten || '');
+                        if (norm && KABUPATEN_DARATAN_COORDS[norm]) {
+                            targetLat = KABUPATEN_DARATAN_COORDS[norm].lat;
+                            targetLng = KABUPATEN_DARATAN_COORDS[norm].lng;
+                        } else if (norm && geoCentroidsByNorm[norm]) {
+                            targetLat = geoCentroidsByNorm[norm].lat;
+                            targetLng = geoCentroidsByNorm[norm].lng;
+                        }
+                    } else if (markersByKabId[kabId]) {
+                        const pos = markersByKabId[kabId].getLatLng();
+                        targetLat = pos.lat;
+                        targetLng = pos.lng;
                     }
-                } else if (markersByKabId[kabId]) {
-                    const pos = markersByKabId[kabId].getLatLng();
-                    targetLat = pos.lat;
-                    targetLng = pos.lng;
+                } else {
+                    // Buat pin marker khusus GPS Waypoint
+                    desaMarkerLayer.clearLayers();
+                    const gpsIcon = L.divIcon({
+                        className: 'custom-desa-marker-container',
+                        html: `
+                            <div class="desa-pin-marker">
+                                <div class="desa-pin-icon" style="background:#2563eb; color:#fff;">
+                                    <span>🎯</span>
+                                </div>
+                                <div class="desa-pin-pulse"></div>
+                                <div class="desa-pin-label">🎯 Titik GPS Waypoint</div>
+                            </div>
+                        `,
+                        iconSize: [140, 65],
+                        iconAnchor: [70, 36],
+                        popupAnchor: [0, -38]
+                    });
+                    const marker = L.marker([targetLat, targetLng], { icon: gpsIcon }).addTo(desaMarkerLayer);
+                    marker.bindPopup(`
+                        <div class="p-2 space-y-1.5 text-xs font-sans">
+                            <div class="font-bold text-blue-700 text-sm flex items-center gap-1">🎯 Titik Waypoint Lapangan</div>
+                            <div class="font-mono text-xs font-semibold text-slate-800 bg-slate-50 p-1.5 rounded border border-slate-200">
+                                Lat: ${Number(targetLat).toFixed(6)}<br>
+                                Lng: ${Number(targetLng).toFixed(6)}
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps?q=${targetLat},${targetLng}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline">
+                                    <span>Buka di Google Maps</span> ↗
+                                </a>
+                            </div>
+                        </div>
+                    `);
+                    setTimeout(() => marker.openPopup(), 1300);
                 }
 
+                const finalZoom = customZoom || 10;
+
                 setTimeout(() => {
-                    flyToVisibleCenter([targetLat, targetLng], 10, { duration: 1.2 });
-                    setTimeout(() => {
-                        showKabupatenDetail(kabId, true);
-                        if (markersByKabId[kabId]) {
-                            markersByKabId[kabId].openTooltip();
-                            activeTooltipLayer = markersByKabId[kabId];
-                        }
-                    }, 1250);
+                    flyToVisibleCenter([targetLat, targetLng], finalZoom, { duration: 1.2 });
+                    if (kabId && kabDataById[kabId]) {
+                        setTimeout(() => {
+                            showKabupatenDetail(kabId, true);
+                            if (markersByKabId[kabId]) {
+                                markersByKabId[kabId].openTooltip();
+                                activeTooltipLayer = markersByKabId[kabId];
+                            }
+                        }, 1250);
+                    }
                 }, 300);
             };
 
@@ -4247,10 +4379,35 @@
                             </div>
                         </div>
                     ` : ''}
+
+                    ${(item.latitude && item.longitude) ? `
+                        <div class="rounded-lg border border-blue-200 dark:border-blue-900/60 p-2.5 bg-blue-50/70 dark:bg-blue-950/40 shadow-2xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400 flex items-center gap-1">
+                                    <span>🎯</span> <span>KOORDINAT GPS / WAYPOINT</span>
+                                </span>
+                                <a href="https://www.google.com/maps?q=${item.latitude},${item.longitude}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-bold text-[10.5px]">
+                                    Buka Google Maps ↗
+                                </a>
+                            </div>
+                            <p class="font-mono font-bold text-slate-800 dark:text-slate-100 mt-1 text-xs">
+                                Lat: ${Number(item.latitude).toFixed(6)}, Lng: ${Number(item.longitude).toFixed(6)}
+                            </p>
+                        </div>
+                    ` : ''}
                 `;
 
                 if (actions) {
-                    if (item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude) {
+                    if (item.latitude && item.longitude) {
+                        actions.innerHTML = `
+                            <button type="button"
+                                    onclick="closeRowDetailModal(); focusOnMap(${Number(item.latitude)}, ${Number(item.longitude)}, ${Number(item.kabupaten_id || 0)}, 15);"
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white shadow-2xs transition cursor-pointer">
+                                <span>🎯</span>
+                                <span>Sorot Titik GPS di Peta</span>
+                            </button>
+                        `;
+                    } else if (item.kabupaten && item.kabupaten.latitude && item.kabupaten.longitude) {
                         actions.innerHTML = `
                             <button type="button"
                                     onclick="closeRowDetailModal(); focusOnMap(${Number(item.kabupaten.latitude)}, ${Number(item.kabupaten.longitude)}, ${Number(item.kabupaten.id)});"

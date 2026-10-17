@@ -966,7 +966,7 @@
                 <td class="kop-text">
                     <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
                     <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
-                    <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN SALATIGA</div>
+                    <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
                     <div class="kop-address">
                         Jl. Hasanudin No. 123, Mangunsari, Sidomukti, Kota Salatiga, Jawa Tengah 50721<br>
                         Telepon: (0298) 327096 | Faksimile: (0298) 327097 | Surat Elektronik: bblkl.salatiga@kemkes.go.id<br>
@@ -1458,7 +1458,7 @@
                 <td class="kop-text">
                     <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
                     <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
-                    <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN SALATIGA</div>
+                    <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
                     <div class="kop-address">
                         Jl. Hasanudin No. 123, Mangunsari, Sidomukti, Kota Salatiga, Jawa Tengah 50721<br>
                         Telepon: (0298) 327096 | Faksimile: (0298) 327097 | Surat Elektronik: bblkl.salatiga@kemkes.go.id<br>
@@ -1953,18 +1953,21 @@
         {{-- status wilayah. Penetapan status adalah kewenangan Dirjen P2P/Dinkes.    --}}
         {{-- ========================================================================= --}}
 
-        {{-- KOP SURAT RESMI BBLKL --}}
+        {{-- KOP SURAT RESMI KEMENKES BBLKL SALATIGA --}}
         <table class="kop-table">
             <tr>
                 <td class="kop-logo">
-                    <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL Kemenkes RI"
-                         onerror="this.src='{{ asset('kemenkes.png') }}'">
+                    <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL Kemenkes RI" onerror="this.src='{{ asset('kemenkes.png') }}'">
                 </td>
                 <td class="kop-text">
-                    <div class="kop-instansi">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
-                    <div class="kop-unit">BALAI BESAR KESEHATAN LINGKUNGAN (BBLKL)</div>
-                    <div class="kop-sub">Tim Kerja Surveilans Penyakit, Faktor Risiko Kesehatan dan KLB</div>
-                    <div class="kop-alamat">Jl. Bringin Raya No.1, Salatiga, Jawa Tengah | Telp. (0298) 312761</div>
+                    <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
+                    <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
+                    <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
+                    <div class="kop-address">
+                        Jl. Hasanudin No. 123, Mangunsari, Sidomukti, Kota Salatiga, Jawa Tengah 50721<br>
+                        Telepon: (0298) 327096 | Faksimile: (0298) 327097 | Surat Elektronik: bblkl.salatiga@kemkes.go.id<br>
+                        Laman Resmi: https://bblabkesling.go.id/ &bull; SI-RESISTENSI INDONESIA
+                    </div>
                 </td>
                 <td class="kop-spacer">
                     {{-- Spacer kanan penyeimbang simetris --}}
@@ -2202,7 +2205,7 @@
                             <div style="font-size:5.5pt; color:#64748b;">{{ \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMM Y, HH:mm') }}</div>
                         </div>
                     @endif
-                    <div class="sig-sub" style="margin-top:2px;">Kepala Balai Besar Kesehatan Lingkungan<br>Kemenkes RI Salatiga</div>
+                    <div class="sig-sub" style="margin-top:2px;">Kepala Balai Besar Laboratorium Kesehatan Lingkungan<br>Salatiga</div>
                 </td>
             </tr>
         </table>
@@ -2311,7 +2314,9 @@
                                 <tr>
                                     <td style="text-align:left; font-weight:700; color:#1e293b; padding-left:2px;">
                                         <span>{{ $kab['kode'] }}</span>
-                                        <span style="font-weight:400; color:#64748b; font-size:6.2pt; display:block; line-height:1;">{{ \Illuminate\Support\Str::limit((string)($kab['kab_name'] ?? ''), 15) }}</span>
+                                        <span style="font-weight:400; color:#64748b; font-size:6.2pt; display:block; line-height:1; max-width:95px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{{ $kab['kab_name'] ?? '' }}">
+                                            {{ strlen((string)($kab['kab_name'] ?? '')) > 16 ? substr((string)$kab['kab_name'], 0, 15) . '…' : ($kab['kab_name'] ?? '') }}
+                                        </span>
                                     </td>
                                     <td>
                                         @php $s1 = $kab['statuses']['deltamethrin'] ?? 'TD'; @endphp

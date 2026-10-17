@@ -517,7 +517,7 @@
                                     </td>
                                     <td class="px-2.5 py-2.5 text-xs">
                                         <div class="font-bold text-slate-800 dark:text-slate-100 leading-snug break-words">{{ $row->kabupaten ? $row->kabupaten->nama_kabupaten : '-' }}</div>
-                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words">{{ $row->provinsi ? $row->provinsi->nama_provinsi : '-' }}</div>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-snug break-words">{{ ($row->kabupaten && $row->kabupaten->provinsi) ? $row->kabupaten->provinsi->nama_provinsi : ($row->provinsi ? $row->provinsi->nama_provinsi : '-') }}</div>
                                     </td>
                                     <td class="px-2.5 py-2.5 text-xs text-slate-700 dark:text-slate-200 leading-snug break-words">
                                         @if(!empty($row->alamat))

@@ -171,10 +171,20 @@ class RekomendasiKebijakanController extends Controller
     {
         try {
             $data = $this->preparePolicyData($request);
-            return view('rekomendasi_kebijakan', $data);
+            $content = view('rekomendasi_kebijakan', $data)->render();
+            return response($content);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Rekomendasi Kebijakan index error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-            return redirect()->route('dashboard')->with('error', 'Gagal memuat modul Rekomendasi Kebijakan: ' . $e->getMessage());
+            return response('<div style="font-family:system-ui,-apple-system,sans-serif;padding:30px;max-width:750px;margin:50px auto;border:1px solid #fca5a5;background:#fef2f2;border-radius:12px;">' .
+                '<h2 style="color:#b91c1c;margin-top:0;">⚠️ Kendala Memuat Menu Rekomendasi Kebijakan</h2>' .
+                '<div style="background:#fff;border-left:4px solid #ef4444;padding:12px 16px;border-radius:4px;margin:16px 0;color:#1e293b;font-weight:600;font-size:14px;">' .
+                    htmlspecialchars($e->getMessage()) .
+                '</div>' .
+                '<pre style="background:#1e293b;color:#f8fafc;padding:14px;border-radius:8px;font-size:11.5px;overflow-x:auto;max-height:260px;">' .
+                    htmlspecialchars($e->getFile() . ':' . $e->getLine() . "\n\n" . $e->getTraceAsString()) .
+                '</pre>' .
+                '<p><a href="' . route('dashboard') . '" style="display:inline-block;padding:9px 18px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;">&larr; Kembali ke Dashboard</a></p>' .
+            '</div>', 200);
         }
     }
 
@@ -185,10 +195,23 @@ class RekomendasiKebijakanController extends Controller
     {
         try {
             $data = $this->preparePolicyData($request);
-            return view('rekomendasi_kebijakan_preview', $data);
+            $content = view('rekomendasi_kebijakan_preview', $data)->render();
+            return response($content);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Rekomendasi Kebijakan preview error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-            return redirect()->route('rekomendasi.index')->with('error', 'Gagal memuat dokumen cetak rekomendasi: ' . $e->getMessage());
+            return response('<div style="font-family:system-ui,-apple-system,sans-serif;padding:30px;max-width:750px;margin:50px auto;border:1px solid #fca5a5;background:#fef2f2;border-radius:12px;">' .
+                '<h2 style="color:#b91c1c;margin-top:0;">⚠️ Kendala Memuat Dokumen Rekomendasi</h2>' .
+                '<div style="background:#fff;border-left:4px solid #ef4444;padding:12px 16px;border-radius:4px;margin:16px 0;color:#1e293b;font-weight:600;font-size:14px;">' .
+                    htmlspecialchars($e->getMessage()) .
+                '</div>' .
+                '<pre style="background:#1e293b;color:#f8fafc;padding:14px;border-radius:8px;font-size:11.5px;overflow-x:auto;max-height:260px;">' .
+                    htmlspecialchars($e->getFile() . ':' . $e->getLine() . "\n\n" . $e->getTraceAsString()) .
+                '</pre>' .
+                '<div style="margin-top:20px;display:flex;gap:10px;">' .
+                    '<a href="' . route('rekomendasi.index') . '" style="display:inline-block;padding:9px 18px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">&larr; Kembali ke Rekomendasi Kebijakan</a>' .
+                    '<a href="' . route('dashboard') . '" style="display:inline-block;padding:9px 18px;background:#e2e8f0;color:#334155;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Dashboard Utama</a>' .
+                '</div>' .
+            '</div>', 200);
         }
     }
 

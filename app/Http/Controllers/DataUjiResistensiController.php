@@ -148,6 +148,8 @@ class DataUjiResistensiController extends Controller
                 'provinsi_id' => 'required|exists:provinsis,id',
                 'kabupaten_id' => 'required|exists:kabupatens,id',
                 'alamat' => 'nullable|string|max:500',
+                'latitude' => 'nullable|numeric|between:-90,90',
+                'longitude' => 'nullable|numeric|between:-180,180',
                 'jenis_nyamuk' => 'required|string',
                 'insektisida' => 'required|string',
                 'metode' => 'required|string',
@@ -158,6 +160,10 @@ class DataUjiResistensiController extends Controller
             ], [
                 'provinsi_id.required' => 'Pilih provinsi.',
                 'kabupaten_id.required' => 'Pilih kota/kabupaten.',
+                'latitude.numeric' => 'Format Latitude harus berupa angka desimal (contoh: -7.324512).',
+                'latitude.between' => 'Nilai Latitude harus berada di antara -90 dan 90 derajat.',
+                'longitude.numeric' => 'Format Longitude harus berupa angka desimal (contoh: 110.501234).',
+                'longitude.between' => 'Nilai Longitude harus berada di antara -180 dan 180 derajat.',
                 'jenis_nyamuk.required' => 'Pilih jenis nyamuk.',
                 'insektisida.required' => 'Pilih jenis insektisida.',
                 'metode.required' => 'Pilih metode pemeriksaan.',
@@ -182,6 +188,8 @@ class DataUjiResistensiController extends Controller
                 'provinsi_id' => $validated['provinsi_id'],
                 'kabupaten_id' => $validated['kabupaten_id'],
                 'address' => $validated['alamat'] ?? null,
+                'latitude' => isset($validated['latitude']) && $validated['latitude'] !== '' ? $validated['latitude'] : null,
+                'longitude' => isset($validated['longitude']) && $validated['longitude'] !== '' ? $validated['longitude'] : null,
                 'mosquito_type' => $validated['jenis_nyamuk'],
                 'insecticide' => $validated['insektisida'],
                 'method' => $validated['metode'],
@@ -239,6 +247,8 @@ class DataUjiResistensiController extends Controller
                     'provinsi_id' => $row['provinsi_id'],
                     'kabupaten_id' => $row['kabupaten_id'],
                     'address' => $row['alamat'] ?? null,
+                    'latitude' => isset($row['latitude']) && $row['latitude'] !== '' ? $row['latitude'] : null,
+                    'longitude' => isset($row['longitude']) && $row['longitude'] !== '' ? $row['longitude'] : null,
                     'mosquito_type' => $row['jenis_nyamuk'],
                     'insecticide' => $row['insektisida'],
                     'method' => $row['metode'],
@@ -274,6 +284,8 @@ class DataUjiResistensiController extends Controller
             'provinsi_id' => 'required|exists:provinsis,id',
             'kabupaten_id' => 'required|exists:kabupatens,id',
             'alamat' => 'nullable|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'jenis_nyamuk' => 'required|string',
             'insektisida' => 'required|string',
             'metode' => 'required|string',
@@ -284,6 +296,10 @@ class DataUjiResistensiController extends Controller
         ], [
             'provinsi_id.required' => 'Pilih provinsi.',
             'kabupaten_id.required' => 'Pilih kota/kabupaten.',
+            'latitude.numeric' => 'Format Latitude harus berupa angka desimal (contoh: -7.324512).',
+            'latitude.between' => 'Nilai Latitude harus berada di antara -90 dan 90 derajat.',
+            'longitude.numeric' => 'Format Longitude harus berupa angka desimal (contoh: 110.501234).',
+            'longitude.between' => 'Nilai Longitude harus berada di antara -180 dan 180 derajat.',
             'jenis_nyamuk.required' => 'Pilih jenis nyamuk.',
             'insektisida.required' => 'Pilih jenis insektisida.',
             'metode.required' => 'Pilih metode pemeriksaan.',
@@ -300,6 +316,8 @@ class DataUjiResistensiController extends Controller
             'provinsi_id' => $validated['provinsi_id'],
             'kabupaten_id' => $validated['kabupaten_id'],
             'address' => $validated['alamat'] ?? null,
+            'latitude' => isset($validated['latitude']) && $validated['latitude'] !== '' ? $validated['latitude'] : null,
+            'longitude' => isset($validated['longitude']) && $validated['longitude'] !== '' ? $validated['longitude'] : null,
             'mosquito_type' => $validated['jenis_nyamuk'],
             'insecticide' => $validated['insektisida'],
             'method' => $validated['metode'],
@@ -343,7 +361,7 @@ class DataUjiResistensiController extends Controller
         // 2. Ambil data dengan memilih hanya kolom yang diperlukan untuk rendering peta & tabel
         $data = DataUjiResistensi::select([
             'id', 'no', 'month', 'year', 'provinsi_id', 'kabupaten_id',
-            'address', 'mosquito_type', 'insecticide', 'method',
+            'address', 'latitude', 'longitude', 'mosquito_type', 'insecticide', 'method',
             'sample_count', 'status', 'mutation', 'publication', 'created_at'
         ])
         ->with([

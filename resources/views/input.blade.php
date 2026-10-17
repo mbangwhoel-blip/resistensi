@@ -11,6 +11,13 @@
 
     <title>Input Data - PETA RESISTENSI</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {{-- LEAFLET CSS --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        .leaflet-map-picker-pin {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+    </style>
     {{-- INISIALISASI & GAYA GLOBAL DARK MODE --}}
     @include('dark_mode_head')
 </head>
@@ -447,8 +454,8 @@
                                     <div class="font-bold text-slate-800 dark:text-slate-100 leading-tight break-words whitespace-normal" title="{{ $item->kabupaten->nama_kabupaten ?? '-' }}">
                                         {{ $item->kabupaten->nama_kabupaten ?? '-' }}
                                     </div>
-                                    <div class="text-[10.5px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ $item->provinsi->nama_provinsi ?? '-' }}">
-                                        {{ $item->provinsi->nama_provinsi ?? '-' }}
+                                    <div class="text-[10.5px] text-slate-500 dark:text-slate-400 font-normal leading-tight break-words whitespace-normal mt-0.5" title="{{ ($item->kabupaten && $item->kabupaten->provinsi) ? $item->kabupaten->provinsi->nama_provinsi : ($item->provinsi->nama_provinsi ?? '-') }}">
+                                        {{ ($item->kabupaten && $item->kabupaten->provinsi) ? $item->kabupaten->provinsi->nama_provinsi : ($item->provinsi->nama_provinsi ?? '-') }}
                                     </div>
                                 </td>
                                 <td class="px-2 py-2 text-xs text-slate-700 leading-snug">
@@ -459,6 +466,14 @@
                                         </div>
                                     @else
                                         <span class="italic text-slate-400 text-[11px]">Belum diisi</span>
+                                    @endif
+                                    @if (!empty($item->latitude) && !empty($item->longitude))
+                                        <div class="mt-1">
+                                            <a href="https://www.google.com/maps?q={{ $item->latitude }},{{ $item->longitude }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-[10px] font-bold hover:bg-blue-100 dark:hover:bg-blue-900 transition shadow-2xs" title="Buka Titik Koordinat GPS di Google Maps">
+                                                <span>🛰️</span> {{ number_format((float)$item->latitude, 5) }}, {{ number_format((float)$item->longitude, 5) }}
+                                                <svg class="w-2.5 h-2.5 text-blue-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                            </a>
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="px-2 py-2 text-center">
@@ -780,7 +795,7 @@
                             {{-- KABUPATEN --}}
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kabupaten / Kota *</label>
-                                <select id="tambahKabupaten" name="kabupaten_id" required disabled class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed transition">
+                                <select id="tambahKabupaten" name="kabupaten_id" onchange="onKabupatenSelected('tambah', this.value)" required disabled class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed transition">
                                     <option value="">-- Pilih Provinsi Dahulu --</option>
                                 </select>
                             </div>
@@ -790,10 +805,70 @@
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                                     Alamat / Titik Lokasi Penangkapan Vektor
                                 </label>
-                                <textarea name="alamat" rows="2" autocomplete="off" placeholder="Contoh: RT 03/RW 02 Desa Sukamaju, Puskesmas Melati / Lokasi Penangkapan Vektor" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400"></textarea>
+                                <textarea id="tambahAlamat" name="alamat" rows="2" autocomplete="off" placeholder="Contoh: RT 03/RW 02 Desa Sukamaju, Puskesmas Melati / Lokasi Penangkapan Vektor" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400"></textarea>
                                 <p class="mt-1 text-[11px] text-slate-400 flex items-center gap-1">
                                     <span>📍</span> Alamat ini akan muncul di popup sebaran peta geografis saat titik surveilans diklik.
                                 </p>
+                            </div>
+
+                            {{-- KOORDINAT GPS / WAYPOINTS LOKASI DETAIL (TAMBAH) --}}
+                            <div class="md:col-span-2 rounded-2xl border border-blue-200/80 bg-blue-50/40 dark:bg-blue-950/20 dark:border-blue-800/60 p-3.5 sm:p-4 space-y-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-blue-100 dark:border-blue-900/40">
+                                    <div class="flex items-center gap-2">
+                                        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 font-bold text-xs">
+                                            🛰️
+                                        </span>
+                                        <div>
+                                            <h5 class="text-xs font-bold uppercase tracking-wider text-blue-950 dark:text-blue-200">
+                                                Koordinat GPS / Waypoints (Pemetaan Presisi Detail)
+                                            </h5>
+                                            <p class="text-[10.5px] text-slate-500 dark:text-slate-400 font-normal">
+                                                Input manual koordinat GPS lapangan, paste dari Google Maps, atau klik langsung di peta.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="getCurrentGpsLocation('tambah')" class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold transition shadow-2xs" title="Ambil koordinat GPS perangkat saat ini">
+                                            <span>🎯</span> Ambil GPS Saya
+                                        </button>
+                                        <button type="button" onclick="toggleMiniMap('tambah')" class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition shadow-2xs">
+                                            <span>🗺️</span> <span id="btnToggleMiniMapText-tambah">Tampilkan Peta Mini</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Kotak Tempel Format Bebas --}}
+                                <div class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-blue-200 dark:border-slate-700 shadow-2xs">
+                                    <span class="text-[11px] font-bold text-blue-700 dark:text-blue-300 shrink-0">📋 Tempel Bebas:</span>
+                                    <input type="text" id="quickPaste-tambah" oninput="parseGpsQuickPaste('tambah', this.value)" placeholder="Tempel koordinat format apa saja (contoh: -7.324512, 110.501234 atau format DMS/Garmin/Maps)" class="w-full text-xs bg-transparent border-0 focus:outline-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400">
+                                    <button type="button" onclick="clearGpsCoords('tambah')" class="text-slate-400 hover:text-rose-500 text-xs px-1 font-bold" title="Kosongkan Koordinat">✕</button>
+                                </div>
+
+                                {{-- Input Latitude & Longitude --}}
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                                            Latitude (Garis Lintang)
+                                        </label>
+                                        <input type="number" step="any" id="tambahLatitude" name="latitude" oninput="onCoordsInputChanged('tambah')" placeholder="-7.324512" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                        <span class="text-[10px] text-slate-400">Desimal derajat (-90 s/d 90)</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                                            Longitude (Garis Bujur)
+                                        </label>
+                                        <input type="number" step="any" id="tambahLongitude" name="longitude" oninput="onCoordsInputChanged('tambah')" placeholder="110.501234" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                        <span class="text-[10px] text-slate-400">Desimal derajat (-180 s/d 180)</span>
+                                    </div>
+                                </div>
+
+                                {{-- Interactive Mini Leaflet Map Picker --}}
+                                <div id="miniMapContainer-tambah" class="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-inner" style="height: 220px;">
+                                    <div id="miniMap-tambah" style="width: 100%; height: 100%; z-index: 1;"></div>
+                                    <div class="absolute bottom-2 left-2 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 shadow-sm pointer-events-none">
+                                        💡 <em>Klik pada peta atau geser pin untuk menentukan titik waypoint surveilans</em>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1049,7 +1124,7 @@
                             {{-- KABUPATEN --}}
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kabupaten / Kota *</label>
-                                <select id="editKabupaten" name="kabupaten_id" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <select id="editKabupaten" name="kabupaten_id" onchange="onKabupatenSelected('edit', this.value)" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
                                     <option value="">-- Pilih Kabupaten --</option>
                                 </select>
                             </div>
@@ -1063,6 +1138,66 @@
                                 <p class="mt-1 text-[11px] text-slate-400 flex items-center gap-1">
                                     <span>📍</span> Alamat ini akan muncul di popup sebaran peta geografis saat titik surveilans diklik.
                                 </p>
+                            </div>
+
+                            {{-- KOORDINAT GPS / WAYPOINTS LOKASI DETAIL (EDIT) --}}
+                            <div class="md:col-span-2 rounded-2xl border border-blue-200/80 bg-blue-50/40 dark:bg-blue-950/20 dark:border-blue-800/60 p-3.5 sm:p-4 space-y-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-blue-100 dark:border-blue-900/40">
+                                    <div class="flex items-center gap-2">
+                                        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 font-bold text-xs">
+                                            🛰️
+                                        </span>
+                                        <div>
+                                            <h5 class="text-xs font-bold uppercase tracking-wider text-blue-950 dark:text-blue-200">
+                                                Koordinat GPS / Waypoints (Pemetaan Presisi Detail)
+                                            </h5>
+                                            <p class="text-[10.5px] text-slate-500 dark:text-slate-400 font-normal">
+                                                Input manual koordinat GPS lapangan, paste dari Google Maps, atau klik langsung di peta.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="getCurrentGpsLocation('edit')" class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold transition shadow-2xs" title="Ambil koordinat GPS perangkat saat ini">
+                                            <span>🎯</span> Ambil GPS Saya
+                                        </button>
+                                        <button type="button" onclick="toggleMiniMap('edit')" class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition shadow-2xs">
+                                            <span>🗺️</span> <span id="btnToggleMiniMapText-edit">Tampilkan Peta Mini</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Kotak Tempel Format Bebas --}}
+                                <div class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-blue-200 dark:border-slate-700 shadow-2xs">
+                                    <span class="text-[11px] font-bold text-blue-700 dark:text-blue-300 shrink-0">📋 Tempel Bebas:</span>
+                                    <input type="text" id="quickPaste-edit" oninput="parseGpsQuickPaste('edit', this.value)" placeholder="Tempel koordinat format apa saja (contoh: -7.324512, 110.501234 atau format DMS/Garmin/Maps)" class="w-full text-xs bg-transparent border-0 focus:outline-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400">
+                                    <button type="button" onclick="clearGpsCoords('edit')" class="text-slate-400 hover:text-rose-500 text-xs px-1 font-bold" title="Kosongkan Koordinat">✕</button>
+                                </div>
+
+                                {{-- Input Latitude & Longitude --}}
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                                            Latitude (Garis Lintang)
+                                        </label>
+                                        <input type="number" step="any" id="editLatitude" name="latitude" oninput="onCoordsInputChanged('edit')" placeholder="-7.324512" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                        <span class="text-[10px] text-slate-400">Desimal derajat (-90 s/d 90)</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                                            Longitude (Garis Bujur)
+                                        </label>
+                                        <input type="number" step="any" id="editLongitude" name="longitude" oninput="onCoordsInputChanged('edit')" placeholder="110.501234" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                        <span class="text-[10px] text-slate-400">Desimal derajat (-180 s/d 180)</span>
+                                    </div>
+                                </div>
+
+                                {{-- Interactive Mini Leaflet Map Picker --}}
+                                <div id="miniMapContainer-edit" class="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-inner" style="height: 220px;">
+                                    <div id="miniMap-edit" style="width: 100%; height: 100%; z-index: 1;"></div>
+                                    <div class="absolute bottom-2 left-2 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 shadow-sm pointer-events-none">
+                                        💡 <em>Klik pada peta atau geser pin untuk menentukan titik waypoint surveilans</em>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1294,13 +1429,367 @@
     </div>
     @endif
 
-    {{-- SCRIPT INTERAKSI MODAL & DINAMIS KABUPATEN --}}
+    {{-- LEAFLET JS UNTUK PICKER WAYPOINT GPS --}}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    {{-- SCRIPT INTERAKSI MODAL & DINAMIS KABUPATEN & GPS WAYPOINTS --}}
     <script>
+        window.kabCache = window.kabCache || {};
+        const mapPickers = {
+            tambah: { map: null, marker: null, visible: true },
+            edit: { map: null, marker: null, visible: true }
+        };
+
+        // Parser Universal Format Koordinat (Desimal, Google Maps URL, DMS, Garmin DDM)
+        function parseCoordinatePair(raw) {
+            if (!raw) return null;
+            raw = String(raw).trim();
+
+            // 1. Google Maps URL (@lat,lng atau ?q=lat,lng)
+            const urlMatch = raw.match(/[@?&]q?=?(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)/i);
+            if (urlMatch) {
+                const lat = parseFloat(urlMatch[1]);
+                const lng = parseFloat(urlMatch[2]);
+                if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    return { lat, lng };
+                }
+            }
+
+            // 2. Standard desimal derajat: -7.324512, 110.501234 atau -7.324512 110.501234
+            const decRegex = /^(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)$/;
+            const decMatch = raw.match(decRegex);
+            if (decMatch) {
+                const lat = parseFloat(decMatch[1]);
+                const lng = parseFloat(decMatch[2]);
+                if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    return { lat, lng };
+                }
+            }
+
+            // Helper parser DMS / DDM untuk 1 komponen
+            function parseDmsOrDdm(str) {
+                str = str.trim();
+                let sign = 1;
+                const dirMatch = str.match(/([NSEW])/i);
+                let dir = dirMatch ? dirMatch[1].toUpperCase() : null;
+                if (dir === 'S' || dir === 'W') sign = -1;
+                if (str.startsWith('-')) sign = -1;
+
+                let clean = str.replace(/[NSEWnsew°'"’”]/g, ' ').trim();
+                let parts = clean.split(/\s+/).filter(p => p.length > 0).map(Number);
+
+                if (parts.length === 3) {
+                    // DMS: Deg Min Sec
+                    let val = Math.abs(parts[0]) + (parts[1] / 60) + (parts[2] / 3600);
+                    return sign * val;
+                } else if (parts.length === 2) {
+                    // DDM (Garmin): Deg Decimal Minutes
+                    let val = Math.abs(parts[0]) + (parts[1] / 60);
+                    return sign * val;
+                } else if (parts.length === 1 && !isNaN(parts[0])) {
+                    return sign * Math.abs(parts[0]);
+                }
+                return null;
+            }
+
+            // 3. Pemisahan dengan koma/titik koma/tab
+            let chunks = raw.split(/[,;\t|]/).map(s => s.trim()).filter(s => s.length > 0);
+            if (chunks.length === 2) {
+                let lat = parseDmsOrDdm(chunks[0]);
+                let lng = parseDmsOrDdm(chunks[1]);
+                if (lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    return { lat, lng };
+                }
+            }
+
+            // 4. Regex DMS lengkap
+            const dmsRegex = /([NSns]?\s*\d+[\s°]\s*\d+(?:\.\d+)?[\s'’]?\s*(?:\d+(?:\.\d+)?["”]?)?\s*[NSns]?)\s*[,;\s]\s*([EWew]?\s*\d+[\s°]\s*\d+(?:\.\d+)?[\s'’]?\s*(?:\d+(?:\.\d+)?["”]?)?\s*[EWew]?)/i;
+            const dmsMatch = raw.match(dmsRegex);
+            if (dmsMatch) {
+                let lat = parseDmsOrDdm(dmsMatch[1]);
+                let lng = parseDmsOrDdm(dmsMatch[2]);
+                if (lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    return { lat, lng };
+                }
+            }
+
+            return null;
+        }
+
+        // Inisialisasi Peta Mini Interaktif Leaflet untuk Mode Tambah & Edit
+        function initOrUpdateMapPicker(mode, initialLat = null, initialLng = null) {
+            const containerId = 'miniMap-' + mode;
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const latInput = document.getElementById(mode === 'tambah' ? 'tambahLatitude' : 'editLatitude');
+            const lngInput = document.getElementById(mode === 'tambah' ? 'tambahLongitude' : 'editLongitude');
+
+            let curLat = initialLat !== null && initialLat !== '' ? parseFloat(initialLat) : (latInput && latInput.value ? parseFloat(latInput.value) : null);
+            let curLng = initialLng !== null && initialLng !== '' ? parseFloat(initialLng) : (lngInput && lngInput.value ? parseFloat(lngInput.value) : null);
+
+            const hasValidCoords = curLat !== null && curLng !== null && !isNaN(curLat) && !isNaN(curLng) && curLat >= -90 && curLat <= 90 && curLng >= -180 && curLng <= 180;
+
+            const pinIcon = L.divIcon({
+                className: 'leaflet-map-picker-pin',
+                html: '<div style="background:#2563eb;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid #fff;font-size:14px;cursor:grab;">📍</div>',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28]
+            });
+
+            const picker = mapPickers[mode];
+
+            if (!picker.map) {
+                // Inisialisasi peta Leaflet pertama kali
+                const defaultCenter = hasValidCoords ? [curLat, curLng] : [-2.5, 118.0];
+                const defaultZoom = hasValidCoords ? 14 : 5;
+
+                picker.map = L.map(containerId, {
+                    center: defaultCenter,
+                    zoom: defaultZoom,
+                    attributionControl: false,
+                    zoomControl: true
+                });
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(picker.map);
+
+                // Event klik pada peta untuk meletakkan titik waypoint
+                picker.map.on('click', function(e) {
+                    setMarkerAndInputs(mode, e.latlng.lat, e.latlng.lng, false);
+                });
+            }
+
+            // Update posisi marker jika koordinat valid
+            if (hasValidCoords) {
+                if (picker.marker) {
+                    picker.marker.setLatLng([curLat, curLng]);
+                } else {
+                    picker.marker = L.marker([curLat, curLng], { icon: pinIcon, draggable: true }).addTo(picker.map);
+                    picker.marker.on('dragend', function() {
+                        const pos = picker.marker.getLatLng();
+                        setMarkerAndInputs(mode, pos.lat, pos.lng, false);
+                    });
+                }
+                picker.map.setView([curLat, curLng], Math.max(picker.map.getZoom(), 14));
+                const statusEl = document.getElementById('statusGps-' + mode);
+                if (statusEl) {
+                    statusEl.textContent = `📍 Titik GPS disetel (${curLat.toFixed(6)}, ${curLng.toFixed(6)})`;
+                    statusEl.className = 'text-[11px] font-semibold text-blue-700 dark:text-blue-300';
+                }
+            } else {
+                if (picker.marker) {
+                    picker.map.removeLayer(picker.marker);
+                    picker.marker = null;
+                }
+            }
+
+            setTimeout(() => {
+                if (picker.map) picker.map.invalidateSize();
+            }, 100);
+        }
+
+        // Set Nilai Input & Posisi Pin Marker Peta Mini
+        function setMarkerAndInputs(mode, lat, lng, panTo = true) {
+            const latVal = Number(lat).toFixed(6);
+            const lngVal = Number(lng).toFixed(6);
+
+            const latInput = document.getElementById(mode === 'tambah' ? 'tambahLatitude' : 'editLatitude');
+            const lngInput = document.getElementById(mode === 'tambah' ? 'tambahLongitude' : 'editLongitude');
+            const quickPaste = document.getElementById('quickPaste-' + mode);
+            const statusEl = document.getElementById('statusGps-' + mode);
+
+            if (latInput) latInput.value = latVal;
+            if (lngInput) lngInput.value = lngVal;
+            if (quickPaste) quickPaste.value = `${latVal}, ${lngVal}`;
+
+            const pinIcon = L.divIcon({
+                className: 'leaflet-map-picker-pin',
+                html: '<div style="background:#2563eb;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid #fff;font-size:14px;cursor:grab;">📍</div>',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28]
+            });
+
+            const picker = mapPickers[mode];
+            if (picker.map) {
+                if (picker.marker) {
+                    picker.marker.setLatLng([lat, lng]);
+                } else {
+                    picker.marker = L.marker([lat, lng], { icon: pinIcon, draggable: true }).addTo(picker.map);
+                    picker.marker.on('dragend', function() {
+                        const pos = picker.marker.getLatLng();
+                        setMarkerAndInputs(mode, pos.lat, pos.lng, false);
+                    });
+                }
+                if (panTo) {
+                    picker.map.setView([lat, lng], Math.max(picker.map.getZoom(), 14));
+                }
+            }
+
+            if (statusEl) {
+                statusEl.textContent = `📍 Titik GPS disetel (${latVal}, ${lngVal})`;
+                statusEl.className = 'text-[11px] font-semibold text-blue-700 dark:text-blue-300';
+            }
+        }
+
+        // Handler saat user mengetik manual di input Latitude atau Longitude
+        window.onCoordsInputChanged = function(mode) {
+            const latInput = document.getElementById(mode === 'tambah' ? 'tambahLatitude' : 'editLatitude');
+            const lngInput = document.getElementById(mode === 'tambah' ? 'tambahLongitude' : 'editLongitude');
+            const lat = parseFloat(latInput.value);
+            const lng = parseFloat(lngInput.value);
+
+            if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                setMarkerAndInputs(mode, lat, lng, true);
+            }
+        };
+
+        // Handler Paste Cepat Semua Format Koordinat (DD, DMS, DDM, Garmin, Maps URL)
+        window.parseGpsQuickPaste = function(mode, raw) {
+            if (!raw || raw.trim().length === 0) return;
+            const coords = parseCoordinatePair(raw);
+            const statusEl = document.getElementById('statusGps-' + mode);
+
+            if (coords) {
+                setMarkerAndInputs(mode, coords.lat, coords.lng, true);
+                if (statusEl) {
+                    statusEl.textContent = `✅ Format koordinat terdeteksi & disetel (${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)})`;
+                    statusEl.className = 'text-[11px] font-semibold text-emerald-600 dark:text-emerald-400';
+                }
+            } else if (statusEl && raw.length > 5) {
+                statusEl.textContent = `⚠️ Format belum lengkap atau tidak valid. Contoh: -7.324512, 110.501234`;
+                statusEl.className = 'text-[11px] font-semibold text-amber-600 dark:text-amber-400';
+            }
+        };
+
+        // Ambil Koordinat GPS Akurat dari Perangkat (Browser Geolocation API)
+        window.getCurrentGpsLocation = function(mode) {
+            const statusEl = document.getElementById('statusGps-' + mode);
+            const btn = document.getElementById('btnGps-' + mode);
+
+            if (!navigator.geolocation) {
+                alert('Browser Anda tidak mendukung deteksi GPS Geolocation.');
+                return;
+            }
+
+            if (statusEl) {
+                statusEl.textContent = '⏳ Mengambil sinyal GPS dari perangkat...';
+                statusEl.className = 'text-[11px] font-semibold text-blue-600 dark:text-blue-400 animate-pulse';
+            }
+            if (btn) btn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    if (btn) btn.disabled = false;
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const acc = Math.round(pos.coords.accuracy || 0);
+
+                    setMarkerAndInputs(mode, lat, lng, true);
+
+                    if (statusEl) {
+                        statusEl.textContent = `✅ Titik GPS diperoleh dari perangkat (Akurasi: ±${acc}m)`;
+                        statusEl.className = 'text-[11px] font-bold text-emerald-700 dark:text-emerald-300';
+                    }
+                },
+                function(err) {
+                    if (btn) btn.disabled = false;
+                    let msg = 'Gagal mengambil GPS.';
+                    if (err.code === 1) msg = 'Izin akses lokasi ditolak oleh pengguna.';
+                    else if (err.code === 2) msg = 'Sinyal GPS perangkat tidak tersedia.';
+                    else if (err.code === 3) msg = 'Waktu permintaan GPS habis (timeout).';
+
+                    if (statusEl) {
+                        statusEl.textContent = `⚠️ ${msg}`;
+                        statusEl.className = 'text-[11px] font-semibold text-rose-600 dark:text-rose-400';
+                    }
+                    alert(msg);
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        };
+
+        // Kosongkan Koordinat GPS
+        window.clearGpsCoords = function(mode) {
+            const latInput = document.getElementById(mode === 'tambah' ? 'tambahLatitude' : 'editLatitude');
+            const lngInput = document.getElementById(mode === 'tambah' ? 'tambahLongitude' : 'editLongitude');
+            const quickPaste = document.getElementById('quickPaste-' + mode);
+            const statusEl = document.getElementById('statusGps-' + mode);
+
+            if (latInput) latInput.value = '';
+            if (lngInput) lngInput.value = '';
+            if (quickPaste) quickPaste.value = '';
+
+            const picker = mapPickers[mode];
+            if (picker.map && picker.marker) {
+                picker.map.removeLayer(picker.marker);
+                picker.marker = null;
+            }
+
+            if (statusEl) {
+                statusEl.textContent = 'Titik koordinat belum disetel';
+                statusEl.className = 'text-[11px] font-medium text-slate-500 dark:text-slate-400';
+            }
+        };
+
+        // Buka/Tutup Tampilan Peta Mini
+        window.toggleMiniMap = function(mode) {
+            const container = document.getElementById('miniMapContainer-' + mode);
+            const textEl = document.getElementById('btnToggleMiniMapText-' + mode);
+            if (!container) return;
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                if (textEl) textEl.textContent = 'Sembunyikan Peta Mini';
+                const picker = mapPickers[mode];
+                if (picker.map) {
+                    setTimeout(() => picker.map.invalidateSize(), 100);
+                }
+            } else {
+                container.classList.add('hidden');
+                if (textEl) textEl.textContent = 'Tampilkan Peta Mini';
+            }
+        };
+
+        // Respons saat user memilih Kabupaten: Geser Peta Mini ke Wilayah Tersebut jika belum ada koordinat
+        window.onKabupatenSelected = function(mode, kabId) {
+            if (!kabId) return;
+            const latInput = document.getElementById(mode === 'tambah' ? 'tambahLatitude' : 'editLatitude');
+            const lngInput = document.getElementById(mode === 'tambah' ? 'tambahLongitude' : 'editLongitude');
+
+            // Jika user belum mengisi koordinat manual, geser peta mini ke tengah kabupaten terpilih
+            if (!latInput.value && !lngInput.value && window.kabCache && window.kabCache[kabId]) {
+                const kab = window.kabCache[kabId];
+                if (kab.latitude && kab.longitude) {
+                    const lat = parseFloat(kab.latitude);
+                    const lng = parseFloat(kab.longitude);
+                    const picker = mapPickers[mode];
+                    if (picker.map) {
+                        picker.map.setView([lat, lng], 11);
+                    }
+                }
+            }
+        };
+
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
+
+                if (modalId === 'modalTambahData') {
+                    setTimeout(() => {
+                        initOrUpdateMapPicker('tambah');
+                    }, 150);
+                } else if (modalId === 'modalEditData') {
+                    setTimeout(() => {
+                        if (mapPickers.edit.map) {
+                            mapPickers.edit.map.invalidateSize();
+                        }
+                    }, 150);
+                }
             }
         }
 
@@ -1340,6 +1829,8 @@
                 .then(data => {
                     let html = '<option value="">-- Pilih Kabupaten / Kota --</option>';
                     data.forEach(kab => {
+                        window.kabCache = window.kabCache || {};
+                        window.kabCache[kab.id] = kab;
                         html += `<option value="${kab.id}">${kab.nama_kabupaten}</option>`;
                     });
                     kabSelect.innerHTML = html;
@@ -1365,6 +1856,8 @@
                 .then(data => {
                     let html = '<option value="">-- Pilih Kabupaten / Kota --</option>';
                     data.forEach(kab => {
+                        window.kabCache = window.kabCache || {};
+                        window.kabCache[kab.id] = kab;
                         const isSelected = selectedKabId && kab.id == selectedKabId ? 'selected' : '';
                         html += `<option value="${kab.id}" ${isSelected}>${kab.nama_kabupaten}</option>`;
                     });
@@ -1432,6 +1925,16 @@
             document.getElementById('editMutasi').value = item.mutasi || '';
             document.getElementById('editPublikasi').value = item.publikasi || '';
             
+            // Set data koordinat GPS Waypoint
+            const latVal = (item.latitude !== null && item.latitude !== undefined) ? item.latitude : '';
+            const lngVal = (item.longitude !== null && item.longitude !== undefined) ? item.longitude : '';
+            document.getElementById('editLatitude').value = latVal;
+            document.getElementById('editLongitude').value = lngVal;
+            const quickPasteEdit = document.getElementById('quickPaste-edit');
+            if (quickPasteEdit) {
+                quickPasteEdit.value = (latVal !== '' && lngVal !== '') ? `${latVal}, ${lngVal}` : '';
+            }
+
             // Set status visual cards
             setStatusChoice(item.status || '', 'edit');
 
@@ -1441,6 +1944,10 @@
             }
 
             openModal('modalEditData');
+
+            setTimeout(() => {
+                initOrUpdateMapPicker('edit', latVal, lngVal);
+            }, 150);
         }
 
         window.openDeleteModal = function(id) {
