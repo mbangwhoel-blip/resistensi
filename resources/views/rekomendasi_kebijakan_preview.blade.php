@@ -2530,19 +2530,19 @@
     </div>
 
     {{-- MODAL APPROVE / PENGESAHAN KEPALA BBLKL DI HALAMAN PREVIEW --}}
-    <div id="approveModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm hidden print:hidden">
-        <div class="relative w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl border border-slate-200">
-            {{-- HEADER MODAL --}}
-            <div class="flex items-center justify-between pb-3.5 border-b border-slate-100">
+    <div id="approveModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-sm hidden print:hidden p-3 sm:p-4 md:p-6 flex items-center justify-center">
+        <div class="relative w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col animate-in fade-in zoom-in duration-150">
+            {{-- HEADER MODAL (STICKY / FIXED AT TOP) --}}
+            <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/90 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-100 text-teal-700 shrink-0">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-black text-slate-800">
-                            Pengesahan Resmi Rekomendasi Kebijakan
+                        <h3 class="text-sm font-black text-slate-800 leading-tight">
+                            Pengesahan Dokumen Rekomendasi Kebijakan
                         </h3>
                         <p class="text-[11px] text-slate-500">
                             Persetujuan &amp; Tanda Tangan Elektronik Kepala/Pimpinan BBLKL
@@ -2551,15 +2551,15 @@
                 </div>
                 <button type="button"
                         onclick="closeApproveModal()"
-                        class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                        class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition cursor-pointer">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            {{-- FORM APPROVAL --}}
-            <form action="{{ route('rekomendasi.approve') }}" method="POST" class="mt-4 space-y-3.5">
+            {{-- FORM APPROVAL DENGAN SCROLLABLE BODY DAN FIXED FOOTER --}}
+            <form action="{{ route('rekomendasi.approve') }}" method="POST" class="flex flex-col flex-1 overflow-hidden m-0">
                 @csrf
                 <input type="hidden" name="tahun" value="{{ $tahunFilter }}">
                 <input type="hidden" name="jenis_nyamuk" value="{{ $nyamukFilter }}">
@@ -2568,111 +2568,114 @@
                 <input type="hidden" name="template" value="{{ $activeTemplate }}">
                 <input type="hidden" name="nama_wilayah" value="{{ $namaWilayah }}">
 
-                {{-- INFORMASI DOKUMEN --}}
-                <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3 text-xs">
-                    <div class="grid grid-cols-2 gap-2 text-[11px]">
-                        <div><strong class="text-slate-500">Wilayah:</strong> <span class="font-bold text-slate-800">{{ $namaWilayah }}</span></div>
-                        <div><strong class="text-slate-500">Tahun:</strong> <span class="font-bold text-slate-800">{{ $tahunFilter }}</span></div>
-                        <div><strong class="text-slate-500">Vektor:</strong> <span class="font-bold text-slate-800">{{ $nyamukFilter }}</span></div>
-                        <div><strong class="text-slate-500">Template Aktif:</strong> <span class="font-bold text-teal-700 uppercase">{{ $activeTemplate }}</span></div>
+                {{-- SCROLLABLE FORM CONTENT --}}
+                <div class="p-5 overflow-y-auto space-y-3.5 flex-1">
+                    {{-- INFORMASI DOKUMEN --}}
+                    <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3 text-xs">
+                        <div class="grid grid-cols-2 gap-2 text-[11px]">
+                            <div><strong class="text-slate-500">Wilayah:</strong> <span class="font-bold text-slate-800">{{ $namaWilayah }}</span></div>
+                            <div><strong class="text-slate-500">Tahun:</strong> <span class="font-bold text-slate-800">{{ $tahunFilter }}</span></div>
+                            <div><strong class="text-slate-500">Vektor:</strong> <span class="font-bold text-slate-800">{{ $nyamukFilter }}</span></div>
+                            <div><strong class="text-slate-500">Template Aktif:</strong> <span class="font-bold text-teal-700 uppercase">{{ $activeTemplate }}</span></div>
+                        </div>
                     </div>
-                </div>
 
-                {{-- PILIHAN LINGKUP TEMPLATE --}}
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Lingkup Pengesahan Dokumen *
-                    </label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-200 bg-teal-50/50 cursor-pointer hover:bg-teal-50 transition">
-                            <input type="radio" name="lingkup_approval" value="semua_template" checked class="text-teal-600 focus:ring-teal-500">
-                            <div class="text-xs">
-                                <strong class="text-slate-800 block leading-tight">Semua Template Dokumen</strong>
-                                <span class="text-[10px] text-slate-500">Kemenkes, Eksekutif &amp; Laboratorium</span>
-                            </div>
+                    {{-- PILIHAN LINGKUP TEMPLATE --}}
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Lingkup Pengesahan Dokumen *
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition">
-                            <input type="radio" name="lingkup_approval" value="template_ini" class="text-teal-600 focus:ring-teal-500">
-                            <div class="text-xs">
-                                <strong class="text-slate-800 block leading-tight">Hanya Template Ini</strong>
-                                <span class="text-[10px] text-slate-500">Format: {{ strtoupper($activeTemplate) }}</span>
-                            </div>
-                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-200 bg-teal-50/50 cursor-pointer hover:bg-teal-50 transition">
+                                <input type="radio" name="lingkup_approval" value="semua_template" checked class="text-teal-600 focus:ring-teal-500">
+                                <div class="text-xs">
+                                    <strong class="text-slate-800 block leading-tight">Semua Template Dokumen</strong>
+                                    <span class="text-[10px] text-slate-500">Kemenkes, Eksekutif, Lab &amp; Agregat</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition">
+                                <input type="radio" name="lingkup_approval" value="template_ini" class="text-teal-600 focus:ring-teal-500">
+                                <div class="text-xs">
+                                    <strong class="text-slate-800 block leading-tight">Hanya Template Ini</strong>
+                                    <span class="text-[10px] text-slate-500">Format: {{ strtoupper($activeTemplate) }}</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                {{-- NAMA & NIP KEPALA/PIMPINAN --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {{-- NAMA & NIP KEPALA/PIMPINAN --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                                Nama Kepala/Pimpinan BBLKL *
+                            </label>
+                            <input type="text"
+                                   name="approver_name"
+                                   required
+                                   value="{{ $approval->approver_name ?? $defaultKepalaNama }}"
+                                   placeholder="Nama Lengkap dan Gelar"
+                                   class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-semibold text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                                NIP Kepala/Pimpinan
+                            </label>
+                            <input type="text"
+                                   name="approver_nip"
+                                   value="{{ $approval->approver_nip ?? $defaultKepalaNip }}"
+                                   placeholder="NIP. 19xxxxxxxxxxxxxx"
+                                   class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                        </div>
+                    </div>
+
+                    {{-- JABATAN & NOMOR SURAT --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                                Jabatan Resmi *
+                            </label>
+                            <input type="text"
+                                   name="approver_jabatan"
+                                   required
+                                   value="{{ $approval->approver_jabatan ?? $defaultKepalaJabatan }}"
+                                   placeholder="Jabatan Resmi Pimpinan"
+                                   class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                                Nomor Surat / Disposisi Rekomendasi
+                            </label>
+                            <input type="text"
+                                   name="nomor_surat"
+                                   value="{{ $approval->nomor_surat ?? $defaultNomorSurat }}"
+                                   placeholder="Contoh: LT-VEC/BBLKL/2026/0417"
+                                   class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-mono font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                        </div>
+                    </div>
+
+                    {{-- CATATAN / INSTRUKSI PENGESAHAN --}}
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            Nama Kepala/Pimpinan BBLKL *
+                            Catatan / Arahan Pimpinan (Opsional)
                         </label>
-                        <input type="text"
-                               name="approver_name"
-                               required
-                               value="{{ $approval->approver_name ?? $defaultKepalaNama }}"
-                               placeholder="Nama Lengkap dan Gelar"
-                               class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-semibold text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+                        <textarea name="notes"
+                                  rows="2"
+                                  placeholder="Arahan tindak lanjut pimpinan..."
+                                  class="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs leading-relaxed">{{ $approval->notes ?? 'Rekomendasi teknis kebijakan pengendalian vektor ini telah diverifikasi dan disahkan sebagai rujukan operasional penanggulangan resistensi di wilayah bersangkutan.' }}</textarea>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            NIP Kepala/Pimpinan
-                        </label>
-                        <input type="text"
-                               name="approver_nip"
-                               value="{{ $approval->approver_nip ?? $defaultKepalaNip }}"
-                               placeholder="NIP. 19xxxxxxxxxxxxxx"
-                               class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
+
+                    {{-- KETERANGAN RESMI --}}
+                    <div class="flex items-start gap-2 text-[11px] text-slate-500">
+                        <span class="text-teal-600 font-bold">ℹ️</span>
+                        <span>Watermark <strong>"DRAFT"</strong> pada cetak dokumen akan dihilangkan dan digantikan dengan tanda tangan &amp; stempel pengesahan elektronik resmi Kepala BBLKL.</span>
                     </div>
                 </div>
 
-                {{-- JABATAN & NOMOR SURAT --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            Jabatan Resmi *
-                        </label>
-                        <input type="text"
-                               name="approver_jabatan"
-                               required
-                               value="{{ $approval->approver_jabatan ?? $defaultKepalaJabatan }}"
-                               placeholder="Jabatan Resmi Pimpinan"
-                               class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                            Nomor Surat / Disposisi Rekomendasi
-                        </label>
-                        <input type="text"
-                               name="nomor_surat"
-                               value="{{ $approval->nomor_surat ?? $defaultNomorSurat }}"
-                               placeholder="Contoh: LT-VEC/BBLKL/2026/0417"
-                               class="w-full h-10 rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-mono font-medium text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs">
-                    </div>
-                </div>
-
-                {{-- CATATAN / INSTRUKSI PENGESAHAN --}}
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                        Catatan / Arahan Pimpinan (Opsional)
-                    </label>
-                    <textarea name="notes"
-                              rows="2"
-                              placeholder="Arahan tindak lanjut pimpinan..."
-                              class="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs text-slate-800 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 shadow-2xs leading-relaxed">{{ $approval->notes ?? 'Rekomendasi teknis kebijakan pengendalian vektor ini telah diverifikasi dan disahkan sebagai rujukan operasional penanggulangan resistensi di wilayah bersangkutan.' }}</textarea>
-                </div>
-
-                {{-- KETERANGAN RESMI --}}
-                <div class="flex items-start gap-2 text-[11px] text-slate-500">
-                    <span class="text-teal-600 font-bold">ℹ️</span>
-                    <span>Watermark <strong>"DRAFT"</strong> pada cetak dokumen akan dihilangkan dan digantikan dengan tanda tangan &amp; stempel pengesahan elektronik resmi Kepala BBLKL.</span>
-                </div>
-
-                {{-- ACTION BUTTONS --}}
-                <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                {{-- ACTION BUTTONS (STICKY / FIXED AT BOTTOM) --}}
+                <div class="flex items-center justify-end gap-2.5 px-5 py-3.5 border-t border-slate-100 bg-slate-50/90 shrink-0">
                     <button type="button"
                             onclick="closeApproveModal()"
-                            class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+                            class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
                         Batal
                     </button>
                     <button type="submit"
@@ -2691,12 +2694,18 @@
     <script>
         function openApproveModal() {
             const modal = document.getElementById('approveModal');
-            if (modal) modal.classList.remove('hidden');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
         function closeApproveModal() {
             const modal = document.getElementById('approveModal');
-            if (modal) modal.classList.add('hidden');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         document.addEventListener('keydown', function(e) {
