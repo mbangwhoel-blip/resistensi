@@ -3115,6 +3115,14 @@
                     });
                 });
             }
+
+            @if(request('edit') == '1' || request('mode') === 'edit')
+                setTimeout(function() {
+                    if (!isEditMode) {
+                        toggleEditMode();
+                    }
+                }, 300);
+            @endif
         });
     </script>
 </body>
