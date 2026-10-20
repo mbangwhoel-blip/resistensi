@@ -29,20 +29,31 @@ class RekomendasiKebijakanController extends Controller
             'nama'      => 'Pyrethroid Sintetik',
             'irac_moa'  => 'IRAC 3A – Modulator Kanal Natrium',
             'warna'     => 'rose',
+            'stadium'   => 'adultisida',
             'deskripsi' => 'Bekerja pada kanal natrium dependen-voltase sel saraf serangga. Umum digunakan untuk fogging, ULV, dan LLINs.',
             'keywords'  => ['cypermethrin','deltamethrin','permethrin','lambda-cyhalothrin','alpha-cypermethrin','etofenprox','bifenthrin','transfluthrin','cyfluthrin']
         ],
         'organofosfat' => [
-            'nama'      => 'Organofosfat',
+            'nama'      => 'Organofosfat (Adultisida)',
             'irac_moa'  => 'IRAC 1B – Inhibitor AChE (ireversibel)',
             'warna'     => 'amber',
-            'deskripsi' => 'Menghambat enzim asetilkolinesterase (AChE) secara ireversibel. Digunakan sebagai adultisida (fogging/ULV) dan larvasida (Temephos).',
-            'keywords'  => ['malathion','pirimiphos','fenitrothion','temephos','chlorpyrifos','abate']
+            'stadium'   => 'adultisida',
+            'deskripsi' => 'Menghambat enzim asetilkolinesterase (AChE) secara ireversibel. Digunakan sebagai adultisida (fogging/ULV).',
+            'keywords'  => ['malathion','pirimiphos','fenitrothion','chlorpyrifos']
+        ],
+        'organofosfat_larvasida' => [
+            'nama'      => 'Organofosfat (Larvasida / Abate)',
+            'irac_moa'  => 'IRAC 1B – Inhibitor AChE (ireversibel)',
+            'warna'     => 'amber',
+            'stadium'   => 'larvasida',
+            'deskripsi' => 'Temephos (Abate) digunakan khusus membunuh jentik/larva pada tempat penampungan air (TPA). BUKAN adultisida fogging/IRS.',
+            'keywords'  => ['temephos','temefos','abate']
         ],
         'karbamat' => [
             'nama'      => 'Karbamat',
             'irac_moa'  => 'IRAC 1A – Inhibitor AChE (reversibel)',
             'warna'     => 'indigo',
+            'stadium'   => 'adultisida',
             'deskripsi' => 'Menghambat AChE secara reversibel. Digunakan untuk IRS (Indoor Residual Spraying). PERHATIAN: Rotasi Karbamat ↔ Organofosfat bukan rotasi MoA sejati karena keduanya menginhibisi AChE (target reseptor sama, hanya mekanisme ikatan berbeda).',
             'keywords'  => ['bendiocarb','propoxur','carbosulfan']
         ],
@@ -50,6 +61,7 @@ class RekomendasiKebijakanController extends Controller
             'nama'      => 'Biolarvasida Bti',
             'irac_moa'  => 'IRAC 11A – Disruptor Membran Sel Pertengahan (Protein Cry)',
             'warna'     => 'emerald',
+            'stadium'   => 'larvasida',
             'deskripsi' => 'Bacillus thuringiensis israelensis (Bti) menghasilkan kristal toksin (Cry proteins) yang merusak sel epitel usus tengah jentik nyamuk. Tidak menimbulkan resistensi silang dengan insektisida kimiawi dewasa.',
             'keywords'  => ['bti','bacillus','thuringiensis']
         ],
@@ -57,6 +69,7 @@ class RekomendasiKebijakanController extends Controller
             'nama'      => 'IGR – Juvenile Hormone Analog (JHA)',
             'irac_moa'  => 'IRAC 7C – Agonis Reseptor Juvenoid',
             'warna'     => 'teal',
+            'stadium'   => 'larvasida',
             'deskripsi' => 'Pyriproxyfen meniru hormon juvenil serangga, mencegah perkembangan menjadi dewasa. BUKAN penghambat sintesis kitin. Digunakan pada stadium pradewasa (jentik/pupa).',
             'keywords'  => ['pyriproxyfen']
         ],
@@ -64,6 +77,7 @@ class RekomendasiKebijakanController extends Controller
             'nama'      => 'IGR – Penghambat Sintesis Kitin (CSI)',
             'irac_moa'  => 'IRAC 15 – Penghambat Biosintesis Kitin Tipe 0',
             'warna'     => 'cyan',
+            'stadium'   => 'larvasida',
             'deskripsi' => 'Benzoylurea (Diflubenzuron, dll.) menghambat sintesis kitin sehingga jentik gagal berganti kulit. Digunakan eksklusif pada stadium pradewasa.',
             'keywords'  => ['diflubenzuron','novaluron','hexaflumuron']
         ],
@@ -71,6 +85,7 @@ class RekomendasiKebijakanController extends Controller
             'nama'      => 'IGR – Growth Accelerator (Methoprene)',
             'irac_moa'  => 'IRAC 7A – Agonis Reseptor Ecdyson',
             'warna'     => 'sky',
+            'stadium'   => 'larvasida',
             'deskripsi' => 'Methoprene mengganggu proses metamorfosis serangga melalui aksi agonis reseptor ecdyson. Digunakan pada stadium pradewasa.',
             'keywords'  => ['methoprene']
         ],
@@ -127,7 +142,7 @@ class RekomendasiKebijakanController extends Controller
         }
         // Temephos: Organofosfat tapi LARVASIDA – ditandai khusus
         if (str_contains($str, 'temefos') || str_contains($str, 'temephos') || str_contains($str, 'abate')) {
-            return ['Temephos/Abate (Larvasida-OP)', 'organofosfat'];
+            return ['Temephos/Abate (Larvasida)', 'organofosfat_larvasida'];
         }
 
         // 3. Karbamat (IRAC 1A) – ADULTISIDA/IRS
@@ -268,7 +283,7 @@ class RekomendasiKebijakanController extends Controller
             $query->where('data_uji_resistensis.year', (int)$tahunFilter);
         }
         if ($nyamukFilter !== 'Semua') {
-            $nyamukLower = strtolower($nyamukFilter);
+            $nyamukLower = strtolower(trim($nyamukFilter));
             if (str_contains($nyamukLower, 'aegypti')) {
                 $query->where(function($q) {
                     $q->whereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%aegypti%']);
@@ -277,11 +292,12 @@ class RekomendasiKebijakanController extends Controller
                 $query->where(function($q) {
                     $q->whereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%albopictus%']);
                 });
-            } elseif (str_contains($nyamukLower, 'anopheles')) {
+            } elseif ($nyamukLower === 'anopheles' || $nyamukLower === 'anhopeles') {
                 $query->where(function($q) {
-                    $q->whereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%anopheles%']);
+                    $q->whereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%anopheles%'])
+                      ->orWhereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%anhopeles%']);
                 });
-            } elseif (str_contains($nyamukLower, 'culex')) {
+            } elseif ($nyamukLower === 'culex') {
                 $query->where(function($q) {
                     $q->whereRaw('LOWER(data_uji_resistensis.mosquito_type) LIKE ?', ['%culex%']);
                 });
@@ -291,8 +307,13 @@ class RekomendasiKebijakanController extends Controller
         }
         if ($kabupatenFilter !== 'Semua' && !empty($kabupatenFilter)) {
             $query->where('data_uji_resistensis.kabupaten_id', $kabupatenFilter);
-        } elseif ($provinsiFilter !== 'Semua') {
-            $query->where('data_uji_resistensis.provinsi_id', $provinsiFilter);
+        } elseif ($provinsiFilter !== 'Semua' && !empty($provinsiFilter)) {
+            $query->where(function ($q) use ($provinsiFilter) {
+                $q->where('data_uji_resistensis.provinsi_id', $provinsiFilter)
+                  ->orWhereHas('kabupaten', function ($qk) use ($provinsiFilter) {
+                      $qk->where('provinsi_id', $provinsiFilter);
+                  });
+            });
         }
 
         // Daftar Kabupaten untuk filter dinamis
@@ -416,6 +437,7 @@ class RekomendasiKebijakanController extends Controller
                     'golongan_nama'  => $golInfo['nama'],
                     'irac_moa'       => $golInfo['irac_moa'] ?? '-',
                     'golongan_warna' => $golInfo['warna'],
+                    'stadium'        => $golInfo['stadium'] ?? 'adultisida',
                     'total_uji'      => 0,
                     'total_sampel'   => 0,
                     'resisten'       => 0,
@@ -522,15 +544,16 @@ class RekomendasiKebijakanController extends Controller
                 $badgeColor = 'rose';
                 $catatan    = "Proporsi resisten: {$pctRes}% dari {$total} titik uji. Mortalitas pada banyak pengujian kemungkinan <90%. Tidak direkomendasikan untuk program pengendalian hingga ada data bioassay ulang yang menunjukkan pemulihan kerentanan. (WHO Manual 2022)";
                 $dilarangList[] = [
-                    'nama'       => $stdName,
-                    'golongan'   => $agg['golongan_key'],
+                    'nama'          => $stdName,
+                    'golongan'      => $agg['golongan_key'],
                     'golongan_nama' => $agg['golongan_nama'],
-                    'irac_moa'   => $agg['irac_moa'],
-                    'pctResisten' => $pctRes,
-                    'pctToleran'  => $pctTol,
-                    'pctRentan'   => $pctRen,
-                    'totalUji'   => $total,
-                    'rataSmpl'   => $rataSmpl,
+                    'irac_moa'      => $agg['irac_moa'],
+                    'stadium'       => $agg['stadium'] ?? 'adultisida',
+                    'pctResisten'   => $pctRes,
+                    'pctToleran'    => $pctTol,
+                    'pctRentan'     => $pctRen,
+                    'totalUji'      => $total,
+                    'rataSmpl'      => $rataSmpl,
                 ];
             } elseif ($pctTol >= 20 || $pctRes >= 10) {
                 // Kemungkinan resisten: sinyal awal perlu dikonfirmasi
@@ -539,15 +562,16 @@ class RekomendasiKebijakanController extends Controller
                 $badgeColor = 'amber';
                 $catatan    = "Terdeteksi {$pctTol}% toleran (mortalitas 90–97%) dan {$pctRes}% resisten dari {$total} titik uji. Disarankan: (1) bioassay konfirmasi ulang (≥3 pengulangan, ≥25 nyamuk/uji), (2) uji sinergis PBO untuk identifikasi mekanisme resistensi.";
                 $pengawasanList[] = [
-                    'nama'        => $stdName,
-                    'golongan'    => $agg['golongan_key'],
+                    'nama'          => $stdName,
+                    'golongan'      => $agg['golongan_key'],
                     'golongan_nama' => $agg['golongan_nama'],
-                    'irac_moa'    => $agg['irac_moa'],
-                    'pctToleran'  => $pctTol,
-                    'pctResisten' => $pctRes,
-                    'pctRentan'   => $pctRen,
-                    'totalUji'    => $total,
-                    'rataSmpl'    => $rataSmpl,
+                    'irac_moa'      => $agg['irac_moa'],
+                    'stadium'       => $agg['stadium'] ?? 'adultisida',
+                    'pctToleran'    => $pctTol,
+                    'pctResisten'   => $pctRes,
+                    'pctRentan'     => $pctRen,
+                    'totalUji'      => $total,
+                    'rataSmpl'      => $rataSmpl,
                 ];
             } else {
                 // Rentan terkonfirmasi: mayoritas rentan, sedikit/tidak ada sinyal resistensi
@@ -556,15 +580,16 @@ class RekomendasiKebijakanController extends Controller
                 $badgeColor = 'emerald';
                 $catatan    = "Proporsi rentan: {$pctRen}% dari {$total} titik uji. Mortalitas mayoritas pengujian kemungkinan ≥98%. Dapat dilanjutkan penggunaannya dengan pemantauan berkala.";
                 $direkomendasikanList[] = [
-                    'nama'       => $stdName,
-                    'golongan'   => $agg['golongan_key'],
+                    'nama'          => $stdName,
+                    'golongan'      => $agg['golongan_key'],
                     'golongan_nama' => $agg['golongan_nama'],
-                    'irac_moa'   => $agg['irac_moa'],
-                    'pctRentan'  => $pctRen,
-                    'pctToleran' => $pctTol,
-                    'pctResisten'=> $pctRes,
-                    'totalUji'   => $total,
-                    'rataSmpl'   => $rataSmpl,
+                    'irac_moa'      => $agg['irac_moa'],
+                    'stadium'       => $agg['stadium'] ?? 'adultisida',
+                    'pctRentan'     => $pctRen,
+                    'pctToleran'    => $pctTol,
+                    'pctResisten'   => $pctRes,
+                    'totalUji'      => $total,
+                    'rataSmpl'      => $rataSmpl,
                 ];
             }
 
@@ -575,6 +600,7 @@ class RekomendasiKebijakanController extends Controller
                 'golongan_nama'  => $agg['golongan_nama'],
                 'irac_moa'       => $agg['irac_moa'],
                 'golongan_warna' => $agg['golongan_warna'],
+                'stadium'        => $agg['stadium'] ?? 'adultisida',
                 'total_uji'      => $total,
                 'total_sampel'   => $agg['total_sampel'],
                 'rata_sampel_per_uji' => $rataSmpl,
@@ -651,12 +677,18 @@ class RekomendasiKebijakanController extends Controller
 
         if (count($dilarangList) > 0) {
             foreach ($dilarangList as $larang) {
-                // Cari alternatif RENTAN dari MoA BERBEDA (bukan sesama AChE inhibitor)
-                $alternatif = collect($direkomendasikanList)->filter(function($item) use ($larang) {
+                $larangStadium = $larang['stadium'] ?? 'adultisida';
+
+                // Cari alternatif RENTAN dari MoA BERBEDA dan SESAMA STADIUM (Adultisida ↔ Adultisida, Larvasida ↔ Larvasida)
+                $alternatif = collect($direkomendasikanList)->filter(function($item) use ($larang, $larangStadium) {
+                    $itemStadium = $item['stadium'] ?? 'adultisida';
+                    if ($larangStadium !== $itemStadium) {
+                        return false; // Jangan merotasikan adultisida fogging ke larvasida bubuk air
+                    }
                     $larangKey = $larang['golongan'];
                     $itemKey   = $item['golongan'];
                     // Hindari merekomendasikan sesama AChE inhibitor (OP ↔ Karbamat)
-                    $achePair  = ['organofosfat', 'karbamat'];
+                    $achePair  = ['organofosfat', 'organofosfat_larvasida', 'karbamat'];
                     if (in_array($larangKey, $achePair) && in_array($itemKey, $achePair)) {
                         return false; // bukan rotasi MoA sejati
                     }
@@ -666,24 +698,27 @@ class RekomendasiKebijakanController extends Controller
                 if ($alternatif) {
                     // Ada bahan rentan dari MoA berbeda di database lokal ini
                     $namaAlt     = $alternatif['nama'] . ' (' . $alternatif['golongan_nama'] . ', ' . $alternatif['irac_moa'] . ')';
-                    $rasional    = "Rotasi ke {$alternatif['nama']} yang terbukti masih rentan berdasarkan {$alternatif['totalUji']} titik uji lokal (rentan: {$alternatif['pctRentan']}%). MoA berbeda sehingga memutus tekanan seleksi gen resistensi.";
+                    $rasional    = "Rotasi ke {$alternatif['nama']} yang terbukti masih rentan berdasarkan {$alternatif['totalUji']} titik uji lokal (rentan: {$alternatif['pctRentan']}%). MoA berbeda pada stadium sasaran yang sama ({$larangStadium}) sehingga memutus tekanan seleksi gen resistensi.";
                     $rasionalKm  = $rasional . ' Sesuai prinsip IRAC Insecticide Resistance Management (IRM).';
                 } else {
-                    // Tidak ada bahan rentan lokal – JANGAN rekomendasi bahan tanpa data
-                    $namaAlt    = '⚠️ Belum ada bahan alternatif terkonfirmasi rentan di data lokal ini.';
-                    $rasional   = "Tidak ada bahan aktif yang memenuhi kriteria kerentanan (proporsi rentan dominan) dalam dataset wilayah/periode ini. Saran: (1) Lakukan bioassay terhadap bahan aktif yang belum diuji (terutama golongan berbeda dari {$larang['golongan_nama']}); (2) Konsultasikan dengan program nasional pengendalian vektor; (3) Pertimbangkan pendekatan non-kimiawi (PSN 3M-Plus, Biolarvasida Bti) selama menunggu hasil uji.";
+                    // Tidak ada bahan rentan lokal sesama stadium – JANGAN rekomendasi bahan tanpa data
+                    $stadiumLabel = $larangStadium === 'larvasida' ? 'larvasida' : 'adultisida (fogging/IRS/ULV)';
+                    $namaAlt    = '⚠️ Belum ada bahan alternatif sesama stadium (' . $stadiumLabel . ') terkonfirmasi rentan di data lokal ini.';
+                    $rasional   = "Tidak ada bahan aktif {$stadiumLabel} yang memenuhi kriteria kerentanan dalam dataset wilayah/periode ini. Saran: (1) Lakukan bioassay terhadap bahan aktif alternatif yang belum diuji; (2) Konsultasikan dengan program nasional pengendalian vektor; (3) Tingkatkan pengendalian non-kimiawi (PSN 3M-Plus, biolarvasida Bti) selama menunggu konfirmasi uji.";
                     $rasionalKm = $rasional;
                 }
 
                 $strategiRotasi[] = [
                     'dilarang'   => $larang['nama'] . ' (' . $larang['golongan_nama'] . ')',
                     'irac_moa'   => $larang['irac_moa'],
+                    'stadium'    => $larangStadium,
                     'alternatif' => $namaAlt,
                     'alasan'     => $rasional,
                 ];
                 $strategiRotasiKemenkes[] = [
                     'dilarang'   => $larang['nama'] . ' (' . $larang['golongan_nama'] . ')',
                     'irac_moa'   => $larang['irac_moa'],
+                    'stadium'    => $larangStadium,
                     'alternatif' => $namaAlt,
                     'alasan'     => $rasionalKm,
                 ];

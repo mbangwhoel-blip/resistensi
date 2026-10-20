@@ -307,7 +307,28 @@ class LaporanController extends Controller
 
         // Filter Jenis Nyamuk
         if ($request->filled('jenis_nyamuk') && $request->jenis_nyamuk !== 'Semua') {
-            $query->where('mosquito_type', $request->jenis_nyamuk);
+            $nyamuk = $request->jenis_nyamuk;
+            $nyLower = strtolower(trim($nyamuk));
+            if (str_contains($nyLower, 'aegypti')) {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(mosquito_type) LIKE ?', ['%aegypti%']);
+                });
+            } elseif (str_contains($nyLower, 'albopictus')) {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(mosquito_type) LIKE ?', ['%albopictus%']);
+                });
+            } elseif ($nyLower === 'anopheles' || $nyLower === 'anhopeles') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(mosquito_type) LIKE ?', ['%anopheles%'])
+                      ->orWhereRaw('LOWER(mosquito_type) LIKE ?', ['%anhopeles%']);
+                });
+            } elseif ($nyLower === 'culex') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(mosquito_type) LIKE ?', ['%culex%']);
+                });
+            } else {
+                $query->where('mosquito_type', $nyamuk);
+            }
         }
 
         // Filter Insektisida

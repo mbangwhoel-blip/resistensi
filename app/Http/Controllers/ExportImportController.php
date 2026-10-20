@@ -190,138 +190,174 @@ class ExportImportController extends Controller
             ]);
         }
 
-        // Export Excel Native (.xlsx) dengan kolom rapi, lebar auto, border & warna header
-        if ($format === 'xlsx' || $format === 'excel') {
-            $fileName = "export_uji_resistensi_{$timestamp}.xlsx";
+        // Export Excel Native (.xlsx / .xls) dengan kolom rapi, lebar auto, border & warna header
+        if ($format === 'xlsx' || $format === 'excel' || $format === 'xls') {
+            $canUsePhpSpreadsheet = class_exists(\XMLWriter::class) && class_exists(\ZipArchive::class);
+            $excelBinary = null;
+            $usedNativeXlsx = false;
 
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('Data Resistensi');
+            if ($canUsePhpSpreadsheet && ($format === 'xlsx' || $format === 'excel')) {
+                try {
+                    $spreadsheet = new Spreadsheet();
+                    $sheet = $spreadsheet->getActiveSheet();
+                    $sheet->setTitle('Data Resistensi');
 
-            // Header kolom
-            $headers = [
-                'No', 'Provinsi', 'Kabupaten', 'Alamat', 'Jenis Nyamuk',
-                'Insektisida', 'Metode', 'Sampel Diperiksa', 'Bulan', 'Tahun',
-                'Resisten', 'Rentan', 'Toleran', 'Mutasi', 'Publikasi'
-            ];
+                    // Header kolom
+                    $headers = [
+                        'No', 'Provinsi', 'Kabupaten', 'Alamat', 'Jenis Nyamuk',
+                        'Insektisida', 'Metode', 'Sampel Diperiksa', 'Bulan', 'Tahun',
+                        'Resisten', 'Rentan', 'Toleran', 'Mutasi', 'Publikasi'
+                    ];
 
-            foreach ($headers as $hIdx => $h) {
-                $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
-                $sheet->setCellValue($colLetter . '1', $h);
-            }
-
-            // Data baris
-            $rowIdx = 2;
-            foreach ($items as $index => $item) {
-                $st = strtolower(trim((string)$item->status));
-                $isResisten = ($st === 'resisten');
-                $isRentan = ($st === 'rentan');
-                $isToleran = str_contains($st, 'toleran') || str_contains($st, 'terduga');
-
-                $sheet->setCellValue('A' . $rowIdx, $index + 1);
-                $sheet->setCellValue('B' . $rowIdx, $item->provinsi ? $item->provinsi->nama_provinsi : '-');
-                $sheet->setCellValue('C' . $rowIdx, $item->kabupaten ? $item->kabupaten->nama_kabupaten : '-');
-                $sheet->setCellValue('D' . $rowIdx, $item->alamat ?: '-');
-                $sheet->setCellValue('E' . $rowIdx, $item->jenis_nyamuk ?: '-');
-                $sheet->setCellValue('F' . $rowIdx, $item->insektisida ?: '-');
-                $sheet->setCellValue('G' . $rowIdx, $item->metode ?: '-');
-                $sheet->setCellValue('H' . $rowIdx, (int)($item->sampel_diperiksa ?? 0));
-                $sheet->setCellValue('I' . $rowIdx, $item->bulan ?: '-');
-                $sheet->setCellValue('J' . $rowIdx, (int)($item->tahun ?? 0));
-                $sheet->setCellValue('K' . $rowIdx, $isResisten ? 'v' : '');
-                $sheet->setCellValue('L' . $rowIdx, $isRentan ? 'v' : '');
-                $sheet->setCellValue('M' . $rowIdx, $isToleran ? 'v' : '');
-                $sheet->setCellValue('N' . $rowIdx, $item->mutasi ?: '-');
-                $sheet->setCellValue('O' . $rowIdx, $item->publikasi ?: '-');
-
-                $sheet->getRowDimension($rowIdx)->setRowHeight(21);
-                $rowIdx++;
-            }
-
-            $lastRow = max(2, $rowIdx - 1);
-
-            // Style Header Row (1)
-            $sheet->getStyle('A1:O1')->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                    'color' => ['rgb' => 'FFFFFF'],
-                    'size' => 11,
-                    'name' => 'Calibri',
-                ],
-                'fill' => [
-                    'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '0F766E'], // Teal Gelap Kemenkes
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ]);
-            $sheet->getRowDimension(1)->setRowHeight(28);
-
-            // Style Data Rows
-            if ($lastRow >= 2) {
-                $sheet->getStyle("A2:O{$lastRow}")->applyFromArray([
-                    'font' => ['size' => 10, 'name' => 'Calibri'],
-                    'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-                ]);
-
-                // Alignment Center untuk Kolom Angka dan Flag
-                $sheet->getStyle("A2:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->getStyle("H2:N{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                // Zebra striping untuk baris genap
-                for ($r = 2; $r <= $lastRow; $r++) {
-                    if ($r % 2 === 0) {
-                        $sheet->getStyle("A{$r}:O{$r}")->getFill()->applyFromArray([
-                            'fillType' => Fill::FILL_SOLID,
-                            'startColor' => ['rgb' => 'F8FAFC'],
-                        ]);
+                    foreach ($headers as $hIdx => $h) {
+                        $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
+                        $sheet->setCellValue($colLetter . '1', $h);
                     }
+
+                    // Data baris
+                    $rowIdx = 2;
+                    foreach ($items as $index => $item) {
+                        $st = strtolower(trim((string)$item->status));
+                        $isResisten = ($st === 'resisten');
+                        $isRentan = ($st === 'rentan');
+                        $isToleran = str_contains($st, 'toleran') || str_contains($st, 'terduga');
+
+                        $sheet->setCellValue('A' . $rowIdx, $index + 1);
+                        $sheet->setCellValue('B' . $rowIdx, $item->provinsi ? $item->provinsi->nama_provinsi : '-');
+                        $sheet->setCellValue('C' . $rowIdx, $item->kabupaten ? $item->kabupaten->nama_kabupaten : '-');
+                        $sheet->setCellValue('D' . $rowIdx, $item->alamat ?: '-');
+                        $sheet->setCellValue('E' . $rowIdx, $item->jenis_nyamuk ?: '-');
+                        $sheet->setCellValue('F' . $rowIdx, $item->insektisida ?: '-');
+                        $sheet->setCellValue('G' . $rowIdx, $item->metode ?: '-');
+                        $sheet->setCellValue('H' . $rowIdx, (int)($item->sampel_diperiksa ?? 0));
+                        $sheet->setCellValue('I' . $rowIdx, $item->bulan ?: '-');
+                        $sheet->setCellValue('J' . $rowIdx, (int)($item->tahun ?? 0));
+                        $sheet->setCellValue('K' . $rowIdx, $isResisten ? 'v' : '');
+                        $sheet->setCellValue('L' . $rowIdx, $isRentan ? 'v' : '');
+                        $sheet->setCellValue('M' . $rowIdx, $isToleran ? 'v' : '');
+                        $sheet->setCellValue('N' . $rowIdx, $item->mutasi ?: '-');
+                        $sheet->setCellValue('O' . $rowIdx, $item->publikasi ?: '-');
+
+                        $sheet->getRowDimension($rowIdx)->setRowHeight(21);
+                        $rowIdx++;
+                    }
+
+                    $lastRow = max(2, $rowIdx - 1);
+
+                    // Style Header Row (1)
+                    $sheet->getStyle('A1:O1')->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                            'color' => ['rgb' => 'FFFFFF'],
+                            'size' => 11,
+                            'name' => 'Calibri',
+                        ],
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => ['rgb' => '0F766E'], // Teal Gelap Kemenkes
+                        ],
+                        'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                        ],
+                    ]);
+                    $sheet->getRowDimension(1)->setRowHeight(28);
+
+                    // Style Data Rows
+                    if ($lastRow >= 2) {
+                        $sheet->getStyle("A2:O{$lastRow}")->applyFromArray([
+                            'font' => ['size' => 10, 'name' => 'Calibri'],
+                            'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+                        ]);
+
+                        // Alignment Center untuk Kolom Angka dan Flag
+                        $sheet->getStyle("A2:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                        $sheet->getStyle("H2:N{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                        // Zebra striping untuk baris genap
+                        for ($r = 2; $r <= $lastRow; $r++) {
+                            if ($r % 2 === 0) {
+                                $sheet->getStyle("A{$r}:O{$r}")->getFill()->applyFromArray([
+                                    'fillType' => Fill::FILL_SOLID,
+                                    'startColor' => ['rgb' => 'F8FAFC'],
+                                ]);
+                            }
+                        }
+                    }
+
+                    // Border seluruh tabel
+                    $sheet->getStyle("A1:O{$lastRow}")->applyFromArray([
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['rgb' => 'CBD5E1'],
+                            ],
+                        ],
+                    ]);
+
+                    // Set Lebar Kolom Proporsional & Rapi
+                    $colWidths = [
+                        'A' => 8,  // No
+                        'B' => 20, // Provinsi
+                        'C' => 20, // Kabupaten
+                        'D' => 30, // Alamat
+                        'E' => 18, // Jenis Nyamuk
+                        'F' => 20, // Insektisida
+                        'G' => 24, // Metode
+                        'H' => 18, // Sampel
+                        'I' => 14, // Bulan
+                        'J' => 12, // Tahun
+                        'K' => 12, // Resisten
+                        'L' => 12, // Rentan
+                        'M' => 12, // Toleran
+                        'N' => 15, // Mutasi
+                        'O' => 26, // Publikasi
+                    ];
+                    foreach ($colWidths as $colLetter => $width) {
+                        $sheet->getColumnDimension($colLetter)->setWidth($width);
+                    }
+
+                    // Freeze Pane agar header tetap terlihat saat scroll
+                    $sheet->freezePane('A2');
+
+                    ob_start();
+                    $writer = new Xlsx($spreadsheet);
+                    $writer->save('php://output');
+                    $excelBinary = ob_get_clean();
+
+                    if ($excelBinary && strlen($excelBinary) > 0) {
+                        $usedNativeXlsx = true;
+                    }
+                } catch (\Throwable $e) {
+                    if (ob_get_level() > 0) {
+                        ob_end_clean();
+                    }
+                    \Illuminate\Support\Facades\Log::warning('PhpSpreadsheet gagal (fallback ke XML SpreadsheetML): ' . $e->getMessage());
+                    $excelBinary = null;
                 }
             }
 
-            // Border seluruh tabel
-            $sheet->getStyle("A1:O{$lastRow}")->applyFromArray([
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => 'CBD5E1'],
-                    ],
-                ],
-            ]);
-
-            // Set Lebar Kolom Proporsional & Rapi
-            $colWidths = [
-                'A' => 8,  // No
-                'B' => 20, // Provinsi
-                'C' => 20, // Kabupaten
-                'D' => 30, // Alamat
-                'E' => 18, // Jenis Nyamuk
-                'F' => 20, // Insektisida
-                'G' => 24, // Metode
-                'H' => 18, // Sampel
-                'I' => 14, // Bulan
-                'J' => 12, // Tahun
-                'K' => 12, // Resisten
-                'L' => 12, // Rentan
-                'M' => 12, // Toleran
-                'N' => 15, // Mutasi
-                'O' => 26, // Publikasi
-            ];
-            foreach ($colWidths as $colLetter => $width) {
-                $sheet->getColumnDimension($colLetter)->setWidth($width);
+            // Jika PhpSpreadsheet berhasil, kirim berkas .xlsx native
+            if ($usedNativeXlsx && $excelBinary !== null) {
+                $fileName = "export_uji_resistensi_{$timestamp}.xlsx";
+                return response($excelBinary, 200, [
+                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+                    'Cache-Control' => 'max-age=0, must-revalidate',
+                    'Pragma' => 'public',
+                ]);
             }
 
-            // Freeze Pane agar header tetap terlihat saat scroll
-            $sheet->freezePane('A2');
+            // Fallback Resmi: Microsoft Excel SpreadsheetML (.xls)
+            // 100% kompatibel dengan MS Excel, WPS, LibreOffice, dan Google Sheets tanpa ekstensi XMLWriter
+            $xmlContent = $this->buildSpreadsheetML($items);
+            $fileName = "export_uji_resistensi_{$timestamp}.xls";
 
-            return response()->streamDownload(function () use ($spreadsheet) {
-                $writer = new Xlsx($spreadsheet);
-                $writer->save('php://output');
-            }, $fileName, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Cache-Control' => 'max-age=0',
+            return response($xmlContent, 200, [
+                'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+                'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+                'Cache-Control' => 'max-age=0, must-revalidate',
+                'Pragma' => 'public',
             ]);
         }
 
@@ -453,103 +489,425 @@ class ExportImportController extends Controller
             ]);
         }
 
-        // Default: Format Excel (.xlsx) dengan kolom rapi, warna header, dan auto-width (tanpa data dummy)
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Template Data Resistensi');
+        // Format Excel (.xlsx / .xls) dengan fallback otomatis
+        $canUsePhpSpreadsheet = class_exists(\XMLWriter::class) && class_exists(\ZipArchive::class);
+        $excelBinary = null;
 
-        // Headers
+        if ($canUsePhpSpreadsheet && ($format === 'xlsx' || $format === 'excel')) {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->setTitle('Template Data Resistensi');
+
+                // Headers
+                $headers = [
+                    'provinsi', 'kabupaten', 'alamat', 'jenis_nyamuk', 'insektisida',
+                    'metode', 'sampel_diperiksa', 'bulan', 'tahun',
+                    'resisten', 'rentan', 'toleran', 'mutasi', 'publikasi'
+                ];
+
+                foreach ($headers as $hIdx => $header) {
+                    $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
+                    $sheet->setCellValue($colLetter . '1', $header);
+                }
+
+                // Style Header Row (1)
+                $sheet->getStyle('A1:N1')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'color' => ['rgb' => 'FFFFFF'],
+                        'size' => 11,
+                        'name' => 'Calibri',
+                    ],
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => '1E40AF'], // Royal Blue Kemenkes
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+                $sheet->getRowDimension(1)->setRowHeight(28);
+
+                // Siapkan grid tabel kosong yang rapi untuk 50 baris isian pertama
+                $maxEmptyRows = 50;
+                $sheet->getStyle("A2:N{$maxEmptyRows}")->applyFromArray([
+                    'font' => [
+                        'size' => 10,
+                        'name' => 'Calibri',
+                    ],
+                    'alignment' => [
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
+                for ($r = 2; $r <= $maxEmptyRows; $r++) {
+                    $sheet->getRowDimension($r)->setRowHeight(22);
+                    $sheet->getStyle("G{$r}:M{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                }
+
+                // Border Thin untuk Seluruh Tabel (Header + Grid Kosong)
+                $sheet->getStyle("A1:N{$maxEmptyRows}")->applyFromArray([
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['rgb' => 'CBD5E1'],
+                        ],
+                    ],
+                ]);
+
+                // Set Lebar Kolom Proporsional & Rapi
+                $minWidths = [
+                    'A' => 18, // provinsi
+                    'B' => 18, // kabupaten
+                    'C' => 30, // alamat
+                    'D' => 18, // jenis_nyamuk
+                    'E' => 20, // insektisida
+                    'F' => 24, // metode
+                    'G' => 18, // sampel_diperiksa
+                    'H' => 14, // bulan
+                    'I' => 12, // tahun
+                    'J' => 12, // resisten
+                    'K' => 12, // rentan
+                    'L' => 12, // toleran
+                    'M' => 14, // mutasi
+                    'N' => 26  // publikasi
+                ];
+                foreach ($minWidths as $col => $w) {
+                    $sheet->getColumnDimension($col)->setWidth($w);
+                }
+
+                // Freeze Panes A2
+                $sheet->freezePane('A2');
+
+                ob_start();
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+                $excelBinary = ob_get_clean();
+            } catch (\Throwable $e) {
+                if (ob_get_level() > 0) {
+                    ob_end_clean();
+                }
+                \Illuminate\Support\Facades\Log::warning('Template PhpSpreadsheet gagal (fallback ke XML SpreadsheetML): ' . $e->getMessage());
+                $excelBinary = null;
+            }
+        }
+
+        if ($excelBinary !== null && strlen($excelBinary) > 0) {
+            $fileName = 'template_import_simpel_bblk.xlsx';
+            return response($excelBinary, 200, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+                'Cache-Control' => 'max-age=0, must-revalidate',
+                'Pragma' => 'public',
+            ]);
+        }
+
+        // Fallback: Template Microsoft Excel SpreadsheetML (.xls)
+        $xmlContent = $this->buildTemplateSpreadsheetML();
+        $fileName = 'template_import_simpel_bblk.xls';
+        return response($xmlContent, 200, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+            'Cache-Control' => 'max-age=0, must-revalidate',
+            'Pragma' => 'public',
+        ]);
+    }
+
+    /**
+     * Membangun dokumen Microsoft Excel XML SpreadsheetML (.xls)
+     * Sepenuhnya native PHP murni tanpa ketergantungan ekstensi XMLWriter / ZipArchive
+     */
+    private function buildSpreadsheetML($items)
+    {
+        $xml = [];
+        $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml[] = '<?mso-application progid="Excel.Sheet"?>';
+        $xml[] = '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"';
+        $xml[] = ' xmlns:o="urn:schemas-microsoft-com:office:office"';
+        $xml[] = ' xmlns:x="urn:schemas-microsoft-com:office:excel"';
+        $xml[] = ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"';
+        $xml[] = ' xmlns:html="http://www.w3.org/TR/REC-html40">';
+
+        // Properti Dokumen
+        $xml[] = ' <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">';
+        $xml[] = '  <Author>Peta Resistensi BBLKL Kemenkes RI</Author>';
+        $xml[] = '  <Created>' . date('Y-m-d\TH:i:s\Z') . '</Created>';
+        $xml[] = ' </DocumentProperties>';
+
+        // Gaya Sel (Styles)
+        $xml[] = ' <Styles>';
+        $xml[] = '  <Style ss:ID="Default" ss:Name="Normal">';
+        $xml[] = '   <Alignment ss:Vertical="Center"/>';
+        $xml[] = '   <Borders/>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '   <Interior/>';
+        $xml[] = '   <NumberFormat/>';
+        $xml[] = '   <Protection/>';
+        $xml[] = '  </Style>';
+
+        // Gaya Header (Teal Kemenkes #0F766E, Teks Putih Tebal)
+        $xml[] = '  <Style ss:ID="sHeader">';
+        $xml[] = '   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>';
+        $xml[] = '   <Interior ss:Color="#0F766E" ss:Pattern="Solid"/>';
+        $xml[] = '  </Style>';
+
+        // Gaya Data Biasa
+        $xml[] = '  <Style ss:ID="sData">';
+        $xml[] = '   <Alignment ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '  </Style>';
+
+        // Gaya Data Belang (Zebra Striping)
+        $xml[] = '  <Style ss:ID="sDataZebra">';
+        $xml[] = '   <Alignment ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '   <Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/>';
+        $xml[] = '  </Style>';
+
+        // Gaya Center untuk Angka & Flag
+        $xml[] = '  <Style ss:ID="sCenter">';
+        $xml[] = '   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '  </Style>';
+
+        $xml[] = '  <Style ss:ID="sCenterZebra">';
+        $xml[] = '   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '   <Interior ss:Color="#F8FAFC" ss:Pattern="Solid"/>';
+        $xml[] = '  </Style>';
+        $xml[] = ' </Styles>';
+
+        $xml[] = ' <Worksheet ss:Name="Data Resistensi">';
+        $xml[] = '  <Table>';
+
+        // Lebar Kolom
+        $widths = [45, 140, 140, 180, 120, 130, 140, 90, 80, 60, 60, 60, 60, 80, 160];
+        foreach ($widths as $w) {
+            $xml[] = '   <Column ss:Width="' . $w . '"/>';
+        }
+
+        // Header Kolom
+        $headers = [
+            'No', 'Provinsi', 'Kabupaten', 'Alamat', 'Jenis Nyamuk',
+            'Insektisida', 'Metode', 'Sampel Diperiksa', 'Bulan', 'Tahun',
+            'Resisten', 'Rentan', 'Toleran', 'Mutasi', 'Publikasi'
+        ];
+        $xml[] = '   <Row ss:Height="26">';
+        foreach ($headers as $h) {
+            $xml[] = '    <Cell ss:StyleID="sHeader"><Data ss:Type="String">' . htmlspecialchars($h, ENT_QUOTES | ENT_XML1, 'UTF-8') . '</Data></Cell>';
+        }
+        $xml[] = '   </Row>';
+
+        // Isi Data Baris
+        foreach ($items as $idx => $item) {
+            $isEven = ($idx % 2 === 1);
+            $dStyle = $isEven ? 'sDataZebra' : 'sData';
+            $cStyle = $isEven ? 'sCenterZebra' : 'sCenter';
+
+            $st = strtolower(trim((string)$item->status));
+            $isResisten = ($st === 'resisten');
+            $isRentan = ($st === 'rentan');
+            $isToleran = str_contains($st, 'toleran') || str_contains($st, 'terduga');
+
+            $cleanText = function($val) {
+                return htmlspecialchars((string)($val ?? '-'), ENT_QUOTES | ENT_XML1, 'UTF-8');
+            };
+
+            $xml[] = '   <Row ss:Height="21">';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="Number">' . ($idx + 1) . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->provinsi ? $item->provinsi->nama_provinsi : '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->kabupaten ? $item->kabupaten->nama_kabupaten : '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->alamat ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->jenis_nyamuk ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->insektisida ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->metode ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="Number">' . (int)($item->sampel_diperiksa ?? 0) . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="String">' . $cleanText($item->bulan ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="Number">' . (int)($item->tahun ?? 0) . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="String">' . ($isResisten ? 'v' : '') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="String">' . ($isRentan ? 'v' : '') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="String">' . ($isToleran ? 'v' : '') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $cStyle . '"><Data ss:Type="String">' . $cleanText($item->mutasi ?: '-') . '</Data></Cell>';
+            $xml[] = '    <Cell ss:StyleID="' . $dStyle . '"><Data ss:Type="String">' . $cleanText($item->publikasi ?: '-') . '</Data></Cell>';
+            $xml[] = '   </Row>';
+        }
+
+        $xml[] = '  </Table>';
+        $xml[] = '  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">';
+        $xml[] = '   <FreezePanes/>';
+        $xml[] = '   <FrozenNoSplit/>';
+        $xml[] = '   <SplitHorizontal>1</SplitHorizontal>';
+        $xml[] = '   <TopRowBottomPane>1</TopRowBottomPane>';
+        $xml[] = '   <ActivePane>2</ActivePane>';
+        $xml[] = '  </WorksheetOptions>';
+        $xml[] = ' </Worksheet>';
+        $xml[] = '</Workbook>';
+
+        return implode("\r\n", $xml);
+    }
+
+    /**
+     * Membangun dokumen Template Excel SpreadsheetML (.xls) untuk Import Data
+     */
+    private function buildTemplateSpreadsheetML()
+    {
+        $xml = [];
+        $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml[] = '<?mso-application progid="Excel.Sheet"?>';
+        $xml[] = '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"';
+        $xml[] = ' xmlns:o="urn:schemas-microsoft-com:office:office"';
+        $xml[] = ' xmlns:x="urn:schemas-microsoft-com:office:excel"';
+        $xml[] = ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"';
+        $xml[] = ' xmlns:html="http://www.w3.org/TR/REC-html40">';
+
+        $xml[] = ' <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">';
+        $xml[] = '  <Author>BBLKL Kemenkes RI</Author>';
+        $xml[] = '  <Created>' . date('Y-m-d\TH:i:s\Z') . '</Created>';
+        $xml[] = ' </DocumentProperties>';
+
+        $xml[] = ' <Styles>';
+        $xml[] = '  <Style ss:ID="Default" ss:Name="Normal">';
+        $xml[] = '   <Alignment ss:Vertical="Center"/>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '  </Style>';
+
+        // Header Template (Royal Blue #1E40AF)
+        $xml[] = '  <Style ss:ID="sTplHeader">';
+        $xml[] = '   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>';
+        $xml[] = '   <Interior ss:Color="#1E40AF" ss:Pattern="Solid"/>';
+        $xml[] = '  </Style>';
+
+        $xml[] = '  <Style ss:ID="sTplCell">';
+        $xml[] = '   <Alignment ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '  </Style>';
+
+        $xml[] = '  <Style ss:ID="sTplCellCenter">';
+        $xml[] = '   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>';
+        $xml[] = '   <Borders>';
+        $xml[] = '    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>';
+        $xml[] = '   </Borders>';
+        $xml[] = '   <Font ss:FontName="Calibri" ss:Size="10" ss:Color="#1E293B"/>';
+        $xml[] = '  </Style>';
+        $xml[] = ' </Styles>';
+
+        $xml[] = ' <Worksheet ss:Name="Template Data Resistensi">';
+        $xml[] = '  <Table>';
+
+        $widths = [130, 130, 180, 120, 140, 150, 110, 90, 80, 80, 80, 80, 90, 180];
+        foreach ($widths as $w) {
+            $xml[] = '   <Column ss:Width="' . $w . '"/>';
+        }
+
         $headers = [
             'provinsi', 'kabupaten', 'alamat', 'jenis_nyamuk', 'insektisida',
             'metode', 'sampel_diperiksa', 'bulan', 'tahun',
             'resisten', 'rentan', 'toleran', 'mutasi', 'publikasi'
         ];
 
-        foreach ($headers as $hIdx => $header) {
-            $colLetter = Coordinate::stringFromColumnIndex($hIdx + 1);
-            $sheet->setCellValue($colLetter . '1', $header);
+        $xml[] = '   <Row ss:Height="26">';
+        foreach ($headers as $h) {
+            $xml[] = '    <Cell ss:StyleID="sTplHeader"><Data ss:Type="String">' . htmlspecialchars($h, ENT_QUOTES | ENT_XML1, 'UTF-8') . '</Data></Cell>';
+        }
+        $xml[] = '   </Row>';
+
+        // 50 baris kosong bergaris untuk siap diisi pengguna
+        for ($i = 0; $i < 50; $i++) {
+            $xml[] = '   <Row ss:Height="21">';
+            for ($c = 0; $c < 14; $c++) {
+                $style = ($c >= 6 && $c <= 12) ? 'sTplCellCenter' : 'sTplCell';
+                $xml[] = '    <Cell ss:StyleID="' . $style . '"/>';
+            }
+            $xml[] = '   </Row>';
         }
 
-        // Style Header Row (1)
-        $sheet->getStyle('A1:N1')->applyFromArray([
-            'font' => [
-                'bold' => true,
-                'color' => ['rgb' => 'FFFFFF'],
-                'size' => 11,
-                'name' => 'Calibri',
-            ],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '1E40AF'], // Royal Blue Kemenkes
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-        ]);
-        $sheet->getRowDimension(1)->setRowHeight(28);
+        $xml[] = '  </Table>';
+        $xml[] = '  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">';
+        $xml[] = '   <FreezePanes/>';
+        $xml[] = '   <FrozenNoSplit/>';
+        $xml[] = '   <SplitHorizontal>1</SplitHorizontal>';
+        $xml[] = '   <TopRowBottomPane>1</TopRowBottomPane>';
+        $xml[] = '   <ActivePane>2</ActivePane>';
+        $xml[] = '  </WorksheetOptions>';
+        $xml[] = ' </Worksheet>';
+        $xml[] = '</Workbook>';
 
-        // Siapkan grid tabel kosong yang rapi untuk 50 baris isian pertama
-        $maxEmptyRows = 50;
-        $sheet->getStyle("A2:N{$maxEmptyRows}")->applyFromArray([
-            'font' => [
-                'size' => 10,
-                'name' => 'Calibri',
-            ],
-            'alignment' => [
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-        ]);
+        return implode("\r\n", $xml);
+    }
 
-        for ($r = 2; $r <= $maxEmptyRows; $r++) {
-            $sheet->getRowDimension($r)->setRowHeight(22);
-            // Center align kolom sampel (G), bulan (H), tahun (I), resisten (J), rentan (K), toleran (L), mutasi (M)
-            $sheet->getStyle("G{$r}:M{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    /**
+     * Parser berkas XML SpreadsheetML (.xls) tanpa ketergantungan ekstensi
+     */
+    private function parseSpreadsheetML($content)
+    {
+        $rows = [];
+        if (preg_match_all('/<Row[^>]*>(.*?)<\/Row>/is', $content, $rowMatches)) {
+            foreach ($rowMatches[1] as $rXml) {
+                $cells = [];
+                if (preg_match_all('/<Cell[^>]*>(.*?)<\/Cell>/is', $rXml, $cellMatches)) {
+                    foreach ($cellMatches[1] as $cXml) {
+                        if (preg_match('/<Data[^>]*>(.*?)<\/Data>/is', $cXml, $dMatch)) {
+                            $cells[] = trim(html_entity_decode($dMatch[1], ENT_QUOTES | ENT_XML1, 'UTF-8'));
+                        } else {
+                            $cells[] = '';
+                        }
+                    }
+                }
+                if (!empty($cells) && array_filter($cells, fn($v) => $v !== '')) {
+                    $rows[] = $cells;
+                }
+            }
         }
-
-        // Border Thin untuk Seluruh Tabel (Header + Grid Kosong)
-        $sheet->getStyle("A1:N{$maxEmptyRows}")->applyFromArray([
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => 'CBD5E1'],
-                ],
-            ],
-        ]);
-
-        // Set Lebar Kolom Proporsional & Rapi
-        $minWidths = [
-            'A' => 18, // provinsi
-            'B' => 18, // kabupaten
-            'C' => 30, // alamat
-            'D' => 18, // jenis_nyamuk
-            'E' => 20, // insektisida
-            'F' => 24, // metode
-            'G' => 18, // sampel_diperiksa
-            'H' => 14, // bulan
-            'I' => 12, // tahun
-            'J' => 12, // resisten
-            'K' => 12, // rentan
-            'L' => 12, // toleran
-            'M' => 14, // mutasi
-            'N' => 26  // publikasi
-        ];
-        foreach ($minWidths as $col => $w) {
-            $sheet->getColumnDimension($col)->setWidth($w);
-        }
-
-        // Freeze Panes A2
-        $sheet->freezePane('A2');
-
-        $fileName = 'template_import_simpel_bblk.xlsx';
-
-        return response()->streamDownload(function () use ($spreadsheet) {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save('php://output');
-        }, $fileName, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Cache-Control' => 'max-age=0',
-        ]);
+        return $rows;
     }
 
     /**
@@ -695,7 +1053,7 @@ class ExportImportController extends Controller
         $ext = strtolower($file->getClientOriginalExtension());
 
         if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
-            return redirect()->back()->with('error', 'Format file harus berupa Excel (.xlsx) atau CSV (.csv / .txt).');
+            return redirect()->back()->with('error', 'Format file harus berupa Excel (.xlsx / .xls) atau CSV (.csv / .txt).');
         }
 
         $path = $file->getRealPath();
@@ -705,6 +1063,29 @@ class ExportImportController extends Controller
             $sheetGroups = $this->parseXlsxSheets($path);
             if (empty($sheetGroups)) {
                 return redirect()->back()->with('error', 'Gagal membaca berkas Excel atau berkas kosong.');
+            }
+        } elseif ($ext === 'xls') {
+            $content = file_get_contents($path);
+            if (str_contains($content, '<Workbook') && str_contains($content, '<Row')) {
+                $rows = $this->parseSpreadsheetML($content);
+                if (empty($rows)) {
+                    return redirect()->back()->with('error', 'Berkas Excel (.xls) tidak memiliki baris data.');
+                }
+                $sheetGroups['Excel'] = $rows;
+            } else {
+                $sheetGroups = $this->parseXlsxSheets($path);
+                if (empty($sheetGroups)) {
+                    $lines = preg_split('/\r\n|\r|\n/', trim($content));
+                    $delimiter = (count($lines) > 0 && strpos($lines[0], ';') !== false) ? ';' : ',';
+                    $rows = [];
+                    foreach ($lines as $line) {
+                        if (trim($line) === '') continue;
+                        $rows[] = str_getcsv($line, $delimiter);
+                    }
+                    if (!empty($rows)) {
+                        $sheetGroups['Sheet1'] = $rows;
+                    }
+                }
             }
         } else {
             // CSV atau TXT

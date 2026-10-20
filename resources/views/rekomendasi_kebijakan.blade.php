@@ -171,7 +171,7 @@
                             <label for="provinsi_id" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
                                 Provinsi
                             </label>
-                            <select name="provinsi_id" id="provinsi_id" onchange="loadKabupatenOptions(this.value); this.form.submit();"
+                            <select name="provinsi_id" id="provinsi_id" onchange="document.getElementById('kabupaten_id').value = 'Semua'; this.form.submit();"
                                     class="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-teal-500 focus:bg-white focus:outline-none dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
                                 <option value="Semua">Semua Provinsi (Nasional)</option>
                                 @foreach ($provinsis as $p)
@@ -325,9 +325,9 @@
 
             {{-- 2. HERO STATUS KESIAPSIAGAAN VEKTOR & PERINGATAN RISIKO --}}
             <div class="rounded-2xl border p-5 shadow-2xs relative overflow-hidden transition-all
-                @if($alertLevel === 'KRITIS')
+                @if($alertLevel === 'TINGGI' || $alertLevel === 'KRITIS' || ($alertColor ?? '') === 'rose')
                     border-rose-300 bg-gradient-to-r from-rose-500/10 via-rose-50 to-white dark:from-rose-950/40 dark:via-zinc-900/60 dark:to-zinc-900 dark:border-rose-900/50
-                @elseif($alertLevel === 'WASPADA')
+                @elseif($alertLevel === 'SEDANG' || $alertLevel === 'WASPADA' || ($alertColor ?? '') === 'amber')
                     border-amber-300 bg-gradient-to-r from-amber-500/10 via-amber-50 to-white dark:from-amber-950/40 dark:via-zinc-900/60 dark:to-zinc-900 dark:border-amber-900/50
                 @else
                     border-emerald-300 bg-gradient-to-r from-emerald-500/10 via-emerald-50 to-white dark:from-emerald-950/40 dark:via-zinc-900/60 dark:to-zinc-900 dark:border-emerald-900/50
@@ -337,8 +337,8 @@
                     <div class="space-y-2">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black tracking-wide uppercase shadow-2xs
-                                @if($alertLevel === 'KRITIS') bg-rose-600 text-white animate-pulse
-                                @elseif($alertLevel === 'WASPADA') bg-amber-500 text-white
+                                @if($alertLevel === 'TINGGI' || $alertLevel === 'KRITIS' || ($alertColor ?? '') === 'rose') bg-rose-600 text-white animate-pulse
+                                @elseif($alertLevel === 'SEDANG' || $alertLevel === 'WASPADA' || ($alertColor ?? '') === 'amber') bg-amber-500 text-white
                                 @else bg-emerald-600 text-white
                                 @endif">
                                 {{ $alertBadge }}

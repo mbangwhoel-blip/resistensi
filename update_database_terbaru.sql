@@ -101,3 +101,6 @@ CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
   KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 8. Tambahkan kolom koordinat latitude & longitude di tabel data_uji_resistensis (jika belum ada)
+ALTER TABLE `data_uji_resistensis` ADD COLUMN IF NOT EXISTS `latitude` decimal(10,8) NULL AFTER `address`;
+ALTER TABLE `data_uji_resistensis` ADD COLUMN IF NOT EXISTS `longitude` decimal(11,8) NULL AFTER `latitude`;

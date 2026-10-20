@@ -200,7 +200,41 @@ Route::get('/auto-fix', function (\Illuminate\Http\Request $request) {
         $actions[] = '⚠️ Error sinkronisasi wilayah: ' . $e->getMessage();
     }
 
-    // 4. Tes render preview template agregat secara internal
+    // 4. Pemeriksaan Ekstensi PHP Server & Uji Coba Export Excel
+    $extChecks = [
+        'xmlwriter' => class_exists(\XMLWriter::class),
+        'dom' => class_exists(\DOMDocument::class),
+        'zip' => class_exists(\ZipArchive::class),
+        'mbstring' => extension_loaded('mbstring'),
+    ];
+    $missingExts = [];
+    foreach ($extChecks as $extName => $isOk) {
+        if (!$isOk) $missingExts[] = $extName;
+    }
+    if (empty($missingExts)) {
+        $actions[] = '✅ Ekstensi PHP Server (xmlwriter, dom, zip, mbstring) lengkap dan aktif';
+    } else {
+        $actions[] = 'ℹ️ Ekstensi PHP Hosting (' . implode(', ', $missingExts) . ') belum dicentang di cPanel PHP Selector. Sistem otomatis menggunakan mode fallback SpreadsheetML & polyfill murni sehingga fitur ekspor/cetak tetap 100% normal tanpa error!';
+    }
+
+    // 5. Uji Coba Download Export Excel Langsung
+    try {
+        $ctlExport = app(\App\Http\Controllers\ExportImportController::class);
+        $reqTestExport = \Illuminate\Http\Request::create('/export/download', 'GET', [
+            'format' => 'xlsx',
+            'bulan' => 'Semua',
+            'tahun' => 'Semua',
+            'jenis_nyamuk' => 'Semua',
+            'provinsi_id' => 'Semua',
+        ]);
+        $respExport = $ctlExport->exportDownload($reqTestExport);
+        $disposition = (string)$respExport->headers->get('Content-Disposition');
+        $actions[] = '✅ Uji Coba Download Export Excel: BERHASIL (' . strlen((string)$respExport->getContent()) . ' bytes, ' . $disposition . ')';
+    } catch (\Throwable $e) {
+        $actions[] = '❌ Kendala Uji Coba Export Excel: ' . $e->getMessage();
+    }
+
+    // 6. Tes render preview template agregat secara internal
     $previewTestMsg = '';
     try {
         $u = \App\Models\User::where('role', 'admin')->first() ?? \App\Models\User::first();
@@ -217,7 +251,7 @@ Route::get('/auto-fix', function (\Illuminate\Http\Request $request) {
         $previewTestMsg = '❌ Kendala Uji Render: ' . $e->getMessage() . ' di baris ' . $e->getLine();
     }
 
-    // 4. Baca 30 baris log terakhir jika ada
+    // 7. Baca 35 baris log terakhir jika ada
     $logContent = '';
     $logPath = storage_path('logs/laravel.log');
     if (file_exists($logPath)) {
@@ -234,9 +268,10 @@ Route::get('/auto-fix', function (\Illuminate\Http\Request $request) {
         <div style='color:#0f766e;font-size:14px;line-height:1.6;'>{$actHtml}</div>
         {$logHtml}
         <div style='margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;'>
+            <a href='" . url('/export/download?bulan=Semua&tahun=Semua&jenis_nyamuk=Semua&provinsi_id=Semua&format=xlsx') . "' style='display:inline-block;padding:10px 18px;background:#059669;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;'>Unduh Excel Uji Coba &rarr;</a>
             <a href='" . url('/rekomendasi-kebijakan/preview?template=laboratorium') . "' target='_blank' style='display:inline-block;padding:10px 18px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;'>Buka Cetak Laboratorium &rarr;</a>
             <a href='" . url('/rekomendasi-kebijakan/preview?template=agregat') . "' target='_blank' style='display:inline-block;padding:10px 18px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;'>Buka Cetak Agregat &rarr;</a>
-            <a href='" . url('/rekomendasi-kebijakan') . "' style='display:inline-block;padding:10px 18px;background:#e2e8f0;color:#334155;text-decoration:none;border-radius:8px;font-weight:700;'>Halaman Rekomendasi</a>
+            <a href='" . url('/export') . "' style='display:inline-block;padding:10px 18px;background:#e2e8f0;color:#334155;text-decoration:none;border-radius:8px;font-weight:700;'>Halaman Export Data</a>
         </div>
     </div>";
 });

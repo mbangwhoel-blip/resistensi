@@ -1021,9 +1021,9 @@
         {{-- 4. STATUS INDEKS KEWASPADAAN VEKTOR (ALERT LEVEL) --}}
         @php
             $alertClass = 'alert-banner-kritis';
-            if ($alertLevel === 'WASPADA') {
+            if ($alertLevel === 'SEDANG' || $alertLevel === 'WASPADA' || ($alertColor ?? '') === 'amber') {
                 $alertClass = 'alert-banner-waspada';
-            } elseif ($alertLevel === 'TERKENDALI') {
+            } elseif ($alertLevel === 'RENDAH' || $alertLevel === 'TERKENDALI' || ($alertColor ?? '') === 'emerald') {
                 $alertClass = 'alert-banner-terkendali';
             }
         @endphp
@@ -1520,9 +1520,9 @@
         {{-- 4. STATUS INDEKS KESIAPSIAGAAN VEKTOR STANDAR KEMENKES --}}
         @php
             $alertClassKemenkes = 'alert-banner-kritis';
-            if ($alertLevel === 'WASPADA') {
+            if ($alertLevel === 'SEDANG' || $alertLevel === 'WASPADA' || ($alertColor ?? '') === 'amber') {
                 $alertClassKemenkes = 'alert-banner-waspada';
-            } elseif ($alertLevel === 'TERKENDALI' || $alertLevel === 'RENDAH') {
+            } elseif ($alertLevel === 'RENDAH' || $alertLevel === 'TERKENDALI' || ($alertColor ?? '') === 'emerald') {
                 $alertClassKemenkes = 'alert-banner-terkendali';
             }
         @endphp
@@ -2236,7 +2236,7 @@
                     DINAS KESEHATAN PROVINSI &bull; REKOMENDASI TEKNIS AGREGAT
                 </div>
                 <h1 class="agr-title">
-                    Resistensi Insektisida pada Nyamuk {{ $nyamukFilter === 'Semua' ? 'Aedes' : $nyamukFilter }}<br>
+                    Resistensi Insektisida pada Nyamuk {{ $nyamukFilter === 'Semua' ? 'Vektor (Aedes, Anopheles, Culex)' : $nyamukFilter }}<br>
                     di {{ $selectedProvinsi ? 'Provinsi ' . $selectedProvinsi->name : $namaWilayah }}
                 </h1>
                 <div class="agr-subtitle">
