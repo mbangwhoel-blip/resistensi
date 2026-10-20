@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KategoriUji;
 use App\Models\DataUjiResistensi;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KategoriUjiController extends Controller
 {
@@ -278,5 +279,135 @@ class KategoriUjiController extends Controller
         return redirect()
             ->route('kategori.index', ['tab' => $tab])
             ->with('success', "Data '{$nama}' berhasil dihapus dari master kategori!");
+    }
+
+    /**
+     * Tampilan Pratinjau Cetak Interaktif Master Data Kategori & Parameter Uji (Web Print Preview)
+     */
+    public function preview(Request $request)
+    {
+        $tab = $request->get('tab', 'nyamuk');
+        $search = trim($request->get('search', ''));
+
+        $query = KategoriUji::query();
+
+        if ($tab && in_array($tab, ['nyamuk', 'insektisida', 'metode'])) {
+            $query->where('category', $tab);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $data = $query->orderBy('category', 'asc')->orderBy('name', 'asc')->get();
+
+        $totalNyamuk = KategoriUji::nyamuk()->count();
+        $totalInsektisida = KategoriUji::insektisida()->count();
+        $totalMetode = KategoriUji::metode()->count();
+        $totalSemua = KategoriUji::count();
+
+        $categoryLabels = [
+            'nyamuk' => 'Jenis Nyamuk Vektor',
+            'insektisida' => 'Insektisida / Bahan Aktif',
+            'metode' => 'Metode Pengendalian / Pengujian',
+            'all' => 'Seluruh Parameter Uji'
+        ];
+
+        $filterInfo = [
+            'tab' => $tab,
+            'tab_label' => $categoryLabels[$tab] ?? 'Parameter Uji',
+            'search' => $search,
+            'total_terfilter' => $data->count(),
+            'total_semua' => $totalSemua,
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        return view('kategori_preview', compact(
+            'data',
+            'tab',
+            'search',
+            'filterInfo',
+            'totalNyamuk',
+            'totalInsektisida',
+            'totalMetode',
+            'totalSemua'
+        ));
+    }
+
+    /**
+     * Unduh atau Alirkan Master Data Kategori & Parameter Uji dalam Format PDF Resmi
+     */
+    public function exportPdf(Request $request)
+    {
+        @ini_set('memory_limit', '512M');
+        @ini_set('max_execution_time', '180');
+
+        $tab = $request->get('tab', 'nyamuk');
+        $search = trim($request->get('search', ''));
+        $mode = $request->get('mode', 'stream');
+
+        $query = KategoriUji::query();
+
+        if ($tab && in_array($tab, ['nyamuk', 'insektisida', 'metode'])) {
+            $query->where('category', $tab);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $data = $query->orderBy('category', 'asc')->orderBy('name', 'asc')->get();
+
+        $totalNyamuk = KategoriUji::nyamuk()->count();
+        $totalInsektisida = KategoriUji::insektisida()->count();
+        $totalMetode = KategoriUji::metode()->count();
+        $totalSemua = KategoriUji::count();
+
+        $categoryLabels = [
+            'nyamuk' => 'Jenis Nyamuk Vektor',
+            'insektisida' => 'Insektisida / Bahan Aktif',
+            'metode' => 'Metode Pengendalian / Pengujian',
+            'all' => 'Seluruh Parameter Uji'
+        ];
+
+        $filterInfo = [
+            'tab' => $tab,
+            'tab_label' => $categoryLabels[$tab] ?? 'Parameter Uji',
+            'search' => $search,
+            'total_terfilter' => $data->count(),
+            'total_semua' => $totalSemua,
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        $logoBase64 = null;
+        $logoPath = public_path('logo_bblkl.png');
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $pdf = Pdf::loadView('kategori_pdf', compact('data', 'tab', 'filterInfo', 'logoBase64'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif'
+            ]);
+
+        $filename = 'Master-Data-Parameter-Uji-' . $tab . '-' . date('Ymd-His') . '.pdf';
+
+        if ($mode === 'download') {
+            return $pdf->download($filename);
+        }
+
+        return $pdf->stream($filename);
     }
 }

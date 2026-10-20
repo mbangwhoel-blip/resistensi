@@ -6,6 +6,7 @@ use App\Models\Instansi;
 use App\Models\Provinsi;
 use App\Models\Kabupaten;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InstansiController extends Controller
 {
@@ -137,5 +138,123 @@ class InstansiController extends Controller
         return redirect()
             ->route('instansi.index')
             ->with('success', 'Unit / Instansi berhasil dihapus!');
+    }
+
+    /**
+     * Tampilan Pratinjau Cetak Interaktif Master Data Unit / Instansi (Web Print Preview)
+     */
+    public function preview(Request $request)
+    {
+        $search = $request->get('search');
+        $kategori = $request->get('kategori');
+        $provinsiId = $request->get('provinsi_id');
+
+        $query = Instansi::with(['provinsi', 'kabupaten']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('unit_code', 'like', "%{$search}%")
+                  ->orWhere('person_in_charge', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
+            });
+        }
+
+        if ($kategori && $kategori !== 'Semua') {
+            $query->where('category', $kategori);
+        }
+
+        if ($provinsiId && $provinsiId !== 'Semua') {
+            $query->where('provinsi_id', $provinsiId);
+        }
+
+        $data = $query->orderBy('name', 'asc')->get();
+
+        $selectedProvinsi = ($provinsiId && $provinsiId !== 'Semua') ? Provinsi::find($provinsiId) : null;
+        $totalInstansi = Instansi::count();
+
+        $filterInfo = [
+            'search' => $search,
+            'kategori' => $kategori ?: 'Semua Kategori',
+            'provinsi_id' => $provinsiId,
+            'provinsi_nama' => $selectedProvinsi ? ($selectedProvinsi->name ?? $selectedProvinsi->nama_provinsi) : 'Seluruh Indonesia',
+            'total_terfilter' => $data->count(),
+            'total_semua' => $totalInstansi,
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        return view('instansi_preview', compact('data', 'filterInfo', 'search', 'kategori', 'provinsiId'));
+    }
+
+    /**
+     * Unduh atau Alirkan Master Data Unit / Instansi dalam Format PDF Resmi
+     */
+    public function exportPdf(Request $request)
+    {
+        @ini_set('memory_limit', '512M');
+        @ini_set('max_execution_time', '180');
+
+        $search = $request->get('search');
+        $kategori = $request->get('kategori');
+        $provinsiId = $request->get('provinsi_id');
+        $mode = $request->get('mode', 'stream');
+
+        $query = Instansi::with(['provinsi', 'kabupaten']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('unit_code', 'like', "%{$search}%")
+                  ->orWhere('person_in_charge', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
+            });
+        }
+
+        if ($kategori && $kategori !== 'Semua') {
+            $query->where('category', $kategori);
+        }
+
+        if ($provinsiId && $provinsiId !== 'Semua') {
+            $query->where('provinsi_id', $provinsiId);
+        }
+
+        $data = $query->orderBy('name', 'asc')->get();
+        $selectedProvinsi = ($provinsiId && $provinsiId !== 'Semua') ? Provinsi::find($provinsiId) : null;
+        $totalInstansi = Instansi::count();
+
+        $filterInfo = [
+            'search' => $search,
+            'kategori' => $kategori ?: 'Semua Kategori',
+            'provinsi_id' => $provinsiId,
+            'provinsi_nama' => $selectedProvinsi ? ($selectedProvinsi->name ?? $selectedProvinsi->nama_provinsi) : 'Seluruh Indonesia',
+            'total_terfilter' => $data->count(),
+            'total_semua' => $totalInstansi,
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        $logoBase64 = null;
+        $logoPath = public_path('logo_bblkl.png');
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $pdf = Pdf::loadView('instansi_pdf', compact('data', 'filterInfo', 'logoBase64'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif'
+            ]);
+
+        $filename = 'Master-Data-Unit-Instansi-' . date('Ymd-His') . '.pdf';
+
+        if ($mode === 'download') {
+            return $pdf->download($filename);
+        }
+
+        return $pdf->stream($filename);
     }
 }

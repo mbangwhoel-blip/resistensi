@@ -191,13 +191,14 @@
                 </div>
             </div>
 
-            {{-- TOOLBAR PENCARIAN, FILTER, DAN TOMBOL TAMBAH --}}
+            {{-- TOOLBAR PENCARIAN, FILTER, DAN TOMBOL AKSI --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs no-print">
-                <form action="{{ route('users.index') }}" method="GET" class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <form action="{{ route('users.index') }}" method="GET" class="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
 
-                    <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-0">
+                    {{-- GRUP KIRI: PENCARIAN, ROLE, DAN TAMPIL DATA (SEJAJAR & PROPORSIONAL) --}}
+                    <div class="flex flex-wrap items-center gap-2.5 flex-1">
                         {{-- KOTAK PENCARIAN --}}
-                        <div class="relative w-full sm:w-64">
+                        <div class="relative w-full sm:w-56 md:w-64">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -206,8 +207,24 @@
                             <input type="text"
                                    name="search"
                                    value="{{ $search }}"
-                                   placeholder="Cari nama, username, email..."
-                                   class="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3.5 text-xs text-slate-700 transition focus:border-blue-500 focus:bg-white focus:outline-none shadow-2xs">
+                                   placeholder="Cari nama, user, email..."
+                                   class="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-700 transition focus:border-blue-500 focus:bg-white focus:outline-none shadow-2xs">
+                        </div>
+
+                        {{-- FILTER ROLE --}}
+                        <div class="w-full sm:w-auto">
+                            <select name="role" onchange="this.form.submit()" class="h-9 w-full sm:w-auto rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 focus:border-blue-500 focus:bg-white focus:outline-none cursor-pointer shadow-2xs">
+                                <option value="Semua" {{ $roleFilter === 'Semua' ? 'selected' : '' }}>Semua Role</option>
+                                <option value="kepala" {{ $roleFilter === 'kepala' ? 'selected' : '' }}>Kepala / Pimpinan BBLKL</option>
+                                <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Administrator</option>
+                                <option value="petugas" {{ $roleFilter === 'petugas' ? 'selected' : '' }}>Petugas Lab</option>
+                                <option value="peneliti" {{ $roleFilter === 'peneliti' ? 'selected' : '' }}>Peneliti</option>
+                                <option value="universitas" {{ $roleFilter === 'universitas' ? 'selected' : '' }}>Universitas / Akademisi</option>
+                                <option value="dinas_kesehatan" {{ $roleFilter === 'dinas_kesehatan' ? 'selected' : '' }}>Dinas Kesehatan</option>
+                                <option value="balai_kekarantinaan_kesehatan" {{ $roleFilter === 'balai_kekarantinaan_kesehatan' ? 'selected' : '' }}>Balai Kekarantinaan Kesehatan</option>
+                                <option value="labkesmas" {{ $roleFilter === 'labkesmas' ? 'selected' : '' }}>Labkesmas</option>
+                                <option value="viewer" {{ $roleFilter === 'viewer' ? 'selected' : '' }}>Viewer (Lihat Saja)</option>
+                            </select>
                         </div>
 
                         {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR) --}}
@@ -231,20 +248,6 @@
                             </select>
                         </div>
 
-                        {{-- FILTER ROLE --}}
-                        <select name="role" onchange="this.form.submit()" class="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 focus:border-blue-500 focus:bg-white focus:outline-none cursor-pointer shadow-2xs shrink-0">
-                            <option value="Semua" {{ $roleFilter === 'Semua' ? 'selected' : '' }}>Semua Role</option>
-                            <option value="kepala" {{ $roleFilter === 'kepala' ? 'selected' : '' }}>Kepala / Pimpinan BBLKL</option>
-                            <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Administrator</option>
-                            <option value="petugas" {{ $roleFilter === 'petugas' ? 'selected' : '' }}>Petugas Lab</option>
-                            <option value="peneliti" {{ $roleFilter === 'peneliti' ? 'selected' : '' }}>Peneliti</option>
-                            <option value="universitas" {{ $roleFilter === 'universitas' ? 'selected' : '' }}>Universitas / Akademisi</option>
-                            <option value="dinas_kesehatan" {{ $roleFilter === 'dinas_kesehatan' ? 'selected' : '' }}>Dinas Kesehatan</option>
-                            <option value="balai_kekarantinaan_kesehatan" {{ $roleFilter === 'balai_kekarantinaan_kesehatan' ? 'selected' : '' }}>Balai Kekarantinaan Kesehatan</option>
-                            <option value="labkesmas" {{ $roleFilter === 'labkesmas' ? 'selected' : '' }}>Labkesmas</option>
-                            <option value="viewer" {{ $roleFilter === 'viewer' ? 'selected' : '' }}>Viewer (Lihat Saja)</option>
-                        </select>
-
                         @if ($search || $roleFilter !== 'Semua')
                             <a href="{{ route('users.index') }}" class="btn-reset-filter h-9 inline-flex items-center rounded-xl px-3 text-xs font-bold transition shadow-2xs shrink-0">
                                 Reset Filter
@@ -252,17 +255,17 @@
                         @endif
                     </div>
 
-                    {{-- TOMBOL AKSI: CETAK & TAMBAH USER --}}
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button type="button"
-                                onclick="window.print()"
-                                class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:bg-slate-50 hover:border-slate-300 active:scale-95 cursor-pointer whitespace-nowrap"
-                                title="Cetak Data Pengguna / Ekspor ke PDF">
-                            <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {{-- GRUP KANAN: TOMBOL CETAK & TAMBAH USER --}}
+                    <div class="flex items-center gap-2 shrink-0 self-start xl:self-auto">
+                        <a href="{{ route('users.preview', ['search' => $search, 'role' => $roleFilter]) }}"
+                           target="_blank"
+                           class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-3.5 text-xs font-bold text-teal-800 shadow-2xs transition hover:bg-teal-100 hover:border-teal-300 active:scale-95 cursor-pointer whitespace-nowrap"
+                           title="Pratinjau Cetak / Ekspor PDF Resmi">
+                            <svg class="h-3.5 w-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
                             <span>Cetak</span>
-                        </button>
+                        </a>
 
                         <button type="button"
                                 onclick="openAddModal()"

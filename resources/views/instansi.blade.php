@@ -196,8 +196,18 @@
                         @endif
                     </form>
 
-                    {{-- TOMBOL TAMBAH UNIT / INSTANSI --}}
-                    <div class="shrink-0">
+                    {{-- TOMBOL AKSI: CETAK & TAMBAH UNIT / INSTANSI --}}
+                    <div class="flex items-center gap-2 shrink-0">
+                        <a href="{{ route('instansi.preview', ['search' => $search, 'kategori' => $kategori, 'provinsi_id' => $provinsiId]) }}"
+                           target="_blank"
+                           class="cursor-pointer h-10 inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-3.5 sm:px-4 text-sm font-bold text-teal-800 shadow-2xs hover:bg-teal-100 hover:border-teal-300 active:scale-95 transition"
+                           title="Pratinjau Cetak / Ekspor PDF Resmi Master Data Unit / Instansi">
+                            <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak</span>
+                        </a>
+
                         <button onclick="openModal('modalTambahInstansi')"
                                 class="cursor-pointer h-10 rounded-xl bg-blue-600 px-4 sm:px-5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-2">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

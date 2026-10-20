@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -204,5 +205,158 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', "Akun pengguna '{$nama}' berhasil dihapus secara permanen.");
+    }
+
+    /**
+     * Tampilan Pratinjau Cetak Interaktif Daftar Pengguna Sistem (Web Print Preview)
+     */
+    public function preview(Request $request)
+    {
+        $search = $request->get('search');
+        $roleFilter = $request->get('role', 'Semua');
+        $statusFilter = $request->get('status', 'Semua');
+
+        $query = User::query()->orderBy('name', 'asc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($roleFilter && $roleFilter !== 'Semua') {
+            if ($roleFilter === 'dinas_kesehatan') {
+                $query->whereIn('role', ['dinas_kesehatan', 'dinkes']);
+            } elseif ($roleFilter === 'balai_kekarantinaan_kesehatan') {
+                $query->whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina']);
+            } elseif ($roleFilter === 'universitas') {
+                $query->whereIn('role', ['universitas', 'akademisi']);
+            } else {
+                $query->where('role', $roleFilter);
+            }
+        }
+
+        if ($statusFilter && $statusFilter !== 'Semua') {
+            $query->where('status', $statusFilter);
+        }
+
+        $data = $query->get();
+
+        $roleLabels = [
+            'Semua' => 'Semua Hak Akses',
+            'kepala' => 'Kepala / Pimpinan BBLKL',
+            'admin' => 'Administrator',
+            'petugas' => 'Petugas Laboratorium',
+            'peneliti' => 'Peneliti',
+            'universitas' => 'Universitas / Akademisi',
+            'dinas_kesehatan' => 'Dinas Kesehatan',
+            'balai_kekarantinaan_kesehatan' => 'Balai Kekarantinaan Kesehatan',
+            'labkesmas' => 'Labkesmas',
+            'viewer' => 'Viewer (Lihat Saja)'
+        ];
+
+        $filterInfo = [
+            'search' => $search,
+            'role' => $roleFilter,
+            'role_label' => $roleLabels[$roleFilter] ?? 'Seluruh Hak Akses',
+            'total_terfilter' => $data->count(),
+            'total_semua' => User::count(),
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        return view('users_preview', compact('data', 'filterInfo', 'search', 'roleFilter'));
+    }
+
+    /**
+     * Unduh atau Alirkan Daftar Pengguna dalam Format PDF Resmi
+     */
+    public function exportPdf(Request $request)
+    {
+        @ini_set('memory_limit', '512M');
+        @ini_set('max_execution_time', '180');
+
+        $search = $request->get('search');
+        $roleFilter = $request->get('role', 'Semua');
+        $statusFilter = $request->get('status', 'Semua');
+        $mode = $request->get('mode', 'stream');
+
+        $query = User::query()->orderBy('name', 'asc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($roleFilter && $roleFilter !== 'Semua') {
+            if ($roleFilter === 'dinas_kesehatan') {
+                $query->whereIn('role', ['dinas_kesehatan', 'dinkes']);
+            } elseif ($roleFilter === 'balai_kekarantinaan_kesehatan') {
+                $query->whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina']);
+            } elseif ($roleFilter === 'universitas') {
+                $query->whereIn('role', ['universitas', 'akademisi']);
+            } else {
+                $query->where('role', $roleFilter);
+            }
+        }
+
+        if ($statusFilter && $statusFilter !== 'Semua') {
+            $query->where('status', $statusFilter);
+        }
+
+        $data = $query->get();
+
+        $roleLabels = [
+            'Semua' => 'Semua Hak Akses',
+            'kepala' => 'Kepala / Pimpinan BBLKL',
+            'admin' => 'Administrator',
+            'petugas' => 'Petugas Laboratorium',
+            'peneliti' => 'Peneliti',
+            'universitas' => 'Universitas / Akademisi',
+            'dinas_kesehatan' => 'Dinas Kesehatan',
+            'balai_kekarantinaan_kesehatan' => 'Balai Kekarantinaan Kesehatan',
+            'labkesmas' => 'Labkesmas',
+            'viewer' => 'Viewer (Lihat Saja)'
+        ];
+
+        $filterInfo = [
+            'search' => $search,
+            'role' => $roleFilter,
+            'role_label' => $roleLabels[$roleFilter] ?? 'Seluruh Hak Akses',
+            'total_terfilter' => $data->count(),
+            'total_semua' => User::count(),
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        $logoBase64 = null;
+        $logoPath = public_path('logo_bblkl.png');
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $pdf = Pdf::loadView('users_pdf', compact('data', 'filterInfo', 'logoBase64'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif'
+            ]);
+
+        $filename = 'Daftar-Pengguna-Sistem-' . date('Ymd-His') . '.pdf';
+
+        if ($mode === 'download') {
+            return $pdf->download($filename);
+        }
+
+        return $pdf->stream($filename);
     }
 }

@@ -559,6 +559,8 @@ Route::middleware('auth')->group(function () {
         // Master Data Unit / Instansi
         Route::prefix('instansi')->name('instansi.')->group(function () {
             Route::get('/', [InstansiController::class, 'index'])->name('index');
+            Route::get('/preview', [InstansiController::class, 'preview'])->name('preview');
+            Route::get('/pdf', [InstansiController::class, 'exportPdf'])->name('pdf');
             Route::post('/', [InstansiController::class, 'store'])->name('store');
             Route::put('/{id}', [InstansiController::class, 'update'])->name('update');
             Route::delete('/{id}', [InstansiController::class, 'destroy'])->name('destroy');
@@ -567,6 +569,8 @@ Route::middleware('auth')->group(function () {
         // Master Data Kategori / Parameter Uji (Jenis Nyamuk, Insektisida, Metode Pengendalian)
         Route::prefix('kategori')->name('kategori.')->group(function () {
             Route::get('/', [KategoriUjiController::class, 'index'])->name('index');
+            Route::get('/preview', [KategoriUjiController::class, 'preview'])->name('preview');
+            Route::get('/pdf', [KategoriUjiController::class, 'exportPdf'])->name('pdf');
             Route::post('/', [KategoriUjiController::class, 'store'])->name('store');
             Route::post('/sync', [KategoriUjiController::class, 'sync'])->name('sync');
             Route::put('/{id}', [KategoriUjiController::class, 'update'])->name('update');
@@ -576,6 +580,8 @@ Route::middleware('auth')->group(function () {
         // Manajemen Pengguna (Kelola User Admin)
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/preview', [UserController::class, 'preview'])->name('preview');
+            Route::get('/pdf', [UserController::class, 'exportPdf'])->name('pdf');
             Route::post('/', [UserController::class, 'store'])->name('store');
             Route::put('/{id}', [UserController::class, 'update'])->name('update');
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
