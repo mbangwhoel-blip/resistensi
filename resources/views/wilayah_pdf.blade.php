@@ -351,14 +351,14 @@
             </td>
             <td style="width: 40%; text-align: center;">
                 <div style="font-size: 8pt; color: #334155; margin-bottom: 50px;">
-                    Surabaya, {{ date('d F Y') }}<br>
+                    Salatiga, {{ date('d F Y') }}<br>
                     <strong>Kepala Balai Besar Laboratorium Kesehatan Lingkungan</strong>
                 </div>
                 <div style="font-size: 8.5pt; font-weight: bold; text-decoration: underline; color: #0f172a;">
-                    Dr. dr. H. Iwan Trihapsoro, Sp.KK, FINSDV, FAADV
+                    Akhmad Saikhu, SKM, M.SC.PH
                 </div>
                 <div style="font-size: 7.5pt; color: #475569;">
-                    NIP. 19680327 199703 1 002
+                    NIP. 196805251992031004
                 </div>
             </td>
         </tr>

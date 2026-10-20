@@ -371,11 +371,11 @@
                 <p class="mt-1">* Standar pembagian wilayah mengikuti ketetapan Kementerian Dalam Negeri Republik Indonesia (Total 38 Provinsi & 514 Kabupaten/Kota).</p>
             </div>
             <div class="text-center pr-6">
-                <p>Surabaya, {{ date('d F Y') }}</p>
+                <p>Salatiga, {{ date('d F Y') }}</p>
                 <p class="font-bold text-slate-900 mt-1">Kepala Balai Besar Laboratorium Kesehatan Lingkungan</p>
                 <div class="h-16"></div>
-                <p class="font-extrabold text-slate-900 underline text-sm">Dr. dr. H. Iwan Trihapsoro, Sp.KK, FINSDV, FAADV</p>
-                <p class="text-[11px] text-slate-600">NIP. 19680327 199703 1 002</p>
+                <p class="font-extrabold text-slate-900 underline text-sm">Akhmad Saikhu, SKM, M.SC.PH</p>
+                <p class="text-[11px] text-slate-600">NIP. 196805251992031004</p>
             </div>
         </div>
 

@@ -35,5 +35,18 @@ class UserSeeder extends Seeder
                 'telepon' => '081234567891',
             ]
         );
+
+        // Akun Kepala / Pimpinan BBLKL
+        User::firstOrCreate(
+            ['username' => 'kepala'],
+            [
+                'name' => 'Akhmad Saikhu, SKM, M.SC.PH',
+                'email' => 'kepala@bblkl.go.id',
+                'password' => Hash::make('kepala123'),
+                'role' => 'kepala',
+                'status' => 'aktif',
+                'telepon' => '196805251992031004',
+            ]
+        );
     }
 }

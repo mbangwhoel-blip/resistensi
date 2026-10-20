@@ -596,3 +596,7 @@ UPDATE data_uji_resistensis du
 INNER JOIN kabupatens k ON du.kabupaten_id = k.id
 SET du.provinsi_id = k.provinsi_id
 WHERE du.provinsi_id != k.provinsi_id OR du.provinsi_id IS NULL;
+
+-- 6. Update Penanggung Jawab / Kepala BBLKL
+UPDATE instansis SET person_in_charge = 'Akhmad Saikhu, SKM, M.SC.PH' WHERE unit_code = 'BBLKL-01' OR name LIKE '%BBLKL%';
+

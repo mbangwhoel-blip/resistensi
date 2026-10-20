@@ -821,11 +821,11 @@ class RekomendasiKebijakanController extends Controller
         $currentUser = auth()->user();
         $isKepala = $currentUser ? (method_exists($currentUser, 'isKepala') ? $currentUser->isKepala() : in_array(strtolower((string)($currentUser->role ?? '')), ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'])) : false;
 
-        $defaultKepalaNama = $approval ? $approval->approver_name : (
-            $isKepala ? $currentUser->name : ($bblkl->person_in_charge ?? 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan')
+        $defaultKepalaNama = ($approval && !empty($approval->approver_name)) ? $approval->approver_name : (
+            $isKepala ? $currentUser->name : (!empty($bblkl?->person_in_charge) && $bblkl->person_in_charge !== 'Kepala Balai BBLKL' ? $bblkl->person_in_charge : 'Akhmad Saikhu, SKM, M.SC.PH')
         );
-        $defaultKepalaNip = $approval ? $approval->approver_nip : '19720315 199803 1 002';
-        $defaultKepalaJabatan = $approval ? $approval->approver_jabatan : 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL) Salatiga';
+        $defaultKepalaNip = ($approval && !empty($approval->approver_nip)) ? $approval->approver_nip : '196805251992031004';
+        $defaultKepalaJabatan = ($approval && !empty($approval->approver_jabatan)) ? $approval->approver_jabatan : 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL) Salatiga';
         $defaultNomorSurat = $approval ? $approval->nomor_surat : ('LT-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($namaWilayah . $tahunFilter . $nyamukFilter . $activeTemplate), 0, 7)));
 
         // 11. Data Khusus Template 4: Policy Brief Agregat Wilayah & Klaster Kerentanan

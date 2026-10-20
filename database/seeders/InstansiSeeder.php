@@ -27,7 +27,7 @@ class InstansiSeeder extends Seeder
                 'alamat' => 'Jl. Karang Menjangan No. 18, Surabaya',
                 'telepon' => '(031) 5021450',
                 'email' => 'info@bblkl.kemkes.go.id',
-                'penanggung_jawab' => 'Kepala Balai BBLKL',
+                'penanggung_jawab' => 'Akhmad Saikhu, SKM, M.SC.PH',
             ]
         );
 
