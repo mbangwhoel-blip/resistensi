@@ -324,21 +324,30 @@ class RekomendasiKebijakanController extends Controller
                 ->get();
         }
 
-        // Nama cakupan wilayah
-        $namaWilayah     = 'Tingkat Nasional (Seluruh Indonesia)';
-        $selectedProvinsi  = null;
-        $selectedKabupaten = null;
+        // Nama cakupan wilayah & Dinas Kesehatan
+        $namaWilayah        = 'Tingkat Nasional (Seluruh Indonesia)';
+        $selectedProvinsi   = null;
+        $selectedKabupaten  = null;
+        $namaDinasKesehatan = 'Dinas Kesehatan Wilayah Setempat';
 
         if ($provinsiFilter !== 'Semua') {
             $selectedProvinsi = Provinsi::find($provinsiFilter);
             if ($selectedProvinsi) {
                 $namaWilayah = 'Provinsi ' . $selectedProvinsi->name;
+                $provName = $selectedProvinsi->name;
+                $namaDinasKesehatan = (stripos($provName, 'Provinsi') === false ? 'Dinas Kesehatan Provinsi ' : 'Dinas Kesehatan ') . $provName;
             }
         }
         if ($kabupatenFilter !== 'Semua' && !empty($kabupatenFilter)) {
             $selectedKabupaten = Kabupaten::find($kabupatenFilter);
             if ($selectedKabupaten) {
                 $namaWilayah = $selectedKabupaten->name . ($selectedProvinsi ? ', ' . $selectedProvinsi->name : '');
+                $kabName = $selectedKabupaten->name;
+                if (stripos($kabName, 'Kabupaten') === false && stripos($kabName, 'Kota') === false) {
+                    $namaDinasKesehatan = 'Dinas Kesehatan Kabupaten ' . $kabName;
+                } else {
+                    $namaDinasKesehatan = 'Dinas Kesehatan ' . $kabName;
+                }
             }
         }
 
@@ -875,6 +884,7 @@ class RekomendasiKebijakanController extends Controller
             'approvalStatus'          => $approvalStatus,
             'docHash'                 => $docHash,
             'scopeHash'               => $scopeHash,
+            'namaDinasKesehatan'      => $namaDinasKesehatan,
             'defaultKepalaNama'       => $defaultKepalaNama,
             'defaultKepalaNip'        => $defaultKepalaNip,
             'defaultKepalaJabatan'    => $defaultKepalaJabatan,

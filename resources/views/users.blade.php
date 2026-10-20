@@ -45,7 +45,7 @@
                     <h1 class="text-base sm:text-lg lg:text-xl font-black text-slate-800 tracking-tight leading-snug truncate">
                         Kelola Pengguna & Hak Akses
                     </h1>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5 truncate">
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">
                         PETA RESISTENSI • Manajemen akun administrator, petugas laboratorium, dan hak akses sistem
                     </p>
                 </div>

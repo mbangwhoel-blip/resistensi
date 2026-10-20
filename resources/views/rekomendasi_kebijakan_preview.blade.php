@@ -878,7 +878,7 @@
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
-                        <span id="btnEditLabel">✏️ Edit Online</span>
+                        <span id="btnEditLabel">Edit Online</span>
                     </button>
 
                     <button type="button"
@@ -1492,7 +1492,7 @@
                 <td style="width: 50%;">
                     <div class="text-[7.5pt] text-slate-600 mb-1">
                         Mengetahui / Rekomendasi Disposisi Teknis:<br>
-                        <strong>Dinas Kesehatan Wilayah Setempat</strong>
+                        <strong>{{ $namaDinasKesehatan ?? ($selectedProvinsi ? 'Dinas Kesehatan Provinsi ' . $selectedProvinsi->name : ($selectedKabupaten ? 'Dinas Kesehatan ' . $selectedKabupaten->name : 'Dinas Kesehatan Wilayah Setempat')) }}</strong>
                     </div>
                     <div style="height: 48px;"></div>
                     <div class="text-[8pt] font-extrabold text-slate-800 border-b border-slate-400 pb-0.5 inline-block">
@@ -2017,7 +2017,7 @@
                 <td style="width: 50%;">
                     <div class="text-[7.5pt] text-slate-600 mb-1">
                         Mengetahui / Rekomendasi Disposisi Teknis:<br>
-                        <strong>Dinas Kesehatan Wilayah Setempat</strong>
+                        <strong>{{ $namaDinasKesehatan ?? ($selectedProvinsi ? 'Dinas Kesehatan Provinsi ' . $selectedProvinsi->name : ($selectedKabupaten ? 'Dinas Kesehatan ' . $selectedKabupaten->name : 'Dinas Kesehatan Wilayah Setempat')) }}</strong>
                     </div>
                     <div style="height: 48px;"></div>
                     <div class="text-[8pt] font-extrabold text-slate-800 border-b border-slate-400 pb-0.5 inline-block">
@@ -2389,7 +2389,7 @@
             {{-- 1. HEADER UTAMA (DARK PINE TEAL) --}}
             <div class="agr-header">
                 <div class="agr-tag">
-                    DINAS KESEHATAN PROVINSI &bull; REKOMENDASI TEKNIS AGREGAT
+                    {{ strtoupper($namaDinasKesehatan ?? ($selectedProvinsi ? 'DINAS KESEHATAN PROVINSI ' . $selectedProvinsi->name : 'DINAS KESEHATAN PROVINSI')) }} &bull; REKOMENDASI TEKNIS AGREGAT
                 </div>
                 <h1 class="agr-title">
                     Resistensi Insektisida pada Nyamuk {{ $nyamukFilter === 'Semua' ? 'Vektor (Aedes, Anopheles, Culex)' : $nyamukFilter }}<br>
@@ -2908,7 +2908,7 @@
 
             if (isEditMode) {
                 body.classList.add('edit-mode-active');
-                if (btnLabel) btnLabel.innerHTML = '👁️ Selesai Edit';
+                if (btnLabel) btnLabel.innerHTML = 'Selesai Edit';
                 if (btnSave) btnSave.style.display = 'inline-flex';
                 if (banner) banner.style.display = 'flex';
 
@@ -2919,10 +2919,10 @@
                 editBadges.forEach(b => b.style.display = 'inline-flex');
                 editBtns.forEach(b => b.style.display = 'inline-flex');
 
-                showToast('✏️ Mode Edit Online Aktif. Anda dapat mengetik atau menambah masukan langsung.', 'info');
+                showToast('Mode Edit Online Aktif. Anda dapat mengetik atau menambah masukan langsung.', 'info');
             } else {
                 body.classList.remove('edit-mode-active');
-                if (btnLabel) btnLabel.innerHTML = '✏️ Edit Online';
+                if (btnLabel) btnLabel.innerHTML = 'Edit Online';
                 if (btnSave) btnSave.style.display = 'none';
                 if (banner) banner.style.display = 'none';
 
