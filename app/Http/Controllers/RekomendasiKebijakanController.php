@@ -1073,7 +1073,7 @@ class RekomendasiKebijakanController extends Controller
 
                 if ($mala === 'RT' || $mala === 'DR') {
                     $klaster3Kab[] = $k['kode'];
-                } elseif ($delta === 'RT' && $mala === 'KR') {
+                } elseif ($mala === 'KR' || ($delta === 'RT' && $mala === 'KR')) {
                     $klaster2Kab[] = $k['kode'];
                 } elseif ($delta === 'RT' && ($mala === 'RN' || $piri === 'RN')) {
                     $klaster1Kab[] = $k['kode'];
@@ -1089,6 +1089,7 @@ class RekomendasiKebijakanController extends Controller
             }
 
             $klasterList = [];
+            // Klaster 1
             if (!empty($klaster1Kab)) {
                 $klasterList[] = [
                     'nomor'     => 1,
@@ -1097,7 +1098,17 @@ class RekomendasiKebijakanController extends Controller
                     'deskripsi' => 'Piretroid tidak direkomendasikan. Organofosfat dapat dipertimbangkan untuk fokus KLB; pantau tekanan seleksi.',
                     'kabupaten' => $klaster1Kab,
                 ];
+            } else {
+                $klasterList[] = [
+                    'nomor'     => 1,
+                    'judul'     => 'Klaster 1 • Belum Teridentifikasi',
+                    'ringkasan' => 'Piretroid RT; organofosfat RN',
+                    'deskripsi' => 'Piretroid tidak direkomendasikan. Organofosfat dapat dipertimbangkan untuk fokus KLB; pantau tekanan seleksi.',
+                    'kabupaten' => [],
+                ];
             }
+
+            // Klaster 2
             if (!empty($klaster2Kab)) {
                 $klasterList[] = [
                     'nomor'     => 2,
@@ -1106,7 +1117,17 @@ class RekomendasiKebijakanController extends Controller
                     'deskripsi' => 'Konfirmasi malathion sebelum pengadaan. Pirimiphos-methyl satu kelompok dengan malathion: pantau resistensi silang.',
                     'kabupaten' => $klaster2Kab,
                 ];
+            } else {
+                $klasterList[] = [
+                    'nomor'     => 2,
+                    'judul'     => 'Klaster 2 • Belum Teridentifikasi',
+                    'ringkasan' => 'Piretroid RT; malathion KR',
+                    'deskripsi' => 'Konfirmasi malathion sebelum pengadaan. Pirimiphos-methyl satu kelompok dengan malathion: pantau resistensi silang.',
+                    'kabupaten' => [],
+                ];
             }
+
+            // Klaster 3
             if (!empty($klaster3Kab)) {
                 $klasterList[] = [
                     'nomor'     => 3,
@@ -1115,7 +1136,17 @@ class RekomendasiKebijakanController extends Controller
                     'deskripsi' => 'Belum ada pilihan kimia terkonfirmasi di wilayah ini. Prioritaskan non-kimia (PSN 3M-Plus, biolarvasida Bti) dan uji kelompok MoA lain.',
                     'kabupaten' => $klaster3Kab,
                 ];
+            } else {
+                $klasterList[] = [
+                    'nomor'     => 3,
+                    'judul'     => 'Klaster 3 • Belum Teridentifikasi',
+                    'ringkasan' => 'Malathion RT atau DR',
+                    'deskripsi' => 'Belum ada pilihan kimia terkonfirmasi di wilayah ini. Prioritaskan non-kimia (PSN 3M-Plus, biolarvasida Bti) dan uji kelompok MoA lain.',
+                    'kabupaten' => [],
+                ];
             }
+
+            // Klaster 4
             if (!empty($klaster4Kab)) {
                 $klasterList[] = [
                     'nomor'     => 4,
@@ -1124,14 +1155,12 @@ class RekomendasiKebijakanController extends Controller
                     'deskripsi' => 'Uji lanjut dan konfirmasi bioassay sebelum penetapan keputusan pengadaan.',
                     'kabupaten' => $klaster4Kab,
                 ];
-            }
-
-            if (empty($klasterList)) {
+            } else {
                 $klasterList[] = [
-                    'nomor'     => 1,
-                    'judul'     => 'Klaster 1 • Wilayah Terpantau',
-                    'ringkasan' => 'Data surveilans terbatas',
-                    'deskripsi' => 'Diperlukan surveilans tambahan pada kabupaten prioritas sebelum penetapan alokasi pengadaan.',
+                    'nomor'     => 4,
+                    'judul'     => 'Klaster 4 • Belum Teridentifikasi',
+                    'ringkasan' => 'Deltamethrin KR; bahan lain belum diuji',
+                    'deskripsi' => 'Uji lanjut dan konfirmasi bioassay sebelum penetapan keputusan pengadaan.',
                     'kabupaten' => [],
                 ];
             }

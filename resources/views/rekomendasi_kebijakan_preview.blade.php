@@ -1071,9 +1071,6 @@
             <h2 class="doc-title">
                 STRATEGI PENGENDALIAN VEKTOR TERPADU & ROTASI INSEKTISIDA BERBASIS KERENTANAN BIOASSAY
             </h2>
-            <div class="doc-meta">
-                Nomor Registrasi: <strong>{{ $isApproved && !empty($approval->nomor_surat) ? $approval->nomor_surat : 'PB-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($namaWilayah . $tahunFilter . $nyamukFilter), 0, 7)) }}</strong> &bull; Klasifikasi: Standar Operasional Pengendalian Vektor
-            </div>
         </div>
 
         {{-- 3. PARAMETER & METADATA EVALUASI --}}
@@ -1590,9 +1587,6 @@
             <h2 class="doc-title">
                 LEMBAR REKOMENDASI TEKNIS MANAJEMEN RESISTENSI INSEKTISIDA VEKTOR
             </h2>
-            <div class="doc-meta">
-                Nomor Registrasi: <strong>{{ $isApproved && !empty($approval->nomor_surat) ? $approval->nomor_surat : 'RT-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($namaWilayah . $tahunFilter . $nyamukFilter . 'kemenkes'), 0, 7)) }}</strong> &bull; Acuan: Permenkes No. 2/2023 & Manual Resistensi Insektisida WHO (2022)
-            </div>
         </div>
 
         {{-- 3. PARAMETER & METADATA EVALUASI TEKNIS --}}
