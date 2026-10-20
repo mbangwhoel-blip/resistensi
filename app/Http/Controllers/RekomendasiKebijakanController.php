@@ -794,6 +794,16 @@ class RekomendasiKebijakanController extends Controller
 
                 $isApproved     = !is_null($approval);
                 $approvalStatus = $isApproved ? 'approved' : 'draft';
+
+                // Jika belum disahkan, muat catatan/masukan draft terakhir agar tetap tampil saat diedit online
+                if (!$approval) {
+                    $approval = RekomendasiApproval::where(function($q) use ($docHash, $scopeHash) {
+                        $q->where('doc_hash', $docHash)
+                          ->orWhere(function($sub) use ($scopeHash) {
+                              $sub->where('filter_scope', $scopeHash)->where('template', 'all');
+                          });
+                    })->latest('updated_at')->first();
+                }
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('RekomendasiApproval query failed: ' . $e->getMessage());
@@ -1363,6 +1373,128 @@ class RekomendasiKebijakanController extends Controller
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Revoke approval failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal membatalkan pengesahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Simpan Catatan / Masukan Khusus dari Mode Edit Online
+     */
+    public function saveNotes(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Akses Ditolak: Anda belum login.'], 401);
+            }
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda belum login.');
+        }
+
+        $userRole = strtolower((string)($user->role ?? ''));
+        $isAdmin = method_exists($user, 'isAdmin') ? $user->isAdmin() : ($userRole === 'admin');
+        $canApprove = method_exists($user, 'canApproveRekomendasi')
+            ? $user->canApproveRekomendasi()
+            : ($isAdmin || in_array($userRole, ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']));
+
+        if (!$isAdmin && !$canApprove) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Akses Ditolak: Hanya Administrator atau Kepala/Pimpinan yang dapat menyimpan catatan masukan.'], 403);
+            }
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda tidak memiliki izin untuk mengedit masukan.');
+        }
+
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('rekomendasi_approvals')) {
+                DB::statement("CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
+                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    `doc_hash` varchar(64) NOT NULL,
+                    `filter_scope` varchar(64) NOT NULL,
+                    `template` varchar(50) NOT NULL DEFAULT 'all',
+                    `tahun` varchar(20) NOT NULL DEFAULT 'Semua',
+                    `jenis_nyamuk` varchar(100) NOT NULL DEFAULT 'Semua',
+                    `provinsi_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `kabupaten_id` varchar(50) NOT NULL DEFAULT 'Semua',
+                    `nama_wilayah` varchar(255) DEFAULT NULL,
+                    `status` varchar(20) NOT NULL DEFAULT 'draft',
+                    `user_id` bigint(20) unsigned DEFAULT NULL,
+                    `approver_name` varchar(150) DEFAULT NULL,
+                    `approver_nip` varchar(50) DEFAULT NULL,
+                    `approver_jabatan` varchar(255) DEFAULT NULL,
+                    `nomor_surat` varchar(100) DEFAULT NULL,
+                    `notes` text DEFAULT NULL,
+                    `verification_token` varchar(64) DEFAULT NULL,
+                    `approved_at` timestamp NULL DEFAULT NULL,
+                    `created_at` timestamp NULL DEFAULT NULL,
+                    `updated_at` timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `rekomendasi_approvals_doc_hash_index` (`doc_hash`),
+                    KEY `rekomendasi_approvals_filter_scope_index` (`filter_scope`),
+                    KEY `rekomendasi_approvals_status_index` (`status`),
+                    KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            }
+
+            $tahun        = (string)($request->input('tahun', 'Semua'));
+            $jenisNyamuk  = (string)($request->input('jenis_nyamuk', 'Semua'));
+            $provinsiId   = (string)($request->input('provinsi_id', 'Semua'));
+            $kabupatenId  = (string)($request->input('kabupaten_id', 'Semua'));
+            $template     = (string)($request->input('template', 'all'));
+            $namaWilayah  = $request->input('nama_wilayah');
+            $notes        = $request->input('notes');
+
+            if (class_exists(\App\Models\RekomendasiApproval::class)) {
+                $docHash   = RekomendasiApproval::makeDocHash($tahun, $jenisNyamuk, $provinsiId, $kabupatenId, $template);
+                $scopeHash = RekomendasiApproval::makeScopeHash($tahun, $jenisNyamuk, $provinsiId, $kabupatenId);
+            } else {
+                $docHash   = md5($tahun . '|' . $jenisNyamuk . '|' . $provinsiId . '|' . $kabupatenId . '|' . $template);
+                $scopeHash = md5($tahun . '|' . $jenisNyamuk . '|' . $provinsiId . '|' . $kabupatenId);
+            }
+
+            // Cari jika sudah ada approval / draft sebelumnya
+            $record = RekomendasiApproval::where('doc_hash', $docHash)->first();
+
+            if (!$record) {
+                // Cek jika ada template 'all'
+                $record = RekomendasiApproval::where('filter_scope', $scopeHash)->where('template', 'all')->first();
+            }
+
+            if ($record) {
+                $record->notes = $notes;
+                $record->save();
+            } else {
+                $record = RekomendasiApproval::create([
+                    'doc_hash'     => $docHash,
+                    'filter_scope' => $scopeHash,
+                    'template'     => $template,
+                    'tahun'        => $tahun,
+                    'jenis_nyamuk' => $jenisNyamuk,
+                    'provinsi_id'  => $provinsiId,
+                    'kabupaten_id' => $kabupatenId,
+                    'nama_wilayah' => $namaWilayah,
+                    'status'       => 'draft',
+                    'user_id'      => auth()->id(),
+                    'notes'        => $notes,
+                ]);
+            }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success'    => true,
+                    'message'    => 'Catatan dan masukan berhasil disimpan ke database.',
+                    'notes'      => $notes,
+                    'updated_at' => now()->translatedFormat('d F Y H:i'),
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Catatan dan masukan berhasil disimpan.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Save notes failed: ' . $e->getMessage());
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan catatan: ' . $e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Gagal menyimpan catatan: ' . $e->getMessage());
         }
     }
 }

@@ -478,14 +478,49 @@
             align-items: center;
         }
 
+        /* Mode Edit Online Styles */
+        .custom-notes-section {
+            transition: all 0.25s ease;
+        }
+        .edit-mode-active .custom-notes-section {
+            border-color: #0d9488 !important;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.16) !important;
+            background-color: #f0fdfa !important;
+        }
+        .edit-mode-active .editable-notes-content {
+            outline: 2px dashed #0d9488 !important;
+            outline-offset: 3px;
+            background-color: #ffffff !important;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: text;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
+        }
+        .edit-mode-active .editable-notes-content:focus {
+            outline: 2.5px solid #0d9488 !important;
+            box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.2) !important;
+        }
+        .edit-mode-active .edit-online-badge {
+            display: inline-flex !important;
+        }
+        .edit-mode-active .edit-mode-btn {
+            display: inline-flex !important;
+        }
+
         /* CETAK (MEDIA PRINT) */
         @media print {
             body {
                 background: #ffffff !important;
                 color: #000000 !important;
             }
-            .no-print {
+            .no-print, #editModeNoticeBanner, .edit-mode-btn, .edit-online-badge {
                 display: none !important;
+            }
+            .editable-notes-content {
+                outline: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 0 !important;
             }
             .sheet-container {
                 width: 100% !important;
@@ -831,8 +866,34 @@
                 </div>
             </div>
 
-            {{-- SISI KANAN: STATUS DRAFT/SAH + APPROVE + CETAK DOKUMEN --}}
+            {{-- SISI KANAN: MODE EDIT ONLINE + STATUS DRAFT/SAH + APPROVE + CETAK DOKUMEN --}}
             <div class="flex items-center gap-2 shrink-0">
+                {{-- TOMBOL MODE EDIT ONLINE & SIMPAN MASUKAN --}}
+                <div class="inline-flex items-center gap-1.5 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+                    <button type="button"
+                            id="btnToggleEditMode"
+                            onclick="toggleEditMode()"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950 shadow transition cursor-pointer active:scale-95"
+                            title="Aktifkan mode edit online untuk menambahkan atau mengubah masukan langsung pada template">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        <span id="btnEditLabel">✏️ Edit Online</span>
+                    </button>
+
+                    <button type="button"
+                            id="btnSaveNotes"
+                            onclick="saveNotesOnline()"
+                            style="display: none;"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 text-xs font-bold text-white shadow transition cursor-pointer active:scale-95 animate-pulse"
+                            title="Simpan perubahan masukan ke database">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        <span id="btnSaveLabel">💾 Simpan Masukan</span>
+                    </button>
+                </div>
+
                 {{-- STATUS PENGESAHAN DOKUMEN --}}
                 @if($isApproved)
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold shrink-0">
@@ -924,6 +985,25 @@
                         <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse"></span>
                     @endif
                 </a>
+            </div>
+        </div>
+
+        {{-- BARIS 3: BANNER NOTIFIKASI MODE EDIT ONLINE --}}
+        <div id="editModeNoticeBanner" style="display: none;" class="px-4 py-2 bg-gradient-to-r from-amber-600/95 via-amber-500/95 to-teal-600/95 text-white text-xs font-semibold flex items-center justify-between border-b border-amber-300/30 shadow-inner">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white text-amber-700 text-xs font-black shadow-xs">✏️</span>
+                <span><strong>Mode Edit Online Aktif:</strong> Anda dapat langsung mengklik dan mengetik masukan, saran, atau arahan pimpinan pada kotak catatan di bawah.</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="addBulletPoint()" class="px-2.5 py-1 rounded-lg bg-slate-900/50 hover:bg-slate-900/80 text-white text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
+                    <span>➕ Tambah Butir Catatan</span>
+                </button>
+                <button type="button" onclick="saveNotesOnline()" class="px-3 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-900 text-[11px] font-extrabold shadow transition flex items-center gap-1 cursor-pointer">
+                    <span>💾 Simpan Masukan</span>
+                </button>
+                <button type="button" onclick="toggleEditMode()" class="px-2.5 py-1 rounded-lg bg-slate-900/40 hover:bg-slate-900/70 text-white text-[11px] font-medium transition cursor-pointer" title="Selesai dan keluar dari mode edit">
+                    ✕ Selesai
+                </button>
             </div>
         </div>
     </div>
@@ -1378,6 +1458,35 @@
                 <li><strong>Penguatan Alokasi Operasional Pemantauan Resistensi:</strong> Menyediakan pos anggaran khusus dalam APBD untuk kegiatan surveilans entomologi, kalibrasi alat semprot, serta monitoring resistensi sebelum musim penularan DBD/Malaria.</li>
                 <li><strong>Penerbitan Surat Edaran Kewaspadaan Dini:</strong> Mengajukan Surat Edaran (SE) Bupati/Walikota/Gubernur kepada seluruh Camat dan Puskesmas mengenai moratorium insektisida resisten dan penguatan PSN 3M-Plus serentak.</li>
             </ul>
+        </div>
+
+        {{-- CATATAN, MASUKAN & DISPOSISI KHUSUS PIMPINAN / TIM AHLI (ONLINE EDITABLE) --}}
+        <div class="custom-notes-section" style="margin: 12px 0 10px 0; border: 1.5px solid #0d9488; background: #f0fdfa; border-radius: 6px; padding: 9px 13px; page-break-inside: avoid;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px solid #ccfbf1; padding-bottom: 3px;">
+                <div style="font-size: 7.6pt; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 5px;">
+                    <span>📝 CATATAN, MASUKAN &amp; DISPOSISI KHUSUS PIMPINAN / TIM AHLI</span>
+                </div>
+                <div class="edit-online-badge no-print" style="display: none; font-size: 6.2pt; font-weight: 700; color: #0f766e; background: #ccfbf1; border: 1px dashed #0d9488; padding: 2px 7px; border-radius: 4px;">
+                    ✏️ Mode Edit Online Aktif — Klik teks di bawah untuk mengubah
+                </div>
+            </div>
+            
+            <div id="editableNotesBox" class="editable-notes-content" style="font-size: 7.2pt; line-height: 1.6; color: #1e293b; min-height: 44px; white-space: pre-wrap;">{{ $approval && !empty($approval->notes) ? $approval->notes : "• Penyesuaian formulasi insektisida di wilayah kantong resistensi tinggi wajib dikoordinasikan dengan Pengelola Program P2P Dinas Kesehatan setempat.\n• Prioritaskan aplikasi larvasida biologi (Bti) dan penguatan Gerakan 1 Rumah 1 Jumantik (G1R1J) pada pemukiman padat.\n• Pelaksanaan rotasi MoA insektisida wajib dievaluasi kembali melalui surveilans bioassay berkala." }}</div>
+
+            <div class="no-print" style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #99f6e4; display: flex; justify-content: space-between; align-items: center; font-size: 6.5pt; color: #0f766e;">
+                <div class="flex items-center gap-2">
+                    <span>💡 <em>Masukan di atas tersimpan otomatis dan akan tercetak resmi pada dokumen rekomendasi.</em></span>
+                    <span class="saveStatusIndicator font-bold text-emerald-700" style="display: none;">✓ Tersimpan</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" onclick="addBulletPoint()" class="edit-mode-btn" style="display: none; padding: 2px 7px; background: #0d9488; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        ➕ Tambah Butir
+                    </button>
+                    <button type="button" onclick="saveNotesOnline()" class="edit-mode-btn" style="display: none; padding: 2px 8px; background: #059669; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        💾 Simpan
+                    </button>
+                </div>
+            </div>
         </div>
 
         {{-- 10. LEMBAR PENGESAHAN & DISPOSISI RESMI --}}
@@ -1879,6 +1988,35 @@
             </ul>
         </div>
 
+        {{-- CATATAN, MASUKAN & DISPOSISI KHUSUS PIMPINAN / TIM AHLI (ONLINE EDITABLE) --}}
+        <div class="custom-notes-section" style="margin: 12px 0 10px 0; border: 1.5px solid #0d9488; background: #f0fdfa; border-radius: 6px; padding: 9px 13px; page-break-inside: avoid;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px solid #ccfbf1; padding-bottom: 3px;">
+                <div style="font-size: 7.6pt; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 5px;">
+                    <span>📝 CATATAN, MASUKAN &amp; DISPOSISI KHUSUS PIMPINAN / TIM AHLI</span>
+                </div>
+                <div class="edit-online-badge no-print" style="display: none; font-size: 6.2pt; font-weight: 700; color: #0f766e; background: #ccfbf1; border: 1px dashed #0d9488; padding: 2px 7px; border-radius: 4px;">
+                    ✏️ Mode Edit Online Aktif — Klik teks di bawah untuk mengubah
+                </div>
+            </div>
+            
+            <div id="editableNotesBox" class="editable-notes-content" style="font-size: 7.2pt; line-height: 1.6; color: #1e293b; min-height: 44px; white-space: pre-wrap;">{{ $approval && !empty($approval->notes) ? $approval->notes : "• Penyesuaian formulasi insektisida di wilayah kantong resistensi tinggi wajib dikoordinasikan dengan Pengelola Program P2P Dinas Kesehatan setempat.\n• Prioritaskan aplikasi larvasida biologi (Bti) dan penguatan Gerakan 1 Rumah 1 Jumantik (G1R1J) pada pemukiman padat.\n• Pelaksanaan rotasi MoA insektisida wajib dievaluasi kembali melalui surveilans bioassay berkala." }}</div>
+
+            <div class="no-print" style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #99f6e4; display: flex; justify-content: space-between; align-items: center; font-size: 6.5pt; color: #0f766e;">
+                <div class="flex items-center gap-2">
+                    <span>💡 <em>Masukan di atas tersimpan otomatis dan akan tercetak resmi pada dokumen rekomendasi.</em></span>
+                    <span class="saveStatusIndicator font-bold text-emerald-700" style="display: none;">✓ Tersimpan</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" onclick="addBulletPoint()" class="edit-mode-btn" style="display: none; padding: 2px 7px; background: #0d9488; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        ➕ Tambah Butir
+                    </button>
+                    <button type="button" onclick="saveNotesOnline()" class="edit-mode-btn" style="display: none; padding: 2px 8px; background: #059669; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        💾 Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+
         {{-- 11. LEMBAR PENGESAHAN & DISPOSISI RESMI --}}
         <table class="sig-container">
             <tr>
@@ -2164,6 +2302,35 @@
         </div>
         @endif
 
+        {{-- CATATAN, MASUKAN & DISPOSISI KHUSUS PIMPINAN / TIM AHLI (ONLINE EDITABLE) --}}
+        <div class="custom-notes-section" style="margin: 12px 0 10px 0; border: 1.5px solid #0d9488; background: #f0fdfa; border-radius: 6px; padding: 9px 13px; page-break-inside: avoid;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px solid #ccfbf1; padding-bottom: 3px;">
+                <div style="font-size: 7.6pt; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 5px;">
+                    <span>📝 CATATAN, MASUKAN &amp; DISPOSISI KHUSUS PIMPINAN / TIM AHLI</span>
+                </div>
+                <div class="edit-online-badge no-print" style="display: none; font-size: 6.2pt; font-weight: 700; color: #0f766e; background: #ccfbf1; border: 1px dashed #0d9488; padding: 2px 7px; border-radius: 4px;">
+                    ✏️ Mode Edit Online Aktif — Klik teks di bawah untuk mengubah
+                </div>
+            </div>
+            
+            <div id="editableNotesBox" class="editable-notes-content" style="font-size: 7.2pt; line-height: 1.6; color: #1e293b; min-height: 44px; white-space: pre-wrap;">{{ $approval && !empty($approval->notes) ? $approval->notes : "• Penyesuaian formulasi insektisida di wilayah kantong resistensi tinggi wajib dikoordinasikan dengan Pengelola Program P2P Dinas Kesehatan setempat.\n• Prioritaskan aplikasi larvasida biologi (Bti) dan penguatan Gerakan 1 Rumah 1 Jumantik (G1R1J) pada pemukiman padat.\n• Pelaksanaan rotasi MoA insektisida wajib dievaluasi kembali melalui surveilans bioassay berkala." }}</div>
+
+            <div class="no-print" style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #99f6e4; display: flex; justify-content: space-between; align-items: center; font-size: 6.5pt; color: #0f766e;">
+                <div class="flex items-center gap-2">
+                    <span>💡 <em>Masukan di atas tersimpan otomatis dan akan tercetak resmi pada dokumen rekomendasi.</em></span>
+                    <span class="saveStatusIndicator font-bold text-emerald-700" style="display: none;">✓ Tersimpan</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" onclick="addBulletPoint()" class="edit-mode-btn" style="display: none; padding: 2px 7px; background: #0d9488; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        ➕ Tambah Butir
+                    </button>
+                    <button type="button" onclick="saveNotesOnline()" class="edit-mode-btn" style="display: none; padding: 2px 8px; background: #059669; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                        💾 Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+
         {{-- TANDA TANGAN --}}
         <table class="sig-container" style="margin-top:10px;">
             <tr>
@@ -2171,15 +2338,15 @@
                     <div class="sig-place-date">Salatiga, {{ date('d F Y') }}</div>
                     <div class="sig-title">Penanggung Jawab Pengujian</div>
                     <div class="sig-space"></div>
-                    <div class="sig-name">( _________________________ )</div>
-                    <div class="sig-sub">Fungsional Entomolog Kesehatan<br>Tim Kerja Surveilans Penyakit, Faktor Risiko Kesehatan dan KLB<br>BBLKL Kemenkes RI Salatiga</div>
+                    <div class="sig-name">( ________________________ )</div>
+                    <div class="sig-sub">Fungsional Entomolog Kesehatan</div>
                 </td>
                 <td class="sig-cell">
                     <div class="sig-place-date">Salatiga, {{ date('d F Y') }}</div>
                     <div class="sig-title">Kepala Tim Kerja / Koordinator</div>
                     <div class="sig-space"></div>
                     <div class="sig-name">( _________________________ )</div>
-                    <div class="sig-sub">Koordinator Tim Kerja Surveilans Penyakit,<br>Faktor Risiko Kesehatan dan KLB<br>BBLKL Kemenkes RI Salatiga</div>
+                    <div class="sig-sub">Ketua Tim Kerja Surveilans Penyakit,<br>Faktor Risiko Kesehatan dan KLB<br>BBLKL Salatiga</div>
                 </td>
                 <td class="sig-cell">
                     <div class="sig-place-date">Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</div>
@@ -2481,6 +2648,35 @@
                 <strong>Batas penggunaan.</strong> Status tiap kabupaten diambil dari dokumen kabupaten yang terverifikasi, bukan dihitung ulang. Hasil tidak dapat diekstrapolasi ke {{ $agregatData['jumlahKabupatenTanpaData'] }} kabupaten/kota tanpa data. Lokasi uji sering dipilih karena ada kasus, sehingga mungkin tidak mewakili seluruh provinsi. Bioassay menggambarkan kerentanan populasi nyamuk, bukan efikasi di lapangan. Dokumen ini rekomendasi teknis; keputusan program dan pengadaan ada pada pejabat berwenang.
             </div>
 
+            {{-- CATATAN, MASUKAN & DISPOSISI KHUSUS PIMPINAN / TIM AHLI (ONLINE EDITABLE) --}}
+            <div class="custom-notes-section" style="margin: 12px 0 10px 0; border: 1.5px solid #0d9488; background: #f0fdfa; border-radius: 6px; padding: 9px 13px; page-break-inside: avoid;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px solid #ccfbf1; padding-bottom: 3px;">
+                    <div style="font-size: 7.6pt; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 5px;">
+                        <span>📝 CATATAN, MASUKAN &amp; DISPOSISI KHUSUS PIMPINAN / TIM AHLI</span>
+                    </div>
+                    <div class="edit-online-badge no-print" style="display: none; font-size: 6.2pt; font-weight: 700; color: #0f766e; background: #ccfbf1; border: 1px dashed #0d9488; padding: 2px 7px; border-radius: 4px;">
+                        ✏️ Mode Edit Online Aktif — Klik teks di bawah untuk mengubah
+                    </div>
+                </div>
+                
+                <div id="editableNotesBox" class="editable-notes-content" style="font-size: 7.2pt; line-height: 1.6; color: #1e293b; min-height: 44px; white-space: pre-wrap;">{{ $approval && !empty($approval->notes) ? $approval->notes : "• Penyesuaian formulasi insektisida di wilayah kantong resistensi tinggi wajib dikoordinasikan dengan Pengelola Program P2P Dinas Kesehatan setempat.\n• Prioritaskan aplikasi larvasida biologi (Bti) dan penguatan Gerakan 1 Rumah 1 Jumantik (G1R1J) pada pemukiman padat.\n• Pelaksanaan rotasi MoA insektisida wajib dievaluasi kembali melalui surveilans bioassay berkala." }}</div>
+
+                <div class="no-print" style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #99f6e4; display: flex; justify-content: space-between; align-items: center; font-size: 6.5pt; color: #0f766e;">
+                    <div class="flex items-center gap-2">
+                        <span>💡 <em>Masukan di atas tersimpan otomatis dan akan tercetak resmi pada dokumen rekomendasi.</em></span>
+                        <span class="saveStatusIndicator font-bold text-emerald-700" style="display: none;">✓ Tersimpan</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="addBulletPoint()" class="edit-mode-btn" style="display: none; padding: 2px 7px; background: #0d9488; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                            ➕ Tambah Butir
+                        </button>
+                        <button type="button" onclick="saveNotesOnline()" class="edit-mode-btn" style="display: none; padding: 2px 8px; background: #059669; color: #fff; border-radius: 4px; font-weight: 700; cursor: pointer; border: none; font-size: 6.5pt;">
+                            💾 Simpan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             {{-- 4. BAGIAN: LEMBAR PENGESAHAN TIGA KOLOM --}}
             <table style="width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 7.3pt;">
                 <tr>
@@ -2701,11 +2897,187 @@
         </div>
     </div>
 
-    {{-- SCRIPT JAVASCRIPT MODAL --}}
+    {{-- SCRIPT JAVASCRIPT MODAL & ONLINE EDITING --}}
     <script>
+        let isEditMode = false;
+        let isDirty = false;
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const body = document.body;
+            const btnLabel = document.getElementById('btnEditLabel');
+            const btnSave = document.getElementById('btnSaveNotes');
+            const banner = document.getElementById('editModeNoticeBanner');
+            const box = document.getElementById('editableNotesBox') || document.querySelector('.editable-notes-content');
+            const editBadges = document.querySelectorAll('.edit-online-badge');
+            const editBtns = document.querySelectorAll('.edit-mode-btn');
+
+            if (isEditMode) {
+                body.classList.add('edit-mode-active');
+                if (btnLabel) btnLabel.innerHTML = '👁️ Selesai Edit';
+                if (btnSave) btnSave.style.display = 'inline-flex';
+                if (banner) banner.style.display = 'flex';
+
+                if (box) {
+                    box.setAttribute('contenteditable', 'true');
+                    box.focus();
+                }
+                editBadges.forEach(b => b.style.display = 'inline-flex');
+                editBtns.forEach(b => b.style.display = 'inline-flex');
+
+                showToast('✏️ Mode Edit Online Aktif. Anda dapat mengetik atau menambah masukan langsung.', 'info');
+            } else {
+                body.classList.remove('edit-mode-active');
+                if (btnLabel) btnLabel.innerHTML = '✏️ Edit Online';
+                if (btnSave) btnSave.style.display = 'none';
+                if (banner) banner.style.display = 'none';
+
+                if (box) {
+                    box.setAttribute('contenteditable', 'false');
+                }
+                editBadges.forEach(b => b.style.display = 'none');
+                editBtns.forEach(b => b.style.display = 'none');
+
+                if (isDirty) {
+                    saveNotesOnline();
+                }
+            }
+        }
+
+        function addBulletPoint() {
+            const box = document.getElementById('editableNotesBox') || document.querySelector('.editable-notes-content');
+            if (!box) return;
+
+            if (!isEditMode) {
+                toggleEditMode();
+            }
+
+            const current = box.innerText.trim();
+            const newBullet = '\n• Rekomendasi Tambahan: ';
+            box.innerText = current ? (current + newBullet) : '• Rekomendasi Tambahan: ';
+            isDirty = true;
+
+            // Move cursor to end
+            box.focus();
+            const range = document.createRange();
+            range.selectNodeContents(box);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            syncNotesToModal(box.innerText);
+
+            const statusIndicators = document.querySelectorAll('.saveStatusIndicator');
+            statusIndicators.forEach(ind => {
+                ind.style.display = 'inline';
+                ind.innerHTML = '● Ada masukan baru (belum tersimpan)...';
+                ind.className = 'saveStatusIndicator font-bold text-amber-700';
+            });
+        }
+
+        function syncNotesToModal(text) {
+            const modalTextarea = document.querySelector('textarea[name="notes"]');
+            if (modalTextarea) {
+                modalTextarea.value = text;
+            }
+        }
+
+        async function saveNotesOnline() {
+            const box = document.getElementById('editableNotesBox') || document.querySelector('.editable-notes-content');
+            if (!box) return;
+
+            const notesText = box.innerText.trim();
+            const saveBtn = document.getElementById('btnSaveNotes');
+            const saveLabel = document.getElementById('btnSaveLabel');
+            const statusIndicators = document.querySelectorAll('.saveStatusIndicator');
+
+            if (saveLabel) saveLabel.innerHTML = '⏳ Menyimpan...';
+            if (saveBtn) saveBtn.classList.remove('animate-pulse');
+
+            syncNotesToModal(notesText);
+
+            try {
+                const formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('tahun', '{{ $tahunFilter }}');
+                formData.append('jenis_nyamuk', '{{ $nyamukFilter }}');
+                formData.append('provinsi_id', '{{ $provinsiFilter }}');
+                formData.append('kabupaten_id', '{{ $kabupatenFilter }}');
+                formData.append('template', '{{ $activeTemplate }}');
+                formData.append('nama_wilayah', '{{ $namaWilayah }}');
+                formData.append('notes', notesText);
+
+                const response = await fetch('{{ route("rekomendasi.save_notes") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    isDirty = false;
+                    try {
+                        localStorage.setItem('rekomendasi_notes_{{ $docHash }}', notesText);
+                    } catch(e) {}
+
+                    statusIndicators.forEach(ind => {
+                        ind.style.display = 'inline';
+                        ind.innerHTML = '✓ Tersimpan (' + (data.updated_at || 'Baru saja') + ')';
+                        ind.className = 'saveStatusIndicator font-bold text-emerald-700';
+                    });
+
+                    showToast('✓ Masukan berhasil disimpan secara online!', 'success');
+                } else {
+                    showToast('⚠️ Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'), 'error');
+                }
+            } catch (err) {
+                console.error('Save error:', err);
+                try {
+                    localStorage.setItem('rekomendasi_notes_{{ $docHash }}', notesText);
+                    showToast('Catatan disimpan ke penyimpanan lokal browser (offline).', 'warning');
+                } catch(e) {
+                    showToast('Gagal menyimpan masukan ke server.', 'error');
+                }
+            } finally {
+                if (saveLabel) saveLabel.innerHTML = '💾 Simpan Masukan';
+                if (saveBtn && isEditMode) saveBtn.classList.add('animate-pulse');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            let toast = document.getElementById('onlineEditToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'onlineEditToast';
+                document.body.appendChild(toast);
+            }
+
+            let bgClass = 'bg-teal-600 border-teal-400';
+            if (type === 'success') bgClass = 'bg-emerald-600 border-emerald-400';
+            if (type === 'error') bgClass = 'bg-rose-600 border-rose-400';
+            if (type === 'warning') bgClass = 'bg-amber-600 border-amber-400';
+
+            toast.className = 'fixed bottom-5 right-5 z-[9999] px-4 py-2.5 rounded-xl shadow-2xl text-xs font-bold text-white transition-all duration-300 transform translate-y-0 opacity-100 border no-print flex items-center gap-2 ' + bgClass;
+            toast.innerHTML = message;
+
+            clearTimeout(window.__toastTimeout);
+            window.__toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-3', 'opacity-0');
+            }, 3500);
+        }
+
         function openApproveModal() {
             const modal = document.getElementById('approveModal');
             if (modal) {
+                const box = document.getElementById('editableNotesBox') || document.querySelector('.editable-notes-content');
+                if (box) {
+                    syncNotesToModal(box.innerText.trim());
+                }
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
             }
@@ -2723,8 +3095,27 @@
             if (e.key === 'Escape') {
                 closeApproveModal();
             }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveNotesOnline();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const box = document.getElementById('editableNotesBox') || document.querySelector('.editable-notes-content');
+            if (box) {
+                box.addEventListener('input', function() {
+                    isDirty = true;
+                    syncNotesToModal(box.innerText);
+                    const statusIndicators = document.querySelectorAll('.saveStatusIndicator');
+                    statusIndicators.forEach(ind => {
+                        ind.style.display = 'inline';
+                        ind.innerHTML = '● Ada perubahan belum tersimpan...';
+                        ind.className = 'saveStatusIndicator font-bold text-amber-700';
+                    });
+                });
+            }
         });
     </script>
-
 </body>
 </html>

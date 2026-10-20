@@ -110,36 +110,80 @@
                 </div>
 
                 <div class="flex flex-col justify-center gap-3 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">Aksi Cepat Tambah Data</p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">Aksi Master Wilayah</p>
+                        <span class="text-[11px] font-bold text-slate-500">Cetak & Kelola</span>
+                    </div>
                     <div class="flex gap-2">
-                        <button onclick="openModal('modalTambahKabupaten')" class="flex-1 cursor-pointer rounded-xl bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                        <button onclick="openModal('modalTambahKabupaten')" class="flex-1 cursor-pointer rounded-xl bg-blue-600 px-3 py-2 text-center text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
                             + Tambah Kab/Kota
                         </button>
-                        <button onclick="openModal('modalTambahProvinsi')" class="flex-1 cursor-pointer rounded-xl bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 transition hover:bg-slate-50">
+                        <button onclick="openModal('modalTambahProvinsi')" class="flex-1 cursor-pointer rounded-xl bg-white px-3 py-2 text-center text-xs font-semibold text-slate-700 shadow-sm border border-slate-200 transition hover:bg-slate-50">
                             + Tambah Provinsi
                         </button>
+                    </div>
+                    <div class="pt-2 border-t border-blue-200/60 flex gap-2">
+                        <a href="{{ route('wilayah.preview', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search]) }}" target="_blank"
+                           class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-2 text-xs font-bold text-white shadow-xs transition">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak Dokumen</span>
+                        </a>
+                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
+                           class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 shadow-xs transition">
+                            <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>View PDF</span>
+                        </a>
                     </div>
                 </div>
             </div>
 
             {{-- TABS & TAB CONTENT --}}
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                {{-- TAB NAVIGATION --}}
-                <div class="flex border-b border-slate-200 bg-slate-50/70 px-6 pt-4">
-                    <a href="{{ route('wilayah.index', ['tab' => 'kabupaten']) }}"
-                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'kabupaten' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                        Daftar Kabupaten / Kota
-                    </a>
-                    <a href="{{ route('wilayah.index', ['tab' => 'provinsi']) }}"
-                       class="flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-semibold transition {{ $tab === 'provinsi' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                        Daftar Provinsi
-                    </a>
+                {{-- TAB NAVIGATION WITH CETAK & PDF ACTIONS --}}
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-200 bg-slate-50/70 px-6 pt-3 pb-1 gap-3">
+                    <div class="flex items-center">
+                        <a href="{{ route('wilayah.index', ['tab' => 'kabupaten']) }}"
+                           class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab === 'kabupaten' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            Daftar Kabupaten / Kota
+                        </a>
+                        <a href="{{ route('wilayah.index', ['tab' => 'provinsi']) }}"
+                           class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab === 'provinsi' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                            </svg>
+                            Daftar Provinsi
+                        </a>
+                    </div>
+
+                    {{-- TOMBOL CEPAT CETAK & PDF AKTIF DI TAB HEADER --}}
+                    <div class="flex items-center gap-2 pb-1">
+                        <a href="{{ route('wilayah.preview', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search]) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition"
+                           title="Buka pratinjau cetak & simpan PDF">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak {{ $tab === 'provinsi' ? 'Provinsi' : 'Kab/Kota' }}</span>
+                        </a>
+
+                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs transition"
+                           title="Buka file PDF langsung di browser">
+                            <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>View PDF</span>
+                        </a>
+                    </div>
                 </div>
 
                 {{-- TAB: KABUPATEN --}}
@@ -179,6 +223,22 @@
                                         Reset
                                     </a>
                                 @endif
+                                <a href="{{ route('wilayah.preview', ['tab' => 'kabupaten', 'provinsi_id' => $selectedProvinsiId, 'search' => $search]) }}" target="_blank"
+                                   class="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
+                                   title="Cetak Kabupaten / Kota terfilter">
+                                    <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    <span>Cetak</span>
+                                </a>
+                                <a href="{{ route('wilayah.pdf', ['tab' => 'kabupaten', 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
+                                   class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
+                                   title="Buka PDF Kabupaten / Kota terfilter">
+                                    <svg class="h-4 w-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>PDF</span>
+                                </a>
                             </div>
                         </form>
 
@@ -277,6 +337,22 @@
                                         Reset
                                     </a>
                                 @endif
+                                <a href="{{ route('wilayah.preview', ['tab' => 'provinsi', 'search' => $search]) }}" target="_blank"
+                                   class="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
+                                   title="Cetak Daftar Provinsi">
+                                    <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    <span>Cetak</span>
+                                </a>
+                                <a href="{{ route('wilayah.pdf', ['tab' => 'provinsi', 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
+                                   class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
+                                   title="Buka PDF Daftar Provinsi">
+                                    <svg class="h-4 w-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>PDF</span>
+                                </a>
                             </div>
                         </form>
 

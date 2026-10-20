@@ -44,11 +44,15 @@ class ProvinsiSeeder extends Seeder
             'Maluku Utara',
             'Papua',
             'Papua Barat',
+            'Papua Tengah',
+            'Papua Selatan',
+            'Papua Barat Daya',
+            'Papua Pegunungan',
         ];
 
         foreach ($data as $nama) {
             Provinsi::firstOrCreate([
-                'nama_provinsi' => $nama,
+                'name' => $nama,
             ]);
         }
     }

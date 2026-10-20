@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Provinsi;
 use App\Models\Kabupaten;
+use App\Models\DataUjiResistensi;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class WilayahController extends Controller
 {
@@ -186,5 +188,159 @@ class WilayahController extends Controller
         return redirect()
             ->route('wilayah.index', ['tab' => 'kabupaten'])
             ->with('success', 'Kabupaten/Kota berhasil dihapus!');
+    }
+
+    /**
+     * Tampilan Pratinjau Cetak Interaktif Master Data Wilayah (Web Print Preview)
+     */
+    public function preview(Request $request)
+    {
+        $tab = $request->get('tab', 'kabupaten');
+        $provinsiId = $request->get('provinsi_id');
+        $search = trim($request->get('search', ''));
+        $allProvinsis = Provinsi::orderBy('name', 'asc')->get();
+
+        $selectedProvinsi = null;
+        if ($provinsiId && $provinsiId !== 'Semua') {
+            $selectedProvinsi = Provinsi::find($provinsiId);
+        }
+
+        if ($tab === 'provinsi') {
+            $query = Provinsi::withCount(['kabupatens', 'dataUjiResistensi'])->orderBy('name', 'asc');
+            if ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            }
+            $data = $query->get();
+        } else {
+            $query = Kabupaten::with('provinsi')->withCount('dataUjiResistensi');
+            if ($selectedProvinsi) {
+                $query->where('provinsi_id', $selectedProvinsi->id);
+            }
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhereHas('provinsi', fn($p) => $p->where('name', 'like', "%{$search}%"));
+                });
+            }
+            $data = $query->orderBy('provinsi_id', 'asc')->orderBy('name', 'asc')->get();
+        }
+
+        $totalProvinsi = Provinsi::count();
+        $totalKabupaten = Kabupaten::count();
+        $totalDataUji = DataUjiResistensi::count();
+
+        $filterInfo = [
+            'tab' => $tab,
+            'provinsi_id' => $provinsiId,
+            'provinsi_nama' => $selectedProvinsi ? ($selectedProvinsi->name ?? $selectedProvinsi->nama_provinsi) : 'Seluruh Indonesia',
+            'search' => $search,
+            'total_terfilter' => $data->count(),
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        $logoBase64 = null;
+        $logoPath = public_path('logo_bblkl.png');
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        return view('wilayah_preview', compact(
+            'data',
+            'tab',
+            'allProvinsis',
+            'selectedProvinsi',
+            'totalProvinsi',
+            'totalKabupaten',
+            'totalDataUji',
+            'filterInfo',
+            'logoBase64'
+        ));
+    }
+
+    /**
+     * Unduh atau Alirkan (Stream) Master Data Wilayah dalam Format PDF Resmi
+     */
+    public function exportPdf(Request $request)
+    {
+        @ini_set('memory_limit', '512M');
+        @ini_set('max_execution_time', '180');
+
+        $tab = $request->get('tab', 'kabupaten');
+        $provinsiId = $request->get('provinsi_id');
+        $search = trim($request->get('search', ''));
+        $mode = $request->get('mode', 'stream'); // stream atau download
+
+        $selectedProvinsi = null;
+        if ($provinsiId && $provinsiId !== 'Semua') {
+            $selectedProvinsi = Provinsi::find($provinsiId);
+        }
+
+        if ($tab === 'provinsi') {
+            $query = Provinsi::withCount(['kabupatens', 'dataUjiResistensi'])->orderBy('name', 'asc');
+            if ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            }
+            $data = $query->get();
+            $filename = 'Master-Data-Provinsi-Indonesia-' . date('Ymd-His') . '.pdf';
+        } else {
+            $query = Kabupaten::with('provinsi')->withCount('dataUjiResistensi');
+            if ($selectedProvinsi) {
+                $query->where('provinsi_id', $selectedProvinsi->id);
+            }
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhereHas('provinsi', fn($p) => $p->where('name', 'like', "%{$search}%"));
+                });
+            }
+            $data = $query->orderBy('provinsi_id', 'asc')->orderBy('name', 'asc')->get();
+            $filename = 'Master-Data-Kabupaten-Kota-Indonesia-' . date('Ymd-His') . '.pdf';
+        }
+
+        $totalProvinsi = Provinsi::count();
+        $totalKabupaten = Kabupaten::count();
+        $totalDataUji = DataUjiResistensi::count();
+
+        $filterInfo = [
+            'tab' => $tab,
+            'provinsi_id' => $provinsiId,
+            'provinsi_nama' => $selectedProvinsi ? ($selectedProvinsi->name ?? $selectedProvinsi->nama_provinsi) : 'Seluruh Indonesia',
+            'search' => $search,
+            'total_terfilter' => $data->count(),
+            'dicetak_pada' => date('d F Y, H:i') . ' WIB',
+            'user' => auth()->check() ? auth()->user()->name : 'Petugas Administrator'
+        ];
+
+        $logoBase64 = null;
+        $logoPath = public_path('logo_bblkl.png');
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $pdf = Pdf::loadView('wilayah_pdf', compact(
+            'data',
+            'tab',
+            'selectedProvinsi',
+            'totalProvinsi',
+            'totalKabupaten',
+            'totalDataUji',
+            'filterInfo',
+            'logoBase64'
+        ))
+        ->setPaper('a4', 'portrait')
+        ->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'sans-serif'
+        ]);
+
+        if ($mode === 'download') {
+            return $pdf->download($filename);
+        }
+
+        return $pdf->stream($filename);
     }
 }
