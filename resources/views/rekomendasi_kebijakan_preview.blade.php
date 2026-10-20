@@ -1986,11 +1986,6 @@
             <h2 class="doc-title">
                 LAPORAN TEKNIS PEMANTAUAN KERENTANAN INSEKTISIDA VEKTOR
             </h2>
-            <div class="doc-meta">
-                Nomor Lab: <strong>{{ $isApproved && !empty($approval->nomor_surat) ? $approval->nomor_surat : 'LT-VEC/BBLKL/' . date('Y') . '/' . strtoupper(substr(md5($namaWilayah . $tahunFilter . $nyamukFilter . 'lab2022'), 0, 7)) }}</strong>
-                &bull; Acuan: WHO Manual for Monitoring Insecticide Resistance in Mosquito Vectors (Juni 2022)
-                &bull; WHO SOP Tube Test (2022) &bull; WHO SOP Bottle Bioassay (Maret 2022)
-            </div>
         </div>
 
         {{-- PARAMETER EVALUASI --}}
