@@ -112,7 +112,7 @@
                 <div class="flex flex-col justify-center gap-3 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">Aksi Master Wilayah</p>
-                        <span class="text-[11px] font-bold text-slate-500">Cetak & Kelola</span>
+                        <span class="text-[11px] font-bold text-slate-500">Kelola Data</span>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="openModal('modalTambahKabupaten')" class="flex-1 cursor-pointer rounded-xl bg-blue-600 px-3 py-2 text-center text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
@@ -121,22 +121,6 @@
                         <button onclick="openModal('modalTambahProvinsi')" class="flex-1 cursor-pointer rounded-xl bg-white px-3 py-2 text-center text-xs font-semibold text-slate-700 shadow-sm border border-slate-200 transition hover:bg-slate-50">
                             + Tambah Provinsi
                         </button>
-                    </div>
-                    <div class="pt-2 border-t border-blue-200/60 flex gap-2">
-                        <a href="{{ route('wilayah.preview', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search]) }}" target="_blank"
-                           class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-2 text-xs font-bold text-white shadow-xs transition">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            <span>Cetak Dokumen</span>
-                        </a>
-                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
-                           class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 shadow-xs transition">
-                            <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Unduh PDF</span>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -174,10 +158,9 @@
                             <span>Cetak {{ $tab === 'provinsi' ? 'Provinsi' : 'Kab/Kota' }}</span>
                         </a>
 
-                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}"
-                           target="_blank"
+                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'download']) }}"
                            class="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs transition"
-                           title="Buka file PDF langsung di browser">
+                           title="Unduh file PDF resmi">
                             <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>

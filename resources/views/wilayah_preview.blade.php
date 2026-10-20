@@ -166,13 +166,13 @@
 <body>
 
     {{-- TOOLBAR ATAS (HANYA MUNCUL DI LAYAR BROWSER, HILANG SAAT DICETAK) --}}
-    <header class="no-print sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/80 px-4 sm:px-6 py-3 shadow-lg">
-        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+    <header class="no-print sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/80 px-4 sm:px-6 py-2.5 shadow-lg">
+        <div class="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 overflow-x-auto">
             
             {{-- SISI KIRI: KEMBALI & INDIKATOR --}}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5 shrink-0">
                 <a href="{{ route('wilayah.index', ['tab' => $tab, 'provinsi_id' => $filterInfo['provinsi_id'], 'search' => $filterInfo['search']]) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-xs font-semibold transition border border-slate-700">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-xs font-semibold transition border border-slate-700 whitespace-nowrap active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -180,54 +180,44 @@
                 </a>
 
                 <div class="hidden sm:flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 whitespace-nowrap">
                         {{ $tab === 'provinsi' ? 'Daftar 38 Provinsi' : 'Daftar 514 Kab/Kota' }}
                     </span>
-                    <span class="text-xs text-slate-400 font-medium">
+                    <span class="text-xs text-slate-400 font-medium whitespace-nowrap">
                         Cakupan: <strong class="text-slate-200">{{ $filterInfo['provinsi_nama'] }}</strong>
                     </span>
                 </div>
             </div>
 
             {{-- SISI TENGAH: SWITCH TAB PREVIEW CEPAT --}}
-            <div class="flex items-center gap-1.5 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+            <div class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700 shrink-0">
                 <a href="{{ route('wilayah.preview', ['tab' => 'kabupaten', 'provinsi_id' => $filterInfo['provinsi_id']]) }}"
-                   class="px-3 py-1 text-xs font-semibold rounded-lg transition {{ $tab === 'kabupaten' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-400 hover:text-white' }}">
+                   class="px-3 py-1 text-xs font-semibold rounded-lg transition whitespace-nowrap {{ $tab === 'kabupaten' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-400 hover:text-white' }}">
                     Kabupaten/Kota
                 </a>
                 <a href="{{ route('wilayah.preview', ['tab' => 'provinsi']) }}"
-                   class="px-3 py-1 text-xs font-semibold rounded-lg transition {{ $tab === 'provinsi' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-400 hover:text-white' }}">
+                   class="px-3 py-1 text-xs font-semibold rounded-lg transition whitespace-nowrap {{ $tab === 'provinsi' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-400 hover:text-white' }}">
                     Provinsi (38)
                 </a>
             </div>
 
             {{-- SISI KANAN: TOMBOL CETAK & PDF --}}
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
                 {{-- TOMBOL UNDUH PDF (DOMPDF) --}}
                 <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $filterInfo['provinsi_id'], 'search' => $filterInfo['search'], 'mode' => 'download']) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold transition border border-slate-700 shadow-sm"
-                   title="Unduh file PDF langsung">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold transition border border-slate-700 shadow-sm whitespace-nowrap active:scale-95"
+                   title="Unduh file PDF resmi">
                     <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <span>Unduh PDF</span>
                 </a>
 
-                {{-- TOMBOL LIHAT PDF DI BROWSER --}}
-                <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $filterInfo['provinsi_id'], 'search' => $filterInfo['search'], 'mode' => 'stream']) }}"
-                   target="_blank"
-                   class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold transition border border-slate-700 shadow-sm"
-                   title="Buka PDF murni di tab baru">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <span>Buka PDF</span>
-                </a>
-
-                {{-- TOMBOL CETAK BROWSER (WINDOW.PRINT) --}}
-                <button onclick="window.print()"
-                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition shadow-md cursor-pointer hover:shadow-teal-500/20">
+                {{-- TOMBOL CETAK BROWSER / SIMPAN PDF (WINDOW.PRINT) --}}
+                <button type="button"
+                        onclick="window.print()"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition shadow-md cursor-pointer hover:shadow-teal-500/20 whitespace-nowrap active:scale-95"
+                        title="Cetak langsung atau simpan sebagai PDF tanpa terganggu IDM">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
