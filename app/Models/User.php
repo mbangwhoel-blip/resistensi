@@ -97,12 +97,24 @@ class User extends Authenticatable
             'bkk',
             'balai_karantina',
             'labkesmas',
+            'peneliti',
+            'universitas',
         ]);
     }
 
     public function isViewer(): bool
     {
         return strtolower((string)$this->role) === 'viewer';
+    }
+
+    public function isPeneliti(): bool
+    {
+        return strtolower((string)$this->role) === 'peneliti';
+    }
+
+    public function isUniversitas(): bool
+    {
+        return in_array(strtolower((string)$this->role), ['universitas', 'akademisi']);
     }
 
     public function canManageData(): bool

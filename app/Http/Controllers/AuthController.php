@@ -122,7 +122,7 @@ class AuthController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas',
+            'role' => 'required|in:petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,peneliti,universitas',
             'telepon' => 'nullable|string|max:20',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',

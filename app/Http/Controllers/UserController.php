@@ -43,6 +43,8 @@ class UserController extends Controller
                 $query->whereIn('role', ['dinas_kesehatan', 'dinkes']);
             } elseif ($roleFilter === 'balai_kekarantinaan_kesehatan') {
                 $query->whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina']);
+            } elseif ($roleFilter === 'universitas') {
+                $query->whereIn('role', ['universitas', 'akademisi']);
             } else {
                 $query->where('role', $roleFilter);
             }
@@ -62,6 +64,8 @@ class UserController extends Controller
             'dinas_kesehatan' => User::whereIn('role', ['dinas_kesehatan', 'dinkes'])->count(),
             'balai_kekarantinaan_kesehatan' => User::whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina'])->count(),
             'labkesmas' => User::where('role', 'labkesmas')->count(),
+            'peneliti' => User::where('role', 'peneliti')->count(),
+            'universitas' => User::where('role', 'universitas')->count(),
             'viewer' => User::where('role', 'viewer')->count(),
             'aktif' => User::where('status', 'aktif')->count(),
             'nonaktif' => User::where('status', 'nonaktif')->count(),
@@ -80,7 +84,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -129,7 +133,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username,' . $id,
             'email' => 'required|email|max:100|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan',
+            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [

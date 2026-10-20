@@ -46,6 +46,24 @@
                 $roleColor = 'text-emerald-600 font-bold';
                 $badgeBg = 'bg-emerald-100 text-emerald-700 border-emerald-200';
                 $badgeLabel = '🔬 Petugas Lab';
+            } elseif ($uRole === 'peneliti') {
+                $avatarGrad = 'from-violet-700 to-violet-500 ring-violet-100';
+                $roleLabel = 'Peneliti';
+                $roleColor = 'text-violet-600 font-bold';
+                $badgeBg = 'bg-violet-100 text-violet-700 border-violet-200';
+                $badgeLabel = '🔍 Peneliti';
+            } elseif ($uRole === 'universitas') {
+                $avatarGrad = 'from-sky-700 to-sky-500 ring-sky-100';
+                $roleLabel = 'Universitas / Akademisi';
+                $roleColor = 'text-sky-600 font-bold';
+                $badgeBg = 'bg-sky-100 text-sky-700 border-sky-200';
+                $badgeLabel = '🎓 Universitas';
+            } elseif ($uRole === 'kepala' || $uRole === 'pimpinan') {
+                $avatarGrad = 'from-indigo-700 to-indigo-500 ring-indigo-100';
+                $roleLabel = 'Kepala / Pimpinan';
+                $roleColor = 'text-indigo-600 font-bold';
+                $badgeBg = 'bg-indigo-100 text-indigo-700 border-indigo-200';
+                $badgeLabel = '🏛️ Kepala / Pimpinan';
             } elseif ($uRole === 'dinas_kesehatan' || $uRole === 'dinkes') {
                 $avatarGrad = 'from-teal-700 to-teal-500 ring-teal-100';
                 $roleLabel = 'Dinas Kesehatan';

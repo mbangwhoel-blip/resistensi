@@ -309,6 +309,8 @@
                                 <option value="dinas_kesehatan" class="bg-slate-900 text-white" {{ old('role') === 'dinas_kesehatan' ? 'selected' : '' }}>🏥 Dinas Kesehatan</option>
                                 <option value="balai_kekarantinaan_kesehatan" class="bg-slate-900 text-white" {{ old('role') === 'balai_kekarantinaan_kesehatan' ? 'selected' : '' }}>🚢 Balai Kekarantinaan Kesehatan</option>
                                 <option value="labkesmas" class="bg-slate-900 text-white" {{ old('role') === 'labkesmas' ? 'selected' : '' }}>🧪 Labkesmas</option>
+                                <option value="peneliti" class="bg-slate-900 text-white" {{ old('role') === 'peneliti' ? 'selected' : '' }}>🔍 Peneliti</option>
+                                <option value="universitas" class="bg-slate-900 text-white" {{ old('role') === 'universitas' ? 'selected' : '' }}>🎓 Universitas / Akademisi</option>
                                 <option value="viewer" class="bg-slate-900 text-white" {{ old('role') === 'viewer' ? 'selected' : '' }}>👁️ Viewer (Lihat Saja)</option>
                             </select>
                         </div>
