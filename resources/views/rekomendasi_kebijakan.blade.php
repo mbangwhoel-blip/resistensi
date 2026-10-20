@@ -159,8 +159,12 @@
                                 <span>Cetak Policy Brief Agregat</span>
                             </a>
 
-                            {{-- SEJAJAR DENGAN TULISAN CAKUPAN --}}
+                            {{-- TULISAN CAKUPAN SEBELUM KOTAK EDIT & TAMBAH MASUKAN ONLINE --}}
                             <div class="inline-flex items-center gap-2.5">
+                                <span class="text-[11px] text-slate-500 dark:text-zinc-400 font-medium whitespace-nowrap">
+                                    Cakupan: <strong class="text-teal-700 dark:text-teal-400">{{ $namaWilayah }}</strong>
+                                </span>
+
                                 {{-- TOMBOL UTAMA: EDIT & TAMBAH MASUKAN ONLINE --}}
                                 <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes', 'edit' => '1'])) }}"
                                    target="_blank"
@@ -171,10 +175,6 @@
                                     </svg>
                                     <span>✏️ Edit &amp; Tambah Masukan Online</span>
                                 </a>
-
-                                <span class="text-[11px] text-slate-500 dark:text-zinc-400 font-medium whitespace-nowrap">
-                                    Cakupan: <strong class="text-teal-700 dark:text-teal-400">{{ $namaWilayah }}</strong>
-                                </span>
                             </div>
                         </div>
                     </div>
