@@ -145,28 +145,6 @@
                             Daftar Provinsi
                         </a>
                     </div>
-
-                    {{-- TOMBOL CEPAT CETAK & PDF AKTIF DI TAB HEADER --}}
-                    <div class="flex items-center gap-2 pb-1">
-                        <a href="{{ route('wilayah.preview', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search]) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition"
-                           title="Buka pratinjau cetak & simpan PDF">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            <span>Cetak {{ $tab === 'provinsi' ? 'Provinsi' : 'Kab/Kota' }}</span>
-                        </a>
-
-                        <a href="{{ route('wilayah.pdf', ['tab' => $tab, 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'download']) }}"
-                           class="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs transition"
-                           title="Unduh file PDF resmi">
-                            <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Unduh PDF</span>
-                        </a>
-                    </div>
                 </div>
 
                 {{-- TAB: KABUPATEN --}}
@@ -213,14 +191,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                     </svg>
                                     <span>Cetak</span>
-                                </a>
-                                <a href="{{ route('wilayah.pdf', ['tab' => 'kabupaten', 'provinsi_id' => $selectedProvinsiId, 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
-                                   class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
-                                   title="Buka PDF Kabupaten / Kota terfilter">
-                                    <svg class="h-4 w-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <span>PDF</span>
                                 </a>
                             </div>
                         </form>
@@ -327,14 +297,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                     </svg>
                                     <span>Cetak</span>
-                                </a>
-                                <a href="{{ route('wilayah.pdf', ['tab' => 'provinsi', 'search' => $search, 'mode' => 'stream']) }}" target="_blank"
-                                   class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 px-3.5 py-2 text-xs font-bold shadow-2xs transition"
-                                   title="Buka PDF Daftar Provinsi">
-                                    <svg class="h-4 w-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <span>PDF</span>
                                 </a>
                             </div>
                         </form>
