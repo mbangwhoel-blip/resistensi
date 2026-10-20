@@ -19,6 +19,53 @@
             font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
             -webkit-font-smoothing: antialiased;
         }
+
+        .print-only {
+            display: none;
+        }
+
+        @media print {
+            aside, header, .no-print, #addModal, #editModal {
+                display: none !important;
+            }
+            main {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                min-height: auto !important;
+                width: 100% !important;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-clean-box {
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+            }
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 8pt !important;
+            }
+            th, td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 5px 8px !important;
+            }
+            th {
+                background-color: #0f172a !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .action-col {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -91,7 +138,7 @@
             @endif
 
             {{-- KARTU STATISTIK RINGKAS --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 no-print">
                 {{-- TOTAL PENGGUNA --}}
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs flex items-center justify-between">
                     <div>
@@ -145,7 +192,7 @@
             </div>
 
             {{-- TOOLBAR PENCARIAN, FILTER, DAN TOMBOL TAMBAH --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs no-print">
                 <form action="{{ route('users.index') }}" method="GET" class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
 
                     <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-0">
@@ -205,8 +252,18 @@
                         @endif
                     </div>
 
-                    {{-- TOMBOL TAMBAH USER --}}
-                    <div class="shrink-0">
+                    {{-- TOMBOL AKSI: CETAK & TAMBAH USER --}}
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button"
+                                onclick="window.print()"
+                                class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:bg-slate-50 hover:border-slate-300 active:scale-95 cursor-pointer whitespace-nowrap"
+                                title="Cetak Data Pengguna / Ekspor ke PDF">
+                            <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak</span>
+                        </button>
+
                         <button type="button"
                                 onclick="openAddModal()"
                                 class="h-9 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition hover:from-blue-500 hover:to-indigo-500 cursor-pointer whitespace-nowrap">
@@ -218,19 +275,43 @@
                 </form>
             </div>
 
+            {{-- KOP PRINT RESMI BBLKL (HANYA TAMPIL SAAT CETAK / PRINT) --}}
+            <div class="print-only mb-6 border-b-2 border-slate-900 pb-4">
+                <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 6px;">
+                    <tr style="border: none;">
+                        <td style="width: 135px; border: none; vertical-align: top;">
+                            <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL" style="max-width: 130px; max-height: 48px;" onerror="this.src='{{ asset('kemenkes.png') }}'">
+                        </td>
+                        <td style="border: none; text-align: center; vertical-align: top;">
+                            <div style="font-size: 9pt; font-weight: 700; color: #334155; text-transform: uppercase;">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
+                            <div style="font-size: 8pt; font-weight: 600; color: #475569; text-transform: uppercase;">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
+                            <div style="font-size: 10.5pt; font-weight: 800; color: #047857; text-transform: uppercase; margin-top: 1px;">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
+                            <div style="font-size: 7.2pt; color: #64748b; margin-top: 2px;">
+                                Jl. Hasanudin No. 123 Salatiga, Jawa Tengah 50721 &bull; Telp: (0298) 327096 &bull; Laman: https://bblabkesling.go.id/
+                            </div>
+                        </td>
+                        <td style="width: 135px; border: none;"></td>
+                    </tr>
+                </table>
+                <div style="text-align: center; margin-top: 8px;">
+                    <h2 style="font-size: 11pt; font-weight: 800; text-transform: uppercase; margin: 0; color: #0f172a;">DAFTAR PENGGUNA &amp; HAK AKSES SISTEM</h2>
+                    <p style="font-size: 7.5pt; color: #64748b; margin: 2px 0 0 0;">PETA RESISTENSI &bull; Dicetak pada: {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y, HH:mm') }} WIB &bull; Petugas: {{ auth()->check() ? auth()->user()->name : 'Administrator' }}</p>
+                </div>
+            </div>
+
             {{-- TABEL PENGGUNA --}}
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden print-clean-box">
                 <div class="overflow-x-auto bg-slate-50">
                     <table class="w-full text-left text-xs table-fixed border-collapse">
                         <thead class="bg-slate-900 text-white uppercase text-[11px] font-bold tracking-wider border-b border-slate-800">
                             <tr>
                                 <th class="w-[4%] px-1.5 py-2.5 text-center">No</th>
-                                <th class="w-[26%] px-2.5 py-2.5">Nama & Username</th>
-                                <th class="w-[20%] px-2.5 py-2.5">Email & Telepon</th>
+                                <th class="w-[26%] px-2.5 py-2.5">Nama &amp; Username</th>
+                                <th class="w-[20%] px-2.5 py-2.5">Email &amp; Telepon</th>
                                 <th class="w-[14%] px-2 py-2.5 text-center whitespace-nowrap">Role / Hak Akses</th>
                                 <th class="w-[8%] px-1.5 py-2.5 text-center whitespace-nowrap">Status</th>
                                 <th class="w-[12%] px-2 py-2.5 text-center whitespace-nowrap">Aktivitas Terakhir</th>
-                                <th class="w-[16%] px-2 py-2.5 text-center whitespace-nowrap">Aksi</th>
+                                <th class="w-[16%] px-2 py-2.5 text-center whitespace-nowrap action-col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -346,7 +427,7 @@
                                     </td>
 
                                     {{-- AKSI --}}
-                                    <td class="px-2 py-2.5 text-center whitespace-nowrap">
+                                    <td class="px-2 py-2.5 text-center whitespace-nowrap action-col">
                                         <div class="inline-flex items-center justify-center gap-1">
                                             {{-- EDIT --}}
                                             <button type="button"
@@ -392,14 +473,29 @@
 
                 {{-- PAGINATION --}}
                 @if ($users->hasPages() || $users->total() > 0)
-                    <div class="border-t border-slate-100 bg-white px-4 py-2.5">
+                    <div class="border-t border-slate-100 bg-white px-4 py-2.5 no-print">
                         {{ $users->links() }}
                     </div>
                 @endif
             </div>
 
+            {{-- BLOK TANDA TANGAN RESMI PENGESAHAN (HANYA MUNCUL SAAT PRINT) --}}
+            <div class="print-only mt-8 pt-4 border-t border-slate-300 flex justify-between items-start text-xs text-slate-700">
+                <div style="font-size: 7.5pt; color: #64748b; max-width: 60%; line-height: 1.5;">
+                    * Dokumen resmi daftar pengguna &amp; hak akses Sistem Informasi Resistensi Insektisida Vektor Indonesia (PETA RESISTENSI).<br>
+                    * Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL) Salatiga &bull; Kementerian Kesehatan Republik Indonesia.
+                </div>
+                <div style="text-align: center; min-width: 220px;">
+                    <div style="font-size: 8pt; color: #334155;">Salatiga, {{ date('d F Y') }}</div>
+                    <div style="font-size: 8pt; font-weight: bold; color: #0f172a; margin-top: 2px;">Kepala Balai Besar Laboratorium Kesehatan Lingkungan</div>
+                    <div style="height: 48px;"></div>
+                    <div style="font-size: 8.5pt; font-weight: bold; text-decoration: underline; color: #0f172a;">Akhmad Saikhu, SKM, M.SC.PH</div>
+                    <div style="font-size: 7.5pt; color: #475569;">NIP. 196805251992031004</div>
+                </div>
+            </div>
+
             {{-- INFORMASI KEAMANAN SISTEM --}}
-            <div class="rounded-2xl border border-blue-200 dark:border-blue-900/60 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-slate-900/90 dark:to-slate-900/90 dark:bg-slate-900 p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="rounded-2xl border border-blue-200 dark:border-blue-900/60 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-slate-900/90 dark:to-slate-900/90 dark:bg-slate-900 p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 no-print">
                 <div class="flex items-center gap-3.5">
                     <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-xl shadow-md shadow-blue-500/25">
                         🛡️
@@ -679,11 +775,15 @@
             }
         }
 
-        // Close on ESC
+        // Close on ESC & Shortcut Cetak Ctrl+P
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeAddModal();
                 closeEditModal();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
             }
         });
     </script>

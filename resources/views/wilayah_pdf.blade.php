@@ -208,12 +208,15 @@
             </td>
             <td class="kop-text">
                 <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
-                <div class="kop-title-2">DIREKTORAT JENDERAL PENCEGAHAN DAN PENGENDALIAN PENYAKIT</div>
+                <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
                 <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
                 <div class="kop-address">
-                    Jl. Karang Menjangan No. 22, Surabaya 60285 • Telp: (031) 5021451 • Email: info@bblkl.kemkes.go.id • Web: bblkl.kemkes.go.id
+                    Jl. Hasanudin No. 123, Mangunsari, Sidomukti, Kota Salatiga, Jawa Tengah 50721<br>
+                    Telepon: (0298) 327096 | Faksimile: (0298) 327097 | Surat Elektronik: bblkl.salatiga@kemkes.go.id<br>
+                    Laman Resmi: https://bblabkesling.go.id/ &bull; SI-RESISTENSI INDONESIA
                 </div>
             </td>
+            <td class="kop-spacer" style="width: 110px;"></td>
         </tr>
     </table>
     <div class="kop-divider"></div>
@@ -223,9 +226,6 @@
         <h1 class="doc-title">
             {{ $tab === 'provinsi' ? 'DAFTAR MASTER DATA PROVINSI REPUBLIK INDONESIA' : 'DAFTAR MASTER DATA KABUPATEN / KOTA REPUBLIK INDONESIA' }}
         </h1>
-        <p class="doc-subtitle">
-            Sistem Informasi Resistensi Insektisida Vektor Indonesia (PETA RESISTENSI) • Data Resmi Kemendagri
-        </p>
     </div>
 
     {{-- KOTAK INFORMASI FILTER & DOKUMEN --}}

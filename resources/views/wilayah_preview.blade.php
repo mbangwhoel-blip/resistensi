@@ -46,54 +46,78 @@
             border-collapse: collapse;
             margin-bottom: 4px;
         }
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 4px;
+        }
         .kop-table td {
-            vertical-align: middle;
+            vertical-align: top;
             padding: 0;
         }
         .kop-logo {
-            width: 160px;
+            width: 135px;
             text-align: left;
+            vertical-align: top;
+            padding-top: 1px;
         }
         .kop-logo img {
-            max-width: 160px;
-            max-height: 55px;
+            max-width: 135px;
+            max-height: 48px;
             height: auto;
             display: block;
+            margin: 0;
         }
         .kop-text {
             text-align: center;
+            vertical-align: top;
+            padding: 0 4px;
+        }
+        .kop-spacer {
+            width: 135px;
+            text-align: right;
+            vertical-align: top;
         }
         .kop-title-1 {
-            font-size: 9.5pt;
-            font-weight: bold;
+            font-size: 9.2pt;
+            font-weight: 700;
             color: #334155;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            white-space: nowrap;
+            line-height: 1.25;
+            margin: 0;
         }
         .kop-title-2 {
-            font-size: 8.5pt;
+            font-size: 8.2pt;
             font-weight: 600;
             color: #475569;
             text-transform: uppercase;
+            white-space: nowrap;
+            line-height: 1.25;
+            margin: 1px 0;
         }
         .kop-title-main {
-            font-size: 12pt;
+            font-size: 10.5pt;
             font-weight: 800;
-            color: #0f172a;
-            letter-spacing: 0.8px;
+            color: #047857;
+            letter-spacing: 0.3px;
             text-transform: uppercase;
-            margin-top: 2px;
-            margin-bottom: 2px;
+            white-space: nowrap;
+            line-height: 1.25;
+            margin: 1px 0 2px 0;
         }
         .kop-address {
-            font-size: 7.5pt;
+            font-size: 7.2pt;
             color: #64748b;
+            line-height: 1.35;
+            margin-top: 2px;
         }
         .kop-divider {
-            border-top: 2.5px solid #0f172a;
-            border-bottom: 1px solid #0f172a;
-            height: 3px;
-            margin-top: 5px;
+            border-top: 2px solid #0f172a;
+            border-bottom: 0.75px solid #0f172a;
+            height: 2.5px;
+            margin-top: 4px;
             margin-bottom: 12px;
         }
 
@@ -234,16 +258,19 @@
         <table class="kop-table">
             <tr>
                 <td class="kop-logo">
-                    <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL Kemenkes RI">
+                    <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL Kemenkes RI" onerror="this.src='{{ asset('kemenkes.png') }}'">
                 </td>
                 <td class="kop-text">
                     <div class="kop-title-1">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
-                    <div class="kop-title-2">DIREKTORAT JENDERAL PENCEGAHAN DAN PENGENDALIAN PENYAKIT</div>
+                    <div class="kop-title-2">DIREKTORAT JENDERAL KESEHATAN PRIMER DAN KOMUNITAS</div>
                     <div class="kop-title-main">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN</div>
                     <div class="kop-address">
-                        Jl. Karang Menjangan No. 22, Surabaya 60285 • Telp: (031) 5021451 • Email: info@bblkl.kemkes.go.id • Web: bblkl.kemkes.go.id
+                        Jl. Hasanudin No. 123, Mangunsari, Sidomukti, Kota Salatiga, Jawa Tengah 50721<br>
+                        Telepon: (0298) 327096 | Faksimile: (0298) 327097 | Surat Elektronik: bblkl.salatiga@kemkes.go.id<br>
+                        Laman Resmi: https://bblabkesling.go.id/ &bull; SI-RESISTENSI INDONESIA
                     </div>
                 </td>
+                <td class="kop-spacer"></td>
             </tr>
         </table>
         <div class="kop-divider"></div>
@@ -253,9 +280,6 @@
             <h1 class="text-sm sm:text-base font-extrabold uppercase text-slate-900 tracking-wide">
                 {{ $tab === 'provinsi' ? 'DAFTAR MASTER DATA PROVINSI REPUBLIK INDONESIA' : 'DAFTAR MASTER DATA KABUPATEN / KOTA REPUBLIK INDONESIA' }}
             </h1>
-            <p class="text-xs text-slate-600 mt-0.5">
-                Sistem Informasi Resistensi Insektisida Vektor Indonesia (PETA RESISTENSI) • Data Resmi Kemendagri
-            </p>
         </div>
 
         {{-- METADATA INFO CETAK --}}
