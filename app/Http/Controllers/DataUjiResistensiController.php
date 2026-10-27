@@ -34,6 +34,9 @@ class DataUjiResistensiController extends Controller
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
+        $daftarTahunAsc = array_values($daftarTahun);
+        sort($daftarTahunAsc);
+
         $search = trim($request->get('search', ''));
 
         // Filter Bulan (Default: Semua Bulan)
@@ -45,13 +48,38 @@ class DataUjiResistensiController extends Controller
             $bulan = 'Semua';
         }
 
-        // Filter Tahun
-        if ($request->has('tahun')) {
-            $tahunReq = $request->get('tahun');
-            $tahun = ($tahunReq === 'Semua' || $tahunReq === 'semua' || empty($tahunReq)) ? 'Semua' : (int)$tahunReq;
+        // Filter Rentang Tahun (tahun_mulai & tahun_selesai) atau Tahun Tunggal
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        // Fallback jika parameter tunggal 'tahun' yang dikirim
+        if ($tahunMulai === null && $tahunSelesai === null && $request->has('tahun')) {
+            $thnVal = $request->get('tahun');
+            if ($thnVal !== 'Semua' && $thnVal !== 'semua' && !empty($thnVal)) {
+                $tahunMulai = (int)$thnVal;
+                $tahunSelesai = (int)$thnVal;
+            }
+        }
+
+        // Normalisasi urutan jika tahun_mulai > tahun_selesai
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
+        // Label teks tahun untuk badge ringkasan
+        if ($tahunMulai && $tahunSelesai) {
+            $tahun = ($tahunMulai === $tahunSelesai) ? (string)$tahunMulai : "{$tahunMulai} - {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahun = "≥ {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahun = "≤ {$tahunSelesai}";
         } else {
-            // Jika ada pencarian tanpa filter tahun eksplisit, jangan kunci tahun
-            $tahun = $search !== '' ? 'Semua' : (int)date('Y');
+            $tahun = 'Semua';
         }
 
         $query = DataUjiResistensi::with([
@@ -63,8 +91,12 @@ class DataUjiResistensiController extends Controller
             $query->where('month', $bulan);
         }
 
-        if ($tahun !== 'Semua' && !empty($tahun)) {
-            $query->where('year', (int)$tahun);
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('year', '<=', $tahunSelesai);
         }
 
         if ($search !== '') {
@@ -100,9 +132,13 @@ class DataUjiResistensiController extends Controller
 
         $data = $query->latest('id')->paginate($perPage)->withQueryString();
 
-        // Data untuk statistik tahun berjalan / semua tahun
-        if ($tahun !== 'Semua' && !empty($tahun)) {
-            $dataTahunBerjalan = DataUjiResistensi::where('year', (int)$tahun)->get();
+        // Data untuk statistik tahun berjalan / rentang tahun / semua tahun
+        if ($tahunMulai && $tahunSelesai) {
+            $dataTahunBerjalan = DataUjiResistensi::whereBetween('year', [$tahunMulai, $tahunSelesai])->get();
+        } elseif ($tahunMulai) {
+            $dataTahunBerjalan = DataUjiResistensi::where('year', '>=', $tahunMulai)->get();
+        } elseif ($tahunSelesai) {
+            $dataTahunBerjalan = DataUjiResistensi::where('year', '<=', $tahunSelesai)->get();
         } else {
             $dataTahunBerjalan = DataUjiResistensi::all();
         }
@@ -119,8 +155,11 @@ class DataUjiResistensiController extends Controller
             'data',
             'bulan',
             'tahun',
+            'tahunMulai',
+            'tahunSelesai',
             'daftarBulan',
             'daftarTahun',
+            'daftarTahunAsc',
             'dataTahunBerjalan',
             'bulanAktif',
             'totalSemuaData',
@@ -427,12 +466,14 @@ class DataUjiResistensiController extends Controller
         $tahunRange = range((int)date('Y'), 2015);
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
-
+        $daftarTahunAsc = array_values($daftarTahun);
+        sort($daftarTahunAsc);
 
         return view('dashboard', compact(
             'data',
             'provinsis',
             'daftarTahun',
+            'daftarTahunAsc',
             'daftarNyamuk',
             'daftarInsektisida',
             'daftarMetode',

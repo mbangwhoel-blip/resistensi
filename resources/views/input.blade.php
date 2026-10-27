@@ -178,18 +178,25 @@
                             </select>
                         </div>
 
-                        {{-- FILTER TAHUN --}}
-                        <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 shadow-2xs hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition">
+                        {{-- FILTER RENTANG PERIODE TAHUN --}}
+                        <div class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 shadow-2xs hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 transition" title="Filter rentang tahun pengujian (Dari s.d Sampai)">
                             <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tahun:</span>
-                            <select name="tahun" onchange="document.getElementById('formFilterBulanTahun').submit()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-1">
-                                <option value="Semua" {{ $tahun == 'Semua' ? 'selected' : '' }}>Semua Tahun</option>
+                            <select name="tahun_mulai" onchange="document.getElementById('formFilterBulanTahun').submit()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-0.5" title="Tahun Mulai (Dari)">
+                                <option value="Semua">Dari...</option>
+                                @foreach ($daftarTahunAsc as $y)
+                                    <option value="{{ $y }}" {{ (string)$tahunMulai === (string)$y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-[10px] font-bold text-slate-400">s.d</span>
+                            <select name="tahun_selesai" onchange="document.getElementById('formFilterBulanTahun').submit()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-0.5" title="Tahun Selesai (Sampai)">
+                                <option value="Semua">Sampai...</option>
                                 @foreach ($daftarTahun as $y)
-                                    <option value="{{ $y }}" {{ (string)$tahun == (string)$y ? 'selected' : '' }}>{{ $y }}</option>
+                                    <option value="{{ $y }}" {{ (string)$tahunSelesai === (string)$y ? 'selected' : '' }}>{{ $y }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        @if($bulan != 'Semua' || $tahun != 'Semua' || !empty($search) || (request('per_page') && request('per_page') != 10))
+                        @if($bulan != 'Semua' || $tahunMulai !== null || $tahunSelesai !== null || !empty($search) || (request('per_page') && request('per_page') != 10))
                             <a href="{{ route('input') }}" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition shadow-2xs" title="Reset filter ke default">
                                 <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -351,6 +358,12 @@
                     <form method="GET" action="{{ route('input') }}" class="relative flex items-center">
                         @if(request('bulan') && request('bulan') !== 'Semua')
                             <input type="hidden" name="bulan" value="{{ request('bulan') }}">
+                        @endif
+                        @if(request('tahun_mulai') && request('tahun_mulai') !== 'Semua')
+                            <input type="hidden" name="tahun_mulai" value="{{ request('tahun_mulai') }}">
+                        @endif
+                        @if(request('tahun_selesai') && request('tahun_selesai') !== 'Semua')
+                            <input type="hidden" name="tahun_selesai" value="{{ request('tahun_selesai') }}">
                         @endif
                         @if(request('tahun') && request('tahun') !== 'Semua')
                             <input type="hidden" name="tahun" value="{{ request('tahun') }}">

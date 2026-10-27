@@ -1541,17 +1541,26 @@
                             </select>
                         </div>
 
-                        {{-- PERIODE TAHUN --}}
-                        <div>
-                            <label for="filterPeriodeTahun" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
-                                Periode Tahun
+                        {{-- PERIODE RENTANG TAHUN --}}
+                        <div class="col-span-1">
+                            <label class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Periode Rentang Tahun
                             </label>
-                            <select id="filterPeriodeTahun" onchange="applyRegionalFilter()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
-                                <option value="">Semua Periode</option>
-                                @foreach ($daftarTahun as $thn)
-                                    <option value="{{ $thn }}">{{ $thn }}</option>
-                                @endforeach
-                            </select>
+                            <div class="flex items-center gap-1">
+                                <select id="filterTahunMulai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-1.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Mulai (Dari)">
+                                    <option value="">Dari...</option>
+                                    @foreach ($daftarTahunAsc as $thn)
+                                        <option value="{{ $thn }}">{{ $thn }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500">s.d</span>
+                                <select id="filterTahunSelesai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-1.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Selesai (Sampai)">
+                                    <option value="">Sampai...</option>
+                                    @foreach ($daftarTahun as $thn)
+                                        <option value="{{ $thn }}">{{ $thn }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         {{-- INDIKATOR --}}
@@ -3120,7 +3129,16 @@
                 const currentLevel = document.querySelector('input[name="levelFilter"]:checked')?.value || 'nasional';
                 const selectedProvId = document.getElementById('filterProvinsiSelect')?.value || '';
                 const selectedKabId = document.getElementById('filterKabupatenSelect')?.value || '';
-                const selectedTahun = document.getElementById('filterPeriodeTahun')?.value || '';
+                const tmVal = document.getElementById('filterTahunMulai')?.value;
+                const tsVal = document.getElementById('filterTahunSelesai')?.value;
+                let minYear = tmVal ? parseInt(tmVal) : null;
+                let maxYear = tsVal ? parseInt(tsVal) : null;
+                if (minYear && maxYear && minYear > maxYear) {
+                    const tmp = minYear;
+                    minYear = maxYear;
+                    maxYear = tmp;
+                }
+
                 const selectedIndikator = document.getElementById('filterIndikator')?.value || 'Peta Endemisitas & Resistensi';
 
                 // Perbarui Keterangan Status Filter di Atas Peta (Gambar 2)
@@ -3128,7 +3146,17 @@
                 const levelEl = document.getElementById('activeFilterLevel');
                 const periodeEl = document.getElementById('activeFilterPeriode');
                 if (titleEl) titleEl.textContent = selectedIndikator;
-                if (periodeEl) periodeEl.textContent = selectedTahun ? `Periode Laporan: ${selectedTahun}` : 'Periode Laporan: Semua Periode';
+                if (periodeEl) {
+                    if (minYear && maxYear) {
+                        periodeEl.textContent = minYear === maxYear ? `Periode: Tahun ${minYear}` : `Periode: Tahun ${minYear} s.d ${maxYear}`;
+                    } else if (minYear) {
+                        periodeEl.textContent = `Periode: Mulai Tahun ${minYear}`;
+                    } else if (maxYear) {
+                        periodeEl.textContent = `Periode: s.d Tahun ${maxYear}`;
+                    } else {
+                        periodeEl.textContent = 'Periode Laporan: Semua Periode';
+                    }
+                }
                 if (levelEl) {
                     if (currentLevel === 'nasional') {
                         levelEl.textContent = 'Level: NASIONAL (Seluruh Indonesia)';
@@ -3167,8 +3195,15 @@
                         }
                     }
 
-                    // Filter Periode Tahun
-                    if (selectedTahun && String(item.tahun) !== String(selectedTahun)) return false;
+                    // Filter Rentang Periode Tahun
+                    const itemYear = parseInt(item.tahun || item.year);
+                    if (minYear && maxYear) {
+                        if (isNaN(itemYear) || itemYear < minYear || itemYear > maxYear) return false;
+                    } else if (minYear) {
+                        if (isNaN(itemYear) || itemYear < minYear) return false;
+                    } else if (maxYear) {
+                        if (isNaN(itemYear) || itemYear > maxYear) return false;
+                    }
 
                     // Filter Level Wilayah
                     if (currentLevel === 'provinsi' && selectedProvId) {
@@ -3856,8 +3891,10 @@
                 const indSelect = document.getElementById('filterIndikator');
                 if (indSelect) indSelect.value = 'Peta Endemisitas & Resistensi';
 
-                const thnSelect = document.getElementById('filterPeriodeTahun');
-                if (thnSelect) thnSelect.value = '';
+                const tmMulai = document.getElementById('filterTahunMulai');
+                if (tmMulai) tmMulai.value = '';
+                const tmSelesai = document.getElementById('filterTahunSelesai');
+                if (tmSelesai) tmSelesai.value = '';
 
                 window.handleSearch('');
                 if (desaMarkerLayer) {

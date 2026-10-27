@@ -35,6 +35,9 @@ class LaporanController extends Controller
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
+        $daftarTahunAsc = array_values($daftarTahun);
+        sort($daftarTahunAsc);
+
         // Daftar jenis nyamuk & insektisida
         $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
             ->distinct()
@@ -53,7 +56,34 @@ class LaporanController extends Controller
         // 2. Baca parameter filter
         $provinsiId = $request->get('provinsi_id');
         $kabupatenId = $request->get('kabupaten_id');
-        $tahun = $request->get('tahun', 'Semua');
+        
+        // Filter Rentang Tahun (tahun_mulai & tahun_selesai) atau Tahun Tunggal
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
+        if ($tahunMulai && $tahunSelesai) {
+            $tahun = ($tahunMulai === $tahunSelesai) ? (string)$tahunMulai : "{$tahunMulai} - {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahun = "≥ {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahun = "≤ {$tahunSelesai}";
+        } else {
+            $tahun = 'Semua';
+        }
         $bulan = $request->get('bulan', 'Semua');
         $jenisNyamuk = $request->get('jenis_nyamuk', 'Semua');
         $insektisida = $request->get('insektisida', 'Semua');
@@ -117,6 +147,9 @@ class LaporanController extends Controller
             'provinsis',
             'kabupatens',
             'daftarTahun',
+            'daftarTahunAsc',
+            'tahunMulai',
+            'tahunSelesai',
             'daftarBulan',
             'daftarNyamuk',
             'daftarInsektisida',
@@ -178,10 +211,34 @@ class LaporanController extends Controller
             if ($k) $kabupatenNama = $k->name ?? $k->nama_kabupaten;
         }
 
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+        $tahunLabel = 'Semua Periode';
+        if ($tahunMulai && $tahunSelesai) {
+            $tahunLabel = ($tahunMulai === $tahunSelesai) ? "Tahun {$tahunMulai}" : "Tahun {$tahunMulai} s.d {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahunLabel = "≥ Tahun {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahunLabel = "≤ Tahun {$tahunSelesai}";
+        }
+
         $filterInfo = [
             'provinsi' => $provinsiNama,
             'kabupaten' => $kabupatenNama,
-            'tahun' => $request->get('tahun', 'Semua'),
+            'tahun' => $tahunLabel,
+            'tahun_mulai' => $tahunMulai,
+            'tahun_selesai' => $tahunSelesai,
             'bulan' => $request->get('bulan', 'Semua'),
             'jenis_nyamuk' => $request->get('jenis_nyamuk', 'Semua'),
             'insektisida' => $request->get('insektisida', 'Semua'),
@@ -238,10 +295,34 @@ class LaporanController extends Controller
             if ($k) $kabupatenNama = $k->name ?? $k->nama_kabupaten;
         }
 
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+        $tahunLabel = 'Semua Periode';
+        if ($tahunMulai && $tahunSelesai) {
+            $tahunLabel = ($tahunMulai === $tahunSelesai) ? "Tahun {$tahunMulai}" : "Tahun {$tahunMulai} s.d {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahunLabel = "≥ Tahun {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahunLabel = "≤ Tahun {$tahunSelesai}";
+        }
+
         $filterInfo = [
             'provinsi' => $provinsiNama,
             'kabupaten' => $kabupatenNama,
-            'tahun' => $request->get('tahun', 'Semua'),
+            'tahun' => $tahunLabel,
+            'tahun_mulai' => $tahunMulai,
+            'tahun_selesai' => $tahunSelesai,
             'bulan' => $request->get('bulan', 'Semua'),
             'jenis_nyamuk' => $request->get('jenis_nyamuk', 'Semua'),
             'insektisida' => $request->get('insektisida', 'Semua'),
@@ -296,9 +377,27 @@ class LaporanController extends Controller
             });
         }
 
-        // Filter Tahun
-        if ($request->filled('tahun') && $request->tahun !== 'Semua') {
-            $query->where('year', (int)$request->tahun);
+        // Filter Rentang Tahun (tahun_mulai & tahun_selesai) atau Tahun Tunggal
+        $tahunMulai = $request->filled('tahun_mulai') && $request->tahun_mulai !== 'Semua' ? (int)$request->tahun_mulai : null;
+        $tahunSelesai = $request->filled('tahun_selesai') && $request->tahun_selesai !== 'Semua' ? (int)$request->tahun_selesai : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('year', '<=', $tahunSelesai);
         }
 
         // Filter Bulan
