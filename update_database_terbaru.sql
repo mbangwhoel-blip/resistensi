@@ -32,8 +32,18 @@ CREATE TABLE IF NOT EXISTS `rekomendasi_approvals` (
     KEY `rekomendasi_approvals_verification_token_index` (`verification_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Hapus duplikat ID lama jika ada
-DELETE FROM kabupatens WHERE id IN (69, 509, 513);
+-- 2. Alihkan foreign key jika ada data uji / instansi yang memakai ID lama
+UPDATE data_uji_resistensis SET kabupaten_id = 280 WHERE kabupaten_id = 430;
+UPDATE instansis SET kabupaten_id = 280 WHERE kabupaten_id = 430;
+UPDATE data_uji_resistensis SET kabupaten_id = 420 WHERE kabupaten_id = 69;
+UPDATE instansis SET kabupaten_id = 420 WHERE kabupaten_id = 69;
+UPDATE data_uji_resistensis SET kabupaten_id = 298 WHERE kabupaten_id = 509;
+UPDATE instansis SET kabupaten_id = 298 WHERE kabupaten_id = 509;
+UPDATE data_uji_resistensis SET kabupaten_id = 322 WHERE kabupaten_id = 513;
+UPDATE instansis SET kabupaten_id = 322 WHERE kabupaten_id = 513;
+
+-- 3. Hapus duplikat ID lama jika ada (Kutai Kertanegara ID 430, Batanghari ID 69, Sitaro ID 509, Pangkep ID 513)
+DELETE FROM kabupatens WHERE id IN (69, 430, 509, 513);
 
 -- 3. Sinkronisasi 38 Provinsi
 INSERT INTO provinsis (id, name, created_at, updated_at) VALUES (1, 'Aceh', NOW(), NOW()) ON DUPLICATE KEY UPDATE name = 'Aceh', updated_at = NOW();

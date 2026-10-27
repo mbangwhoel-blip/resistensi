@@ -84,8 +84,10 @@ Route::get('/auto-fix', function (\Illuminate\Http\Request $request) {
 
     // 1. Bersihkan Seluruh Cache Laravel (View, Config, Route, Cache)
     try {
-        \Illuminate\Support\Facades\Artisan::call('view:clear');
-        $actions[] = '✅ Cache View Blade berhasil dibersihkan (recompiled otomatis)';
+        if (class_exists(\DOMDocument::class)) {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+            $actions[] = '✅ Cache View Blade berhasil dibersihkan (recompiled otomatis)';
+        }
     } catch (\Throwable $e) {
         $actions[] = '⚠️ View clear: ' . $e->getMessage();
     }
@@ -167,12 +169,31 @@ Route::get('/auto-fix', function (\Illuminate\Http\Request $request) {
 
     // 4. Sinkronisasi Otomatis 38 Provinsi & 514 Kabupaten/Kota Kemendagri & Data Uji
     try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        // 4.1. Pembersihan duplikat khusus (ID 430 Kutai Kertanegara -> 280 Kutai Kartanegara, 69 -> 420, dsb.)
+        \Illuminate\Support\Facades\DB::table('data_uji_resistensis')->where('kabupaten_id', 430)->update(['kabupaten_id' => 280]);
+        \Illuminate\Support\Facades\DB::table('instansis')->where('kabupaten_id', 430)->update(['kabupaten_id' => 280]);
+        \Illuminate\Support\Facades\DB::table('data_uji_resistensis')->where('kabupaten_id', 69)->update(['kabupaten_id' => 420]);
+        \Illuminate\Support\Facades\DB::table('instansis')->where('kabupaten_id', 69)->update(['kabupaten_id' => 420]);
+        \Illuminate\Support\Facades\DB::table('data_uji_resistensis')->where('kabupaten_id', 509)->update(['kabupaten_id' => 298]);
+        \Illuminate\Support\Facades\DB::table('instansis')->where('kabupaten_id', 509)->update(['kabupaten_id' => 298]);
+        \Illuminate\Support\Facades\DB::table('data_uji_resistensis')->where('kabupaten_id', 513)->update(['kabupaten_id' => 322]);
+        \Illuminate\Support\Facades\DB::table('instansis')->where('kabupaten_id', 513)->update(['kabupaten_id' => 322]);
+
+        $deletedDups = \Illuminate\Support\Facades\DB::table('kabupatens')->whereIn('id', [69, 430, 509, 513])->delete();
+        if ($deletedDups > 0) {
+            $actions[] = "✅ Duplikat kabupaten lama ($deletedDups baris, termasuk ID 430 Kutai Kertanegara) berhasil dibersihkan";
+        }
+
+        if (class_exists(\DOMDocument::class)) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            } catch (\Throwable $e) {}
+        }
         
         $provCount = \App\Models\Provinsi::count();
         $kabCount = \App\Models\Kabupaten::count();
 
-        if ($kabCount < 514 || $provCount < 38) {
+        if (($kabCount < 514 || $provCount < 38) && class_exists(\DOMDocument::class)) {
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\ProvinsiSeeder', '--force' => true]);
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\KabupatenSeeder', '--force' => true]);
             $provCount = \App\Models\Provinsi::count();

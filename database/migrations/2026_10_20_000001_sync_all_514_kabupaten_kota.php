@@ -21,13 +21,24 @@ return new class extends Migration
         }
 
         // 2. Bersihkan duplikat khusus jika ada
+        if (Kabupaten::find(430)) {
+            DB::table('data_uji_resistensis')->where('kabupaten_id', 430)->update(['kabupaten_id' => 280]);
+            DB::table('instansis')->where('kabupaten_id', 430)->update(['kabupaten_id' => 280]);
+            Kabupaten::destroy(430);
+        }
         if (Kabupaten::find(69) && Kabupaten::find(420)) {
+            DB::table('data_uji_resistensis')->where('kabupaten_id', 69)->update(['kabupaten_id' => 420]);
+            DB::table('instansis')->where('kabupaten_id', 69)->update(['kabupaten_id' => 420]);
             Kabupaten::destroy(69);
         }
         if (Kabupaten::find(509) && Kabupaten::find(298)) {
+            DB::table('data_uji_resistensis')->where('kabupaten_id', 509)->update(['kabupaten_id' => 298]);
+            DB::table('instansis')->where('kabupaten_id', 509)->update(['kabupaten_id' => 298]);
             Kabupaten::destroy(509);
         }
         if (Kabupaten::find(513) && Kabupaten::find(322)) {
+            DB::table('data_uji_resistensis')->where('kabupaten_id', 513)->update(['kabupaten_id' => 322]);
+            DB::table('instansis')->where('kabupaten_id', 513)->update(['kabupaten_id' => 322]);
             Kabupaten::destroy(513);
         }
 

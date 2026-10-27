@@ -465,6 +465,32 @@
             font-size: 8pt;
             padding: 0 10px;
         }
+        .sig-space {
+            height: 68px;
+            margin: 4px 0;
+        }
+        .sig-title {
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: #1e293b;
+            min-height: 22px;
+        }
+        .sig-name {
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .sig-nip {
+            font-size: 6.8pt;
+            color: #475569;
+            margin-top: 1px;
+        }
+        .sig-sub {
+            font-size: 6.8pt;
+            color: #64748b;
+            line-height: 1.35;
+            margin-top: 2px;
+        }
 
         /* Footer Halaman */
         .doc-footer {
@@ -1505,7 +1531,7 @@
                 <td style="width: 50%; text-align: right;">
                     <div class="text-[7.5pt] text-slate-600 mb-1">
                         Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
-                        <strong>Kepala Balai Besar Laboratorium Kesehatan Lingkungan<br>Kemenkes RI Salatiga</strong>
+                        <strong>Kepala Balai Besar Laboratorium Kesehatan Lingkungan<br>
                     </div>
                     @if(!$isApproved)
                         <div style="border:1.5px dashed #f59e0b; background:#fffbeb; padding:7px 14px; border-radius:6px; display:inline-block; text-align:center; min-width:230px; margin:4px 0;">
@@ -2030,7 +2056,7 @@
                 <td style="width: 50%; text-align: right;">
                     <div class="text-[7.5pt] text-slate-600 mb-1">
                         Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
-                        <strong>Disahkan Oleh:<br>Kepala Balai Besar Laboratorium Kesehatan Lingkungan Salatiga</strong>
+                        <strong>Disahkan Oleh:<br>Kepala Balai Besar Laboratorium Kesehatan Lingkungan</strong>
                     </div>
                     @if(!$isApproved)
                         <div style="border:1.5px dashed #f59e0b; background:#fffbeb; padding:7px 14px; border-radius:6px; display:inline-block; text-align:center; min-width:230px; margin:4px 0;">
@@ -2326,34 +2352,48 @@
         </div>
 
         {{-- TANDA TANGAN --}}
-        <table class="sig-container" style="margin-top:10px;">
+        <table class="sig-container" style="margin-top:14px; width:100%; border-collapse:collapse;">
             <tr>
-                <td class="sig-cell">
-                    <div class="sig-place-date">Salatiga, {{ date('d F Y') }}</div>
-                    <div class="sig-title">Penanggung Jawab Pengujian</div>
-                    <div class="sig-space"></div>
-                    <div class="sig-name">( ________________________ )</div>
-                    <div class="sig-sub">Fungsional Entomolog Kesehatan</div>
-                </td>
-                <td class="sig-cell">
-                    <div class="sig-place-date">Salatiga, {{ date('d F Y') }}</div>
-                    <div class="sig-title">Kepala Tim Kerja / Koordinator</div>
-                    <div class="sig-space"></div>
-                    <div class="sig-name">( _________________________ )</div>
-                    <div class="sig-sub">Ketua Tim Kerja Surveilans Penyakit,<br>Faktor Risiko Kesehatan dan KLB<br>BBLKL Salatiga</div>
-                </td>
-                <td class="sig-cell">
+                <td style="width: 33.3%; vertical-align: top; padding: 0 8px 0 0;">
                     <div class="sig-place-date">Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</div>
-                    <div class="sig-title">Kepala Balai</div>
+                </td>
+                <td style="width: 33.3%; vertical-align: top; padding: 0 8px 0 0;">
+                    <div class="sig-place-date">Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</div>
+                </td>
+                <td style="width: 33.4%; vertical-align: top; padding: 0;">
+                    <div class="sig-place-date">Salatiga, {{ $isApproved ? \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMMM Y') : \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 33.3%; vertical-align: top; padding: 2px 8px 0 0;">
+                    <div class="sig-title">Penanggung Jawab Pengujian</div>
+                </td>
+                <td style="width: 33.3%; vertical-align: top; padding: 2px 8px 0 0;">
+                    <div class="sig-title">Ketua Tim Kerja Surveilans Penyakit,<br>Faktor Risiko Kesehatan dan KLB</div>
+                </td>
+                <td style="width: 33.4%; vertical-align: top; padding: 2px 0 0 0;">
+                    <div class="sig-title">Kepala Balai Besar Laboratorium Kesehatan Lingkungan</div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 33.3%; vertical-align: top; padding: 0 8px 0 0;">
+                    <div class="sig-space" style="height: 80px;"></div>
+                    <div class="sig-name" style="margin-top: 2px;">( ________________________ )</div>
+                </td>
+                <td style="width: 33.3%; vertical-align: top; padding: 0 8px 0 0;">
+                    <div class="sig-space" style="height: 80px;"></div>
+                    <div class="sig-name" style="margin-top: 2px;">( _________________________ )</div>
+                </td>
+                <td style="width: 33.4%; vertical-align: top; padding: 0;">
                     @if(!$isApproved)
-                        <div style="border:1.5px dashed #f59e0b; background:#fffbeb; padding:6px 10px; border-radius:6px; display:inline-block; text-align:center; min-width:180px; margin:4px 0;">
+                        <div style="border:1.5px dashed #f59e0b; background:#fffbeb; padding:6px 10px; border-radius:6px; display:inline-block; text-align:center; min-width:180px; margin:4px 0; min-height:68px;">
                             <span style="font-size:7pt; font-weight:800; color:#b45309; display:block;">⚠️ DRAFT BELUM DISAHKAN</span>
                             <span style="font-size:6.5pt; color:#92400e;">Menunggu Verifikasi &amp; Tanda Tangan</span>
-                            <div style="height:18px;"></div>
+                            <div style="height:14px;"></div>
                             <span style="font-size:7pt; color:#64748b;">( Belum Disahkan )</span>
                         </div>
                     @else
-                        <div style="border:1.5px solid #059669; background:#f0fdf4; padding:5px 8px; border-radius:6px; display:inline-block; text-align:left; min-width:190px; margin:4px 0;">
+                        <div style="border:1.5px solid #059669; background:#f0fdf4; padding:5px 8px; border-radius:6px; display:inline-block; text-align:left; min-width:190px; margin:4px 0; min-height:68px;">
                             <div style="font-size:6pt; font-weight:800; color:#065f46; text-transform:uppercase;">Disahkan Digital:</div>
                             <div style="font-size:7.5pt; font-weight:800; color:#0f172a;">{{ $approval->approver_name }}</div>
                             <div style="font-size:6.2pt; color:#334155;">NIP. {{ $approval->approver_nip ?? '-' }}</div>
@@ -2361,7 +2401,12 @@
                             <div style="font-size:5.5pt; color:#64748b;">{{ \Carbon\Carbon::parse($approval->approved_at)->isoFormat('D MMM Y, HH:mm') }}</div>
                         </div>
                     @endif
-                    <div class="sig-sub" style="margin-top:2px;">Kepala Balai Besar Laboratorium Kesehatan Lingkungan<br>Salatiga</div>
+                    <div class="sig-name" style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 7.5pt; margin-top: 2px;">
+                        {{ $isApproved && !empty($approval->approver_name) ? $approval->approver_name : ($defaultKepalaNama ?? 'Akhmad Saikhu, SKM, M.SC.PH') }}
+                    </div>
+                    <div class="sig-nip" style="font-size: 6.8pt; color: #475569; margin-top: 1px;">
+                        NIP. {{ $isApproved && !empty($approval->approver_nip) ? $approval->approver_nip : ($defaultKepalaNip ?? '196805251992031004') }}
+                    </div>
                 </td>
             </tr>
         </table>
@@ -2678,10 +2723,10 @@
                         <div style="color: #64748b; font-size: 7pt; margin-bottom: 2px;">Disusun oleh</div>
                         <div style="height: 38px;"></div>
                         <div style="font-weight: 800; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 1px; display: inline-block;">
-                            Tim Ahli Entomologi Kesehatan
+                            Tim Penyusun
                         </div>
                         <div style="font-size: 6.8pt; color: #64748b; margin-top: 2px;">
-                            BBLKL Kemenkes RI Salatiga
+                            Balai Besar Laboratorium Kesehatan Lingkungan
                         </div>
                     </td>
                     <td style="width: 33.3%; vertical-align: top; padding-right: 8px;">
