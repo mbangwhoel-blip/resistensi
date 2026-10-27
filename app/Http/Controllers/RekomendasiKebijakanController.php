@@ -259,9 +259,10 @@ class RekomendasiKebijakanController extends Controller
             ->whereNotNull('year')
             ->pluck('year')
             ->map(fn($y) => (int)$y)
-            ->filter(fn($y) => $y > 2000 && $y < 2100)
+            ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
             ->toArray();
-        $daftarTahun = array_values(array_unique(array_merge([(int)date('Y'), (int)date('Y') - 1], $tahunDb)));
+        $tahunRange = range((int)date('Y'), 2015);
+        $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
         $daftarNyamuk = DataUjiResistensi::select('mosquito_type')

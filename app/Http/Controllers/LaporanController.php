@@ -23,15 +23,16 @@ class LaporanController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
-        // Daftar tahun dari database + rentang tahun sistem
+        // Daftar tahun dari database + rentang tahun sistem (2015 s.d sekarang)
         $tahunDb = DataUjiResistensi::select('year')
             ->distinct()
             ->whereNotNull('year')
             ->pluck('year')
             ->map(fn($y) => (int)$y)
-            ->filter(fn($y) => $y > 2000 && $y < 2100)
+            ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
             ->toArray();
-        $daftarTahun = array_values(array_unique(array_merge([(int)date('Y'), (int)date('Y') - 1, (int)date('Y') - 2], $tahunDb)));
+        $tahunRange = range((int)date('Y'), 2015);
+        $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
         // Daftar jenis nyamuk & insektisida

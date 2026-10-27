@@ -22,15 +22,16 @@ class DataUjiResistensiController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
-        // Ambil daftar tahun dinamis dari database + rentang tahun sistem
+        // Ambil daftar tahun dinamis dari database + rentang tahun sistem (2015 s.d sekarang)
         $tahunDb = DataUjiResistensi::select('year')
             ->distinct()
             ->whereNotNull('year')
             ->pluck('year')
             ->map(fn($y) => (int)$y)
-            ->filter(fn($y) => $y > 2000 && $y < 2100)
+            ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
             ->toArray();
-        $daftarTahun = array_values(array_unique(array_merge([date('Y') + 1, (int)date('Y'), (int)date('Y') - 1, (int)date('Y') - 2], $tahunDb)));
+        $tahunRange = range((int)date('Y'), 2015);
+        $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
         $search = trim($request->get('search', ''));
@@ -142,9 +143,10 @@ class DataUjiResistensiController extends Controller
 
         // Jika input dikirim sebagai satu data langsung (dari Modal / Form Tambah Data)
         if ($request->filled('provinsi_id') || !$request->has('rows')) {
+            $currentYear = (int)date('Y');
             $validated = $request->validate([
                 'bulan' => 'required|string',
-                'tahun' => 'required|integer',
+                'tahun' => 'required|integer|min:2015|max:' . $currentYear,
                 'provinsi_id' => 'required|exists:provinsis,id',
                 'kabupaten_id' => 'required|exists:kabupatens,id',
                 'alamat' => 'nullable|string|max:500',
@@ -160,6 +162,10 @@ class DataUjiResistensiController extends Controller
             ], [
                 'provinsi_id.required' => 'Pilih provinsi.',
                 'kabupaten_id.required' => 'Pilih kota/kabupaten.',
+                'tahun.required' => 'Tahun pengujian wajib diisi.',
+                'tahun.integer' => 'Tahun pengujian harus berupa angka bulat.',
+                'tahun.min' => 'Tahun pengujian minimal adalah tahun 2015.',
+                'tahun.max' => 'Tahun pengujian maksimal adalah tahun ' . $currentYear . ' (sekarang).',
                 'latitude.numeric' => 'Format Latitude harus berupa angka desimal (contoh: -7.324512).',
                 'latitude.between' => 'Nilai Latitude harus berada di antara -90 dan 90 derajat.',
                 'longitude.numeric' => 'Format Longitude harus berupa angka desimal (contoh: 110.501234).',
@@ -210,9 +216,10 @@ class DataUjiResistensiController extends Controller
         }
 
         // Fallback jika form mengirim rows
+        $currentYear = (int)date('Y');
         $request->validate([
             'bulan' => 'required|string',
-            'tahun' => 'required|integer',
+            'tahun' => 'required|integer|min:2015|max:' . $currentYear,
             'rows' => 'required|array|min:1',
             'rows.*.provinsi_id' => 'required|exists:provinsis,id',
             'rows.*.kabupaten_id' => 'required|exists:kabupatens,id',
@@ -278,9 +285,10 @@ class DataUjiResistensiController extends Controller
 
         $data = DataUjiResistensi::findOrFail($id);
 
+        $currentYear = (int)date('Y');
         $validated = $request->validate([
             'bulan' => 'required|string',
-            'tahun' => 'required|integer',
+            'tahun' => 'required|integer|min:2015|max:' . $currentYear,
             'provinsi_id' => 'required|exists:provinsis,id',
             'kabupaten_id' => 'required|exists:kabupatens,id',
             'alamat' => 'nullable|string|max:500',
@@ -296,6 +304,10 @@ class DataUjiResistensiController extends Controller
         ], [
             'provinsi_id.required' => 'Pilih provinsi.',
             'kabupaten_id.required' => 'Pilih kota/kabupaten.',
+            'tahun.required' => 'Tahun pengujian wajib diisi.',
+            'tahun.integer' => 'Tahun pengujian harus berupa angka bulat.',
+            'tahun.min' => 'Tahun pengujian minimal adalah tahun 2015.',
+            'tahun.max' => 'Tahun pengujian maksimal adalah tahun ' . $currentYear . ' (sekarang).',
             'latitude.numeric' => 'Format Latitude harus berupa angka desimal (contoh: -7.324512).',
             'latitude.between' => 'Nilai Latitude harus berada di antara -90 dan 90 derajat.',
             'longitude.numeric' => 'Format Longitude harus berupa angka desimal (contoh: 110.501234).',
@@ -405,15 +417,15 @@ class DataUjiResistensiController extends Controller
             ];
         }
 
-        $daftarTahun = DataUjiResistensi::select('year')->distinct()->pluck('year')->toArray();
-        if (empty($daftarTahun)) {
-            $daftarTahun = [(int)date('Y')];
-        }
-        foreach ([2024, 2025, 2026] as $thn) {
-            if (!in_array($thn, $daftarTahun)) {
-                $daftarTahun[] = $thn;
-            }
-        }
+        $tahunDb = DataUjiResistensi::select('year')
+            ->distinct()
+            ->whereNotNull('year')
+            ->pluck('year')
+            ->map(fn($y) => (int)$y)
+            ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
+            ->toArray();
+        $tahunRange = range((int)date('Y'), 2015);
+        $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
 

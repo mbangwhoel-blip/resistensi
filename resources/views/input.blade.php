@@ -777,8 +777,8 @@
 
                             {{-- TAHUN --}}
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun *</label>
-                                <input type="number" name="tahun" value="{{ $tahun == 'Semua' ? date('Y') : $tahun }}" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun * <span class="text-[10px] font-normal text-slate-400 lowercase">(2015 s.d sekarang)</span></label>
+                                <input type="number" name="tahun" min="2015" max="{{ date('Y') }}" value="{{ $tahun == 'Semua' ? date('Y') : $tahun }}" required autocomplete="off" placeholder="Contoh: {{ date('Y') }}" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
                             </div>
 
                             {{-- PROVINSI --}}
@@ -1106,8 +1106,8 @@
 
                             {{-- TAHUN --}}
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun *</label>
-                                <input type="number" id="editTahun" name="tahun" required autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tahun * <span class="text-[10px] font-normal text-slate-400 lowercase">(2015 s.d sekarang)</span></label>
+                                <input type="number" id="editTahun" name="tahun" min="2015" max="{{ date('Y') }}" required autocomplete="off" placeholder="Contoh: {{ date('Y') }}" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 shadow-2xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition">
                             </div>
 
                             {{-- PROVINSI --}}
