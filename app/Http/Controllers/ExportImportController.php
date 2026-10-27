@@ -28,7 +28,32 @@ class ExportImportController extends Controller
         }
 
         $bulanFilter = $request->get('bulan', 'Semua');
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
         $tahunFilter = $request->get('tahun', 'Semua');
+        if ($tahunMulai && $tahunSelesai) {
+            $tahunFilter = ($tahunMulai === $tahunSelesai) ? (string)$tahunMulai : "{$tahunMulai} - {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahunFilter = "≥ {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahunFilter = "≤ {$tahunSelesai}";
+        }
+
         $nyamukFilter = $request->get('jenis_nyamuk', '');
         $provinsiFilter = $request->get('provinsi_id', '');
         $perPageRaw = $request->get('per_page', 25);
@@ -46,8 +71,12 @@ class ExportImportController extends Controller
             $query->where('month', $bulanFilter);
         }
 
-        if ($tahunFilter && $tahunFilter !== 'Semua') {
-            $query->where('year', (int)$tahunFilter);
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('year', '<=', $tahunSelesai);
         }
 
         if ($nyamukFilter && $nyamukFilter !== 'Semua') {
@@ -100,6 +129,9 @@ class ExportImportController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        $daftarTahunAsc = $daftarTahun;
+        sort($daftarTahunAsc);
+
         return view('export', compact(
             'dataPreview',
             'totalSemua',
@@ -109,6 +141,9 @@ class ExportImportController extends Controller
             'totalRentan',
             'provinsis',
             'daftarTahun',
+            'daftarTahunAsc',
+            'tahunMulai',
+            'tahunSelesai',
             'daftarNyamuk',
             'daftarBulan',
             'bulanFilter',
@@ -131,7 +166,23 @@ class ExportImportController extends Controller
 
         $format = strtolower($request->get('format', 'xlsx'));
         $bulanFilter = $request->get('bulan', 'Semua');
-        $tahunFilter = $request->get('tahun', 'Semua');
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
         $nyamukFilter = $request->get('jenis_nyamuk', '');
         $provinsiFilter = $request->get('provinsi_id', '');
 
@@ -140,8 +191,12 @@ class ExportImportController extends Controller
         if ($bulanFilter && $bulanFilter !== 'Semua') {
             $query->where('month', $bulanFilter);
         }
-        if ($tahunFilter && $tahunFilter !== 'Semua') {
-            $query->where('year', (int)$tahunFilter);
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('year', '<=', $tahunSelesai);
         }
         if ($nyamukFilter && $nyamukFilter !== 'Semua') {
             $query->where('mosquito_type', $nyamukFilter);

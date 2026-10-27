@@ -230,22 +230,33 @@
 
                         {{-- FILTER PERIODE TAHUN & TOMBOL RESET --}}
                         <div>
-                            <label for="tahun" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
-                                Periode Tahun
+                            <label class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                                Periode Rentang Tahun
                             </label>
-                            <div class="flex items-center gap-2">
-                                <select name="tahun" id="tahun" onchange="this.form.submit()"
-                                        class="flex-1 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-teal-500 focus:bg-white focus:outline-none dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
-                                    <option value="Semua">Semua Periode</option>
-                                    @foreach ($daftarTahun as $th)
-                                        <option value="{{ $th }}" {{ (string)$tahunFilter === (string)$th ? 'selected' : '' }}>
-                                            {{ $th }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            <div class="flex items-center gap-1.5">
+                                <div class="grid grid-cols-2 gap-1 flex-1">
+                                    <select name="tahun_mulai" id="tahun_mulai" onchange="this.form.submit()"
+                                            class="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-2 py-1.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-teal-500 focus:bg-white focus:outline-none dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer" title="Tahun Mulai (Dari)">
+                                        <option value="Semua">Dari...</option>
+                                        @foreach ($daftarTahunAsc as $th)
+                                            <option value="{{ $th }}" {{ (string)($tahunMulai ?? '') === (string)$th ? 'selected' : '' }}>
+                                                {{ $th }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <select name="tahun_selesai" id="tahun_selesai" onchange="this.form.submit()"
+                                            class="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-2 py-1.5 text-xs font-medium text-slate-800 shadow-2xs focus:border-teal-500 focus:bg-white focus:outline-none dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer" title="Tahun Selesai (Sampai)">
+                                        <option value="Semua">Sampai...</option>
+                                        @foreach ($daftarTahun as $th)
+                                            <option value="{{ $th }}" {{ (string)($tahunSelesai ?? '') === (string)$th ? 'selected' : '' }}>
+                                                {{ $th }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
                                 <a href="{{ route('rekomendasi.index') }}"
-                                   class="inline-flex h-[38px] px-3 items-center justify-center rounded-xl border border-slate-200 bg-white hover:bg-slate-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 text-xs font-semibold text-slate-600 transition shadow-2xs cursor-pointer whitespace-nowrap"
+                                   class="inline-flex h-[34px] px-2.5 items-center justify-center rounded-xl border border-slate-200 bg-white hover:bg-slate-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 text-xs font-semibold text-slate-600 transition shadow-2xs cursor-pointer whitespace-nowrap"
                                    title="Reset Filter ke Default">
                                     Reset
                                 </a>
@@ -891,6 +902,8 @@
             <form method="POST" action="{{ route('rekomendasi.approve') }}" class="flex flex-col flex-1 overflow-hidden m-0">
                 @csrf
                 <input type="hidden" name="tahun" value="{{ $tahunFilter }}">
+                <input type="hidden" name="tahun_mulai" value="{{ $tahunMulai }}">
+                <input type="hidden" name="tahun_selesai" value="{{ $tahunSelesai }}">
                 <input type="hidden" name="jenis_nyamuk" value="{{ $nyamukFilter }}">
                 <input type="hidden" name="provinsi_id" value="{{ $provinsiFilter }}">
                 <input type="hidden" name="kabupaten_id" value="{{ $kabupatenFilter }}">

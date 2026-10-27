@@ -322,15 +322,23 @@
                 {{-- FORM FILTER --}}
                 <form method="GET" action="{{ route('analisis.index') }}" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                        {{-- FILTER TAHUN --}}
+                        {{-- FILTER RENTANG TAHUN --}}
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Tahun Pengujian</label>
-                            <select name="tahun" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs">
-                                <option value="Semua" {{ $tahunFilter === 'Semua' ? 'selected' : '' }}>-- Semua Tahun --</option>
-                                @foreach ($daftarTahun as $thn)
-                                    <option value="{{ $thn }}" {{ (string)$tahunFilter === (string)$thn ? 'selected' : '' }}>{{ $thn }}</option>
-                                @endforeach
-                            </select>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Rentang Tahun</label>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <select name="tahun_mulai" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-2 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs" title="Tahun Mulai (Dari)">
+                                    <option value="Semua">Dari...</option>
+                                    @foreach ($daftarTahunAsc as $thn)
+                                        <option value="{{ $thn }}" {{ (string)($tahunMulai ?? '') === (string)$thn ? 'selected' : '' }}>{{ $thn }}</option>
+                                    @endforeach
+                                </select>
+                                <select name="tahun_selesai" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-2 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-2xs" title="Tahun Selesai (Sampai)">
+                                    <option value="Semua">Sampai...</option>
+                                    @foreach ($daftarTahun as $thn)
+                                        <option value="{{ $thn }}" {{ (string)($tahunSelesai ?? '') === (string)$thn ? 'selected' : '' }}>{{ $thn }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         {{-- FILTER JENIS NYAMUK --}}

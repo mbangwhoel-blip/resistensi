@@ -264,6 +264,8 @@ class RekomendasiKebijakanController extends Controller
         $tahunRange = range((int)date('Y'), 2015);
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
+        $daftarTahunAsc = $daftarTahun;
+        sort($daftarTahunAsc);
 
         $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
             ->distinct()
@@ -273,15 +275,44 @@ class RekomendasiKebijakanController extends Controller
             ->pluck('mosquito_type');
 
         // 2. Baca Parameter Filter
-        $tahunFilter     = $request->get('tahun', 'Semua');
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
+        $tahunFilter = $request->get('tahun', 'Semua');
+        if ($tahunMulai && $tahunSelesai) {
+            $tahunFilter = ($tahunMulai === $tahunSelesai) ? (string)$tahunMulai : "{$tahunMulai} - {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahunFilter = "≥ {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahunFilter = "≤ {$tahunSelesai}";
+        }
+
         $nyamukFilter    = $request->get('jenis_nyamuk', 'Semua');
         $provinsiFilter  = $request->get('provinsi_id', 'Semua');
         $kabupatenFilter = $request->get('kabupaten_id', 'Semua');
 
         // 3. Query Dasar Terfilter
         $query = DataUjiResistensi::query();
-        if ($tahunFilter !== 'Semua') {
-            $query->where('data_uji_resistensis.year', (int)$tahunFilter);
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('data_uji_resistensis.year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('data_uji_resistensis.year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('data_uji_resistensis.year', '<=', $tahunSelesai);
         }
         if ($nyamukFilter !== 'Semua') {
             $nyamukLower = strtolower(trim($nyamukFilter));
@@ -844,6 +875,9 @@ class RekomendasiKebijakanController extends Controller
         return [
             'provinsis'               => $provinsis,
             'daftarTahun'             => $daftarTahun,
+            'daftarTahunAsc'          => $daftarTahunAsc,
+            'tahunMulai'              => $tahunMulai,
+            'tahunSelesai'            => $tahunSelesai,
             'daftarNyamuk'            => $daftarNyamuk,
             'daftarKabupaten'         => $daftarKabupaten,
             'tahunFilter'             => $tahunFilter,

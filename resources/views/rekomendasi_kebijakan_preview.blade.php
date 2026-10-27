@@ -2808,6 +2808,8 @@
             <form action="{{ route('rekomendasi.approve') }}" method="POST" class="flex flex-col flex-1 overflow-hidden m-0">
                 @csrf
                 <input type="hidden" name="tahun" value="{{ $tahunFilter }}">
+                <input type="hidden" name="tahun_mulai" value="{{ $tahunMulai ?? '' }}">
+                <input type="hidden" name="tahun_selesai" value="{{ $tahunSelesai ?? '' }}">
                 <input type="hidden" name="jenis_nyamuk" value="{{ $nyamukFilter }}">
                 <input type="hidden" name="provinsi_id" value="{{ $provinsiFilter }}">
                 <input type="hidden" name="kabupaten_id" value="{{ $kabupatenFilter }}">

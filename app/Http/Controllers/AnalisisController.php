@@ -28,6 +28,8 @@ class AnalisisController extends Controller
         $tahunRange = range((int)date('Y'), 2015);
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
+        $daftarTahunAsc = $daftarTahun;
+        sort($daftarTahunAsc);
 
         $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
             ->distinct()
@@ -44,7 +46,32 @@ class AnalisisController extends Controller
             ->pluck('insecticide');
 
         // 2. Baca Parameter Filter
+        $tahunMulaiReq = $request->get('tahun_mulai');
+        $tahunSelesaiReq = $request->get('tahun_selesai');
+
+        $tahunMulai = ($tahunMulaiReq !== null && $tahunMulaiReq !== '' && $tahunMulaiReq !== 'Semua') ? (int)$tahunMulaiReq : null;
+        $tahunSelesai = ($tahunSelesaiReq !== null && $tahunSelesaiReq !== '' && $tahunSelesaiReq !== 'Semua') ? (int)$tahunSelesaiReq : null;
+
+        if ($tahunMulai === null && $tahunSelesai === null && $request->filled('tahun') && $request->tahun !== 'Semua') {
+            $tahunMulai = (int)$request->tahun;
+            $tahunSelesai = (int)$request->tahun;
+        }
+
+        if ($tahunMulai && $tahunSelesai && $tahunMulai > $tahunSelesai) {
+            $temp = $tahunMulai;
+            $tahunMulai = $tahunSelesai;
+            $tahunSelesai = $temp;
+        }
+
         $tahunFilter = $request->get('tahun', 'Semua');
+        if ($tahunMulai && $tahunSelesai) {
+            $tahunFilter = ($tahunMulai === $tahunSelesai) ? (string)$tahunMulai : "{$tahunMulai} - {$tahunSelesai}";
+        } elseif ($tahunMulai) {
+            $tahunFilter = "≥ {$tahunMulai}";
+        } elseif ($tahunSelesai) {
+            $tahunFilter = "≤ {$tahunSelesai}";
+        }
+
         $nyamukFilter = $request->get('jenis_nyamuk', 'Semua');
         $insektisidaFilter = $request->get('insektisida', 'Semua');
         $provinsiFilter = $request->get('provinsi_id', 'Semua');
@@ -52,8 +79,12 @@ class AnalisisController extends Controller
         // 3. Query Dasar Terfilter
         $query = DataUjiResistensi::query();
 
-        if ($tahunFilter !== 'Semua') {
-            $query->where('year', (int)$tahunFilter);
+        if ($tahunMulai && $tahunSelesai) {
+            $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
+        } elseif ($tahunMulai) {
+            $query->where('year', '>=', $tahunMulai);
+        } elseif ($tahunSelesai) {
+            $query->where('year', '<=', $tahunSelesai);
         }
         if ($nyamukFilter !== 'Semua') {
             $query->where('mosquito_type', $nyamukFilter);
@@ -249,6 +280,9 @@ class AnalisisController extends Controller
         return view('analisis', compact(
             'provinsis',
             'daftarTahun',
+            'daftarTahunAsc',
+            'tahunMulai',
+            'tahunSelesai',
             'daftarNyamuk',
             'daftarInsektisida',
             'tahunFilter',
