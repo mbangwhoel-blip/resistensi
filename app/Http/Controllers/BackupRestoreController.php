@@ -61,7 +61,7 @@ class BackupRestoreController extends Controller
     }
 
     /**
-     * Buat Backup SQL Baru
+     * Buat Backup Database (Format ZIP Terkompresi atau SQL Dump)
      */
     public function createBackup(Request $request)
     {
@@ -70,65 +70,20 @@ class BackupRestoreController extends Controller
         }
 
         try {
-            $tables = DB::select('SHOW TABLES');
-            $dbName = config('database.connections.mysql.database', 'db_simpel');
-            $tableKey = "Tables_in_{$dbName}";
+            $format = strtolower($request->input('format', 'zip'));
+            $compress = ($format === 'zip');
 
-            $sqlDump = "-- =====================================================\n";
-            $sqlDump .= "-- PETA RESISTENSI Database Backup\n";
-            $sqlDump .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
-            $sqlDump .= "-- Database: {$dbName}\n";
-            $sqlDump .= "-- =====================================================\n\n";
-            $sqlDump .= "SET FOREIGN_KEY_CHECKS = 0;\n";
-            $sqlDump .= "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';\n\n";
+            $backupService = app(\App\Services\DatabaseBackupService::class);
+            $backupInfo = $backupService->createBackup($compress);
 
-            foreach ($tables as $tableObj) {
-                $tableName = $tableObj->$tableKey ?? reset($tableObj);
-                if (!$tableName) continue;
-
-                // Create Table DDL
-                $createTable = DB::select("SHOW CREATE TABLE `{$tableName}`");
-                $createTableSql = $createTable[0]->{'Create Table'} ?? '';
-
-                $sqlDump .= "-- -----------------------------------------------------\n";
-                $sqlDump .= "-- Table structure for `{$tableName}`\n";
-                $sqlDump .= "-- -----------------------------------------------------\n";
-                $sqlDump .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
-                $sqlDump .= $createTableSql . ";\n\n";
-
-                // Table Rows
-                $rows = DB::table($tableName)->get();
-                if ($rows->count() > 0) {
-                    $sqlDump .= "-- Data for `{$tableName}`\n";
-                    foreach ($rows as $row) {
-                        $values = [];
-                        foreach ((array)$row as $val) {
-                            if (is_null($val)) {
-                                $values[] = 'NULL';
-                            } elseif (is_numeric($val)) {
-                                $values[] = $val;
-                            } else {
-                                $values[] = "'" . addslashes((string)$val) . "'";
-                            }
-                        }
-                        $sqlDump .= "INSERT INTO `{$tableName}` VALUES (" . implode(', ', $values) . ");\n";
-                    }
-                    $sqlDump .= "\n";
-                }
-            }
-
-            $sqlDump .= "SET FOREIGN_KEY_CHECKS = 1;\n";
-
-            $filename = "backup_resistensi_" . date('Y-m-d_His') . ".sql";
-            $filePath = $this->backupDir . DIRECTORY_SEPARATOR . $filename;
-
-            File::put($filePath, $sqlDump);
+            $targetPath = $compress && !empty($backupInfo['zip_path']) ? $backupInfo['zip_path'] : $backupInfo['sql_path'];
+            $targetFilename = $compress && !empty($backupInfo['zip_filename']) ? $backupInfo['zip_filename'] : $backupInfo['sql_filename'];
 
             if ($request->has('download')) {
-                return response()->download($filePath, $filename);
+                return response()->download($targetPath, $targetFilename);
             }
 
-            return redirect()->route('backup.index')->with('success', "Backup database berhasil dibuat: {$filename} (" . $this->formatBytes(strlen($sqlDump)) . ")");
+            return redirect()->route('backup.index')->with('success', "Backup database ({$targetFilename}) berhasil dibuat dan disimpan di server (" . $backupInfo['formatted_size'] . ").");
         } catch (\Throwable $e) {
             return redirect()->route('backup.index')->with('error', "Gagal membuat backup: " . $e->getMessage());
         }
@@ -159,8 +114,8 @@ class BackupRestoreController extends Controller
      */
     public function deleteBackup($filename)
     {
-        if (Auth::check() && Auth::user()->isViewer()) {
-            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            return redirect()->route('backup.index')->with('error', 'Akses Ditolak: Penghapusan berkas backup hanya dapat dilakukan oleh Administrator.');
         }
 
         $cleanFilename = basename($filename);
@@ -184,8 +139,8 @@ class BackupRestoreController extends Controller
      */
     public function runAutoBackupNow(Request $request, \App\Services\DatabaseBackupService $backupService, \App\Services\GoogleDriveService $gdriveService)
     {
-        if (Auth::check() && Auth::user()->isViewer()) {
-            return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            return redirect()->route('backup.index')->with('error', 'Akses Ditolak: Fitur Backup Online otomatis hanya dapat dijalankan oleh Administrator.');
         }
 
         try {

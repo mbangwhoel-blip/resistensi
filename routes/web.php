@@ -487,6 +487,9 @@ Route::middleware('auth')->group(function () {
         'dashboard'
     ])->name('dashboard');
 
+    // Update Profil Pengguna Sendiri
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+
     Route::get('/input', [
         DataUjiResistensiController::class,
         'index'
@@ -548,8 +551,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/process', [ExportImportController::class, 'importProcess'])->name('process');
     });
 
-    // Backup & Restore Database (Khusus Role Administrator)
-    Route::middleware('admin')->prefix('backup-restore')->name('backup.')->group(function () {
+    // Backup & Restore Database (Khusus Role Administrator & Direktorat)
+    Route::middleware('can_backup')->prefix('backup-restore')->name('backup.')->group(function () {
         Route::get('/', [BackupRestoreController::class, 'index'])->name('index');
         Route::post('/create', [BackupRestoreController::class, 'createBackup'])->name('create');
         Route::post('/auto-now', [BackupRestoreController::class, 'runAutoBackupNow'])->name('auto_now');

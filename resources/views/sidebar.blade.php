@@ -160,6 +160,7 @@
     @php
         $currentUser = Auth::user();
         $isAdmin = $currentUser && in_array(strtolower((string)$currentUser->role), ['admin', 'kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl']);
+        $canBackup = $currentUser && ($isAdmin || strtolower((string)$currentUser->role) === 'direktorat' || (method_exists($currentUser, 'canBackupRestore') && $currentUser->canBackupRestore()));
         $isViewer = $currentUser && (strtolower((string)$currentUser->role) === 'viewer' || (method_exists($currentUser, 'isViewer') && $currentUser->isViewer()));
     @endphp
     <nav class="custom-sidebar-nav flex-1 overflow-y-auto px-3 pt-3 pb-4 space-y-3.5 text-xs">
@@ -355,8 +356,8 @@
         </div>
         @endif
 
-        {{-- SEKSI 4: SISTEM (TIDAK DITAMPILKAN UNTUK ROLE VIEWER) --}}
-        @if ($isAdmin || !$isViewer)
+        {{-- SEKSI 4: SISTEM (TIDAK DITAMPILKAN UNTUK ROLE VIEWER / VISITOR) --}}
+        @if (!$isViewer)
         <div>
             <div class="nav-section-title">
                 Sistem
@@ -380,8 +381,7 @@
                 </a>
                 @endif
 
-                {{-- BACKUP & RESTORE (KHUSUS ADMINISTRATOR) --}}
-                @if ($isAdmin)
+                {{-- BACKUP & RESTORE (SEMUA ROLE KECUALI VISITOR / VIEWER) --}}
                 <a href="{{ route('backup.index') }}"
                    class="nav-menu-link {{ request()->routeIs('backup.*') ? 'active' : 'inactive' }}">
                     <div class="flex items-center gap-2.5 min-w-0">
@@ -396,7 +396,6 @@
                         <span class="nav-active-dot"></span>
                     @endif
                 </a>
-                @endif
             </div>
         </div>
         @endif

@@ -321,6 +321,7 @@
                                 $roleBadge = match($u->role) {
                                     'kepala', 'pimpinan' => ['Kepala BBLKL', 'bg-emerald-50 text-emerald-800 border-emerald-300'],
                                     'admin' => ['Administrator', 'bg-blue-50 text-blue-800 border-blue-300'],
+                                    'direktorat' => ['Direktorat', 'bg-rose-50 text-rose-800 border-rose-300'],
                                     'petugas' => ['Petugas Lab', 'bg-amber-50 text-amber-800 border-amber-300'],
                                     'peneliti' => ['Peneliti', 'bg-purple-50 text-purple-800 border-purple-300'],
                                     'universitas' => ['Universitas/Akademisi', 'bg-indigo-50 text-indigo-800 border-indigo-300'],

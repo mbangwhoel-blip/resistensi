@@ -306,6 +306,7 @@
                                     required
                                     class="w-full rounded-xl border border-slate-700 bg-slate-950/70 px-3.5 py-2.5 sm:py-2 text-base sm:text-sm text-white transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 cursor-pointer">
                                 <option value="petugas" class="bg-slate-900 text-white" {{ old('role', 'petugas') === 'petugas' ? 'selected' : '' }}>🔬 Petugas Lab</option>
+                                <option value="direktorat" class="bg-slate-900 text-white" {{ old('role') === 'direktorat' ? 'selected' : '' }}>🏛️ Direktorat</option>
                                 <option value="dinas_kesehatan" class="bg-slate-900 text-white" {{ old('role') === 'dinas_kesehatan' ? 'selected' : '' }}>🏥 Dinas Kesehatan</option>
                                 <option value="balai_kekarantinaan_kesehatan" class="bg-slate-900 text-white" {{ old('role') === 'balai_kekarantinaan_kesehatan' ? 'selected' : '' }}>🚢 Balai Kekarantinaan Kesehatan</option>
                                 <option value="labkesmas" class="bg-slate-900 text-white" {{ old('role') === 'labkesmas' ? 'selected' : '' }}>🧪 Labkesmas</option>

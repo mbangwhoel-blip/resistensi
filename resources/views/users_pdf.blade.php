@@ -235,6 +235,7 @@
                             $roleLabel = match($u->role) {
                                 'kepala', 'pimpinan' => 'Kepala BBLKL',
                                 'admin' => 'Administrator',
+                                'direktorat' => 'Direktorat',
                                 'petugas' => 'Petugas Lab',
                                 'peneliti' => 'Peneliti',
                                 'universitas' => 'Universitas / Akademisi',

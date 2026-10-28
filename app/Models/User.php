@@ -86,11 +86,34 @@ class User extends Authenticatable
     }
 
 
+    public function isDirektorat(): bool
+    {
+        return strtolower((string)$this->role) === 'direktorat';
+    }
+
+    public function canManageUsers(): bool
+    {
+        return in_array(strtolower((string)$this->role), [
+            'admin',
+            'kepala',
+            'pimpinan',
+            'kepala_balai',
+            'kepala_bblkl',
+            'pimpinan_bblkl'
+        ]);
+    }
+
+    public function canBackupRestore(): bool
+    {
+        return !$this->isViewer();
+    }
+
     public function isPetugas(): bool
     {
         return in_array($this->role, [
             'admin',
             'petugas',
+            'direktorat',
             'dinas_kesehatan',
             'dinkes',
             'balai_kekarantinaan_kesehatan',

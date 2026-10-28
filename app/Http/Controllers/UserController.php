@@ -62,6 +62,7 @@ class UserController extends Controller
             'total' => User::count(),
             'admin' => User::where('role', 'admin')->count(),
             'petugas' => User::where('role', 'petugas')->count(),
+            'direktorat' => User::where('role', 'direktorat')->count(),
             'dinas_kesehatan' => User::whereIn('role', ['dinas_kesehatan', 'dinkes'])->count(),
             'balai_kekarantinaan_kesehatan' => User::whereIn('role', ['balai_kekarantinaan_kesehatan', 'bkk', 'balai_karantina'])->count(),
             'labkesmas' => User::where('role', 'labkesmas')->count(),
@@ -85,7 +86,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username',
             'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
+            'role' => 'required|in:admin,petugas,direktorat,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -134,7 +135,7 @@ class UserController extends Controller
             'username' => 'required|alpha_dash|min:3|max:50|unique:users,username,' . $id,
             'email' => 'required|email|max:100|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:admin,petugas,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
+            'role' => 'required|in:admin,petugas,direktorat,viewer,dinas_kesehatan,dinkes,balai_kekarantinaan_kesehatan,bkk,balai_karantina,labkesmas,kepala,pimpinan,peneliti,universitas',
             'status' => 'required|in:aktif,nonaktif',
             'telepon' => 'nullable|string|max:20',
         ], [
@@ -160,7 +161,7 @@ class UserController extends Controller
             if ($validated['status'] === 'nonaktif') {
                 return redirect()->back()->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri yang sedang digunakan.');
             }
-            if ($role !== 'admin') {
+            if ($user->role === 'admin' && $role !== 'admin') {
                 return redirect()->back()->with('error', 'Anda tidak dapat mengubah role akun Anda sendiri menjadi non-admin.');
             }
         }
@@ -181,7 +182,57 @@ class UserController extends Controller
 
         $user->update($dataUpdate);
 
+        // Jika akun yang diedit adalah akun yang sedang aktif login, segera segarkan session Auth
+        if (Auth::check() && Auth::id() === $user->id) {
+            Auth::setUser($user->fresh());
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Data pengguna '{$user->name}' berhasil diperbarui.",
+                'user' => $user->fresh()
+            ]);
+        }
+
         return redirect()->route('users.index')->with('success', "Data pengguna '{$user->name}' berhasil diperbarui.");
+    }
+
+    /**
+     * Perbarui profil pengguna yang sedang login saat ini (nama, telepon, password).
+     */
+    public function updateProfile(Request $request)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'telepon' => 'nullable|string|max:20',
+            'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'password.min' => 'Password baru minimal terdiri dari 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $dataUpdate = [
+            'name' => $validated['name'],
+            'phone' => $validated['telepon'] ?? null,
+        ];
+
+        if (!empty($validated['password'])) {
+            $dataUpdate['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($dataUpdate);
+        Auth::setUser($user->fresh());
+
+        return redirect()->back()->with('success', "Profil berhasil diperbarui menjadi '{$user->name}'.");
     }
 
     /**
@@ -249,6 +300,7 @@ class UserController extends Controller
             'Semua' => 'Semua Hak Akses',
             'kepala' => 'Kepala / Pimpinan BBLKL',
             'admin' => 'Administrator',
+            'direktorat' => 'Direktorat',
             'petugas' => 'Petugas Laboratorium',
             'peneliti' => 'Peneliti',
             'universitas' => 'Universitas / Akademisi',
@@ -317,6 +369,7 @@ class UserController extends Controller
             'Semua' => 'Semua Hak Akses',
             'kepala' => 'Kepala / Pimpinan BBLKL',
             'admin' => 'Administrator',
+            'direktorat' => 'Direktorat',
             'petugas' => 'Petugas Laboratorium',
             'peneliti' => 'Peneliti',
             'universitas' => 'Universitas / Akademisi',

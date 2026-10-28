@@ -48,5 +48,18 @@ class UserSeeder extends Seeder
                 'telepon' => '196805251992031004',
             ]
         );
+
+        // Akun Direktorat (Hak akses input, import, export, serta backup & restore)
+        User::updateOrCreate(
+            ['username' => 'direktorat'],
+            [
+                'name' => 'Direktorat Kesehatan Lingkungan',
+                'email' => 'direktorat@kemenkes.go.id',
+                'password' => Hash::make('direktorat123'),
+                'role' => 'direktorat',
+                'status' => 'aktif',
+                'telepon' => '081234567899',
+            ]
+        );
     }
 }

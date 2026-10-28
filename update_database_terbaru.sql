@@ -610,3 +610,8 @@ WHERE du.provinsi_id != k.provinsi_id OR du.provinsi_id IS NULL;
 -- 6. Update Penanggung Jawab / Kepala BBLKL
 UPDATE instansis SET person_in_charge = 'Akhmad Saikhu, SKM, M.SC.PH' WHERE unit_code = 'BBLKL-01' OR name LIKE '%BBLKL%';
 
+-- 7. Sinkronisasi Akun & Hak Akses Direktorat Kesehatan Lingkungan (Password default: direktorat123)
+INSERT INTO `users` (`username`, `name`, `email`, `password`, `role`, `status`, `telepon`, `created_at`, `updated_at`)
+VALUES ('direktorat', 'Direktorat Kesehatan Lingkungan', 'direktorat@kemenkes.go.id', '$2y$10$imN.SsIivmRbja7YKsU8T.DFhkqwyKo/RcLTpUs1o4JpdjKS7Lesm', 'direktorat', 'aktif', '081234567899', NOW(), NOW())
+ON DUPLICATE KEY UPDATE `name` = 'Direktorat Kesehatan Lingkungan', `email` = 'direktorat@kemenkes.go.id', `role` = 'direktorat', `status` = 'aktif', `telepon` = '081234567899', `updated_at` = NOW();
+

@@ -280,8 +280,43 @@
     html.dark .bg-amber-50\/70,
     html.dark .bg-amber-50\/80,
     html.dark .bg-amber-50\/90,
-    html.dark [class*="bg-amber-50"] {
+    html.dark [class*="bg-amber-50/"] {
         background-color: rgba(245, 158, 11, 0.18) !important;
+    }
+
+    /* Tombol Utama: Edit & Tambah Masukan Online (Mode Gelap: Tegas, Kontras Tinggi & Sangat Terbaca) */
+    html.dark .btn-edit-masukan-online,
+    html.dark #btnEditMasukanOnline,
+    html.dark #btnToggleEditMode {
+        background-color: #f59e0b !important;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #09090b !important;
+        border: 1.5px solid #fde047 !important;
+        box-shadow: 0 2px 14px rgba(245, 158, 11, 0.45) !important;
+    }
+    html.dark .btn-edit-masukan-online:hover,
+    html.dark #btnEditMasukanOnline:hover,
+    html.dark #btnToggleEditMode:hover {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+        color: #000000 !important;
+        border-color: #fef08a !important;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.65) !important;
+    }
+    html.dark .btn-edit-masukan-online svg,
+    html.dark #btnEditMasukanOnline svg,
+    html.dark #btnToggleEditMode svg {
+        color: #09090b !important;
+        stroke: #09090b !important;
+    }
+    html.dark .btn-edit-masukan-online span,
+    html.dark #btnEditMasukanOnline span,
+    html.dark #btnToggleEditMode span {
+        color: #09090b !important;
+        font-weight: 800 !important;
+    }
+    html.dark .btn-edit-masukan-online *,
+    html.dark #btnEditMasukanOnline * {
+        color: #09090b !important;
     }
     html.dark .bg-amber-200,
     html.dark .bg-amber-200\/80,
@@ -666,6 +701,55 @@
     html.dark [class*="from-blue-50"] p,
     html.dark [class*="from-blue-50/80"] p {
         color: #cbd5e1 !important;
+    }
+
+    /* 14b. Kartu Otomatisasi Backup & Gradien Khusus di Mode Gelap */
+    html.dark .backup-online-card,
+    html.dark [class*="from-blue-50"][class*="to-white"],
+    html.dark [class*="from-blue-50/80"][class*="to-white"] {
+        background: linear-gradient(135deg, #090d16 0%, #172554 45%, #090d16 100%) !important;
+        background-color: #0c1220 !important;
+        border: 1.5px solid #2563eb !important;
+        box-shadow: 0 4px 25px -2px rgba(0, 0, 0, 0.7) !important;
+    }
+    html.dark .backup-online-card h2,
+    html.dark .backup-online-card .card-title {
+        color: #f8fafc !important;
+        font-weight: 800 !important;
+    }
+    html.dark .backup-online-card p,
+    html.dark .backup-online-card .card-desc {
+        color: #cbd5e1 !important;
+    }
+    html.dark .backup-online-card .badge-active {
+        background-color: rgba(5, 150, 105, 0.35) !important;
+        color: #34d399 !important;
+        border: 1px solid #059669 !important;
+        font-weight: 800 !important;
+    }
+    html.dark .backup-online-card .badge-cloud {
+        background-color: rgba(37, 99, 235, 0.35) !important;
+        color: #60a5fa !important;
+        border: 1px solid #2563eb !important;
+        font-weight: 800 !important;
+    }
+    html.dark .backup-online-card .meta-label {
+        color: #94a3b8 !important;
+        font-weight: 600 !important;
+    }
+    html.dark .backup-online-card .meta-schedule {
+        color: #38bdf8 !important;
+        font-weight: 700 !important;
+    }
+    html.dark .backup-online-card .meta-email {
+        background-color: #030712 !important;
+        color: #f8fafc !important;
+        border: 1px solid #475569 !important;
+        font-weight: 700 !important;
+    }
+    html.dark .backup-online-card .meta-value {
+        color: #e2e8f0 !important;
+        font-weight: 600 !important;
     }
 
     /* 15. Header User & Theme Toggle Buttons */

@@ -217,6 +217,7 @@
                                 <option value="Semua" {{ $roleFilter === 'Semua' ? 'selected' : '' }}>Semua Role</option>
                                 <option value="kepala" {{ $roleFilter === 'kepala' ? 'selected' : '' }}>Kepala / Pimpinan BBLKL</option>
                                 <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Administrator</option>
+                                <option value="direktorat" {{ $roleFilter === 'direktorat' ? 'selected' : '' }}>Direktorat</option>
                                 <option value="petugas" {{ $roleFilter === 'petugas' ? 'selected' : '' }}>Petugas Lab</option>
                                 <option value="peneliti" {{ $roleFilter === 'peneliti' ? 'selected' : '' }}>Peneliti</option>
                                 <option value="universitas" {{ $roleFilter === 'universitas' ? 'selected' : '' }}>Universitas / Akademisi</option>
@@ -370,6 +371,11 @@
                                             <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
                                                 <span>🔬</span>
                                                 <span>Petugas Lab</span>
+                                            </span>
+                                        @elseif ($u->role === 'direktorat')
+                                            <span class="inline-flex items-center gap-1 rounded-lg bg-rose-50 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-300 px-2 py-0.5 text-[11px] font-bold text-rose-700">
+                                                <span>🏛️</span>
+                                                <span>Direktorat</span>
                                             </span>
                                         @elseif ($u->role === 'peneliti')
                                             <span class="inline-flex items-center gap-1 rounded-lg bg-violet-50 border border-violet-200 dark:bg-violet-950/40 dark:border-violet-800 dark:text-violet-300 px-2 py-0.5 text-[11px] font-bold text-violet-700">
@@ -560,6 +566,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Role / Hak Akses *</label>
                         <select name="role" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-blue-500 focus:outline-none bg-white">
                             <option value="petugas">Petugas Laboratorium</option>
+                            <option value="direktorat">Direktorat</option>
                             <option value="peneliti">Peneliti</option>
                             <option value="universitas">Universitas / Akademisi</option>
                             <option value="kepala">Kepala / Pimpinan BBLKL</option>
@@ -669,6 +676,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Role / Hak Akses *</label>
                         <select id="editRole" name="role" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-blue-500 focus:outline-none bg-white">
                             <option value="petugas">Petugas Laboratorium</option>
+                            <option value="direktorat">Direktorat</option>
                             <option value="peneliti">Peneliti</option>
                             <option value="universitas">Universitas / Akademisi</option>
                             <option value="kepala">Kepala / Pimpinan BBLKL</option>
@@ -741,11 +749,11 @@
         }
 
         function openEditModal(user) {
-            document.getElementById('editForm').action = '/users/' + user.id;
+            document.getElementById('editForm').action = "{{ route('users.index') }}/" + user.id;
             document.getElementById('editName').value = user.name || '';
             document.getElementById('editUsername').value = user.username || '';
             document.getElementById('editEmail').value = user.email || '';
-            document.getElementById('editTelepon').value = user.telepon || '';
+            document.getElementById('editTelepon').value = user.telepon || user.phone || '';
             let userRole = user.role || 'petugas';
             if (userRole === 'dinkes') userRole = 'dinas_kesehatan';
             if (userRole === 'bkk' || userRole === 'balai_karantina') userRole = 'balai_kekarantinaan_kesehatan';

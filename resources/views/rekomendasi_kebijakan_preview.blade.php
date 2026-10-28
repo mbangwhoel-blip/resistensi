@@ -41,6 +41,29 @@
             position: relative;
         }
 
+        /* Tombol Edit Masukan Online */
+        .btn-edit-masukan-online {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            color: #09090b !important;
+            border: 1.5px solid #fde047 !important;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4) !important;
+            font-weight: 800 !important;
+        }
+        .btn-edit-masukan-online:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: #000000 !important;
+            border-color: #fef08a !important;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.6) !important;
+        }
+        .btn-edit-masukan-online svg {
+            color: #09090b !important;
+            stroke: #09090b !important;
+        }
+        .btn-edit-masukan-online span {
+            color: #09090b !important;
+            font-weight: 800 !important;
+        }
+
         /* Watermark DRAFT Otomatis Sebelum Disahkan Kepala/Pimpinan BBLKL */
         .watermark-draft-box {
             position: relative;
@@ -899,12 +922,12 @@
                     <button type="button"
                             id="btnToggleEditMode"
                             onclick="toggleEditMode()"
-                            class="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950 shadow transition cursor-pointer active:scale-95"
+                            class="btn-edit-masukan-online inline-flex items-center gap-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 px-3 py-1.5 text-xs font-black text-slate-950 shadow transition cursor-pointer active:scale-95 ring-1 ring-amber-300"
                             title="Aktifkan mode edit online untuk menambahkan atau mengubah masukan langsung pada template">
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
-                        <span id="btnEditLabel">Edit Online</span>
+                        <span id="btnEditLabel" class="font-black">Edit Online</span>
                     </button>
 
                     <button type="button"

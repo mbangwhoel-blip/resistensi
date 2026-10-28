@@ -161,19 +161,20 @@
 
                             {{-- TULISAN CAKUPAN SEBELUM KOTAK EDIT & TAMBAH MASUKAN ONLINE --}}
                             <div class="inline-flex items-center gap-2.5">
-                                <span class="text-[11px] text-slate-500 dark:text-zinc-400 font-medium whitespace-nowrap">
-                                    Cakupan: <strong class="text-teal-700 dark:text-teal-400">{{ $namaWilayah }}</strong>
+                                <span class="text-[11px] text-slate-500 dark:text-zinc-300 font-medium whitespace-nowrap">
+                                    Cakupan: <strong class="text-teal-700 dark:text-teal-300 font-bold">{{ $namaWilayah }}</strong>
                                 </span>
 
                                 {{-- TOMBOL UTAMA: EDIT & TAMBAH MASUKAN ONLINE --}}
                                 <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes', 'edit' => '1'])) }}"
                                    target="_blank"
-                                   class="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-bold text-slate-950 shadow-2xs transition active:scale-95 cursor-pointer ring-2 ring-amber-300 dark:ring-amber-500/40 whitespace-nowrap"
+                                   id="btnEditMasukanOnline"
+                                   class="btn-edit-masukan-online inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-black text-slate-950 shadow-sm transition active:scale-95 cursor-pointer ring-2 ring-amber-300 dark:ring-amber-400 whitespace-nowrap"
                                    title="Buka template dokumen dan aktifkan Mode Edit Online untuk menambahkan masukan atau catatan arahan">
-                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
-                                    <span>Edit &amp; Tambah Masukan Online</span>
+                                    <span class="font-black tracking-tight">Edit &amp; Tambah Masukan Online</span>
                                 </a>
                             </div>
                         </div>
