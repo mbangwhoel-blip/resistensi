@@ -197,26 +197,40 @@
                 <p class="text-xs text-slate-500 mt-1">Dicetak pada: {{ now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB</p>
             </div>
 
-            {{-- KARTU KPI / RINGKASAN STATISTIK --}}
+            {{-- KARTU KPI / RINGKASAN STATISTIK (INTERAKTIF KE DATA LAPORAN) --}}
+            @php
+                $cleanFilterParams = array_filter([
+                    'provinsi_id'   => $provinsiFilter !== 'Semua' ? $provinsiFilter : null,
+                    'tahun_mulai'   => $tahunMulai,
+                    'tahun_selesai' => $tahunSelesai,
+                    'jenis_nyamuk'  => $nyamukFilter !== 'Semua' ? $nyamukFilter : null,
+                    'insektisida'   => $insektisidaFilter !== 'Semua' ? $insektisidaFilter : null,
+                ]);
+            @endphp
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
                 {{-- TOTAL PENGUJIAN --}}
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+                <a href="{{ route('laporan.index', $cleanFilterParams) }}"
+                   title="Buka seluruh catatan data uji terfilter di Halaman Laporan"
+                   class="group block rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Uji</span>
-                        <div class="h-8 w-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 text-sm">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-blue-600 transition-colors">Total Uji</span>
+                        <div class="h-8 w-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 text-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                             📋
                         </div>
                     </div>
                     <div class="mt-2 text-2xl font-black text-slate-900 leading-tight">
                         {{ number_format($totalPemeriksaan, 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-medium text-slate-400">
-                        Catatan uji terfilter
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-medium text-slate-400">
+                        <span>Catatan uji terfilter</span>
+                        <span class="text-[10px] font-bold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 {{-- TOTAL SAMPEL NYAMUK --}}
-                <div class="rounded-2xl border border-blue-200 bg-blue-50/50 p-4 shadow-2xs">
+                <a href="{{ route('laporan.index', $cleanFilterParams) }}"
+                   title="Buka data spesimen nyamuk terfilter di Halaman Laporan"
+                   class="group block rounded-2xl border border-blue-200 bg-blue-50/50 p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Total Nyamuk</span>
                         <div class="h-8 w-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 text-sm">
@@ -226,61 +240,88 @@
                     <div class="mt-2 text-2xl font-black text-blue-900 leading-tight">
                         {{ number_format($totalSampel, 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-blue-600">
-                        Ekor nyamuk diuji
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-semibold text-blue-600">
+                        <span>Ekor nyamuk diuji</span>
+                        <span class="text-[10px] font-bold underline opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 {{-- KASUS RESISTEN --}}
-                <div class="rounded-2xl border border-rose-200 bg-rose-50/50 p-4 shadow-2xs">
+                <a href="{{ route('laporan.index', array_merge($cleanFilterParams, ['status' => 'Resisten'])) }}"
+                   title="Buka seluruh data uji status RESISTEN di Halaman Laporan"
+                   class="group block rounded-2xl border border-rose-200 bg-rose-50/50 p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-rose-700">Resisten</span>
-                        <span class="rounded-md bg-rose-200/80 px-1.5 py-0.5 text-[10px] font-bold text-rose-800">
-                            {{ $persenResisten }}%
-                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="rounded-md bg-rose-200/80 px-1.5 py-0.5 text-[10px] font-bold text-rose-800">
+                                {{ $persenResisten }}%
+                            </span>
+                            <svg class="h-3.5 w-3.5 text-rose-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="mt-2 text-2xl font-black text-rose-700 leading-tight">
                         {{ number_format($totalResisten, 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-rose-600/80">
-                        Vektor kebal insektisida
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-semibold text-rose-600/80">
+                        <span>Vektor kebal insektisida</span>
+                        <span class="text-[10px] font-bold underline opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 {{-- KASUS TOLERAN --}}
-                <div class="rounded-2xl border border-amber-200 bg-amber-50/50 p-4 shadow-2xs">
+                <a href="{{ route('laporan.index', array_merge($cleanFilterParams, ['status' => 'Toleran'])) }}"
+                   title="Buka seluruh data uji status TOLERAN / TERDUGA RESISTEN di Halaman Laporan"
+                   class="group block rounded-2xl border border-amber-200 bg-amber-50/50 p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Toleran</span>
-                        <span class="rounded-md bg-amber-200/80 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">
-                            {{ $persenToleran }}%
-                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="rounded-md bg-amber-200/80 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">
+                                {{ $persenToleran }}%
+                            </span>
+                            <svg class="h-3.5 w-3.5 text-amber-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="mt-2 text-2xl font-black text-amber-700 leading-tight">
                         {{ number_format($totalToleran, 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-amber-600/80">
-                        Terduga mulai kebal
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-semibold text-amber-600/80">
+                        <span>Terduga mulai kebal</span>
+                        <span class="text-[10px] font-bold underline opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 {{-- KASUS RENTAN --}}
-                <div class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 shadow-2xs">
+                <a href="{{ route('laporan.index', array_merge($cleanFilterParams, ['status' => 'Rentan'])) }}"
+                   title="Buka seluruh data uji status RENTAN di Halaman Laporan"
+                   class="group block rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Rentan</span>
-                        <span class="rounded-md bg-emerald-200/80 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">
-                            {{ $persenRentan }}%
-                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="rounded-md bg-emerald-200/80 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">
+                                {{ $persenRentan }}%
+                            </span>
+                            <svg class="h-3.5 w-3.5 text-emerald-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="mt-2 text-2xl font-black text-emerald-700 leading-tight">
                         {{ number_format($totalRentan, 0, ',', '.') }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-emerald-600/80">
-                        Efektif terbunuh
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-semibold text-emerald-600/80">
+                        <span>Efektif terbunuh</span>
+                        <span class="text-[10px] font-bold underline opacity-0 group-hover:opacity-100 transition-opacity">Lihat Data &rarr;</span>
                     </div>
-                </div>
+                </a>
 
                 {{-- WILAYAH TERPANTAU --}}
-                <div class="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-4 shadow-2xs">
+                <a href="{{ route('wilayah.index') }}"
+                   title="Buka peta dan daftar sebaran wilayah di Halaman Wilayah"
+                   class="group block rounded-2xl border border-indigo-200 bg-indigo-50/50 p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-700">Provinsi</span>
                         <div class="h-8 w-8 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700 text-sm">
@@ -290,10 +331,11 @@
                     <div class="mt-2 text-2xl font-black text-indigo-900 leading-tight">
                         {{ $totalProvinsi }}
                     </div>
-                    <div class="mt-1 text-[11px] font-semibold text-indigo-600/80">
-                        Provinsi terpantau
+                    <div class="mt-1 flex items-center justify-between text-[11px] font-semibold text-indigo-600/80">
+                        <span>Provinsi terpantau</span>
+                        <span class="text-[10px] font-bold underline opacity-0 group-hover:opacity-100 transition-opacity">Lihat Peta &rarr;</span>
                     </div>
-                </div>
+                </a>
             </div>
 
             {{-- PANEL FILTER INTERAKTIF ANALISIS --}}
@@ -383,11 +425,11 @@
                             <span>Terapkan Filter</span>
                         </button>
 
-                        <a href="{{ route('analisis.index') }}" class="cursor-pointer inline-flex items-center gap-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white px-4 py-2 text-xs font-bold shadow-2xs active:scale-95 transition" title="Reset semua filter parameter analisis">
-                            <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('analisis.index') }}" class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition shadow-2xs cursor-pointer" title="Reset semua filter parameter analisis">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
-                            <span>Reset</span>
+                            <span>Reset Filter</span>
                         </a>
                     </div>
                 </form>
