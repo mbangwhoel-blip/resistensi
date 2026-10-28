@@ -191,14 +191,15 @@
                 </div>
             </div>
 
-            {{-- TOOLBAR PENCARIAN, FILTER, DAN TOMBOL AKSI --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs no-print">
-                <form action="{{ route('users.index') }}" method="GET" class="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
+            {{-- TOOLBAR PENCARIAN, FILTER, DAN TOMBOL AKSI (SEJAJAR SATU BARIS & PROPORSIONAL) --}}
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs no-print dark:bg-zinc-900 dark:border-zinc-800">
+                <form id="formFilterUsers" action="{{ route('users.index') }}" method="GET" class="flex flex-wrap items-center justify-between gap-3">
+                    <input type="hidden" name="per_page" value="{{ request('per_page', $perPageRaw ?? 10) }}">
 
-                    {{-- GRUP KIRI: PENCARIAN, ROLE, DAN TAMPIL DATA (SEJAJAR & PROPORSIONAL) --}}
-                    <div class="flex flex-wrap items-center gap-2.5 flex-1">
+                    {{-- GRUP KIRI: PENCARIAN & FILTER ROLE (SEJAJAR SATU BARIS) --}}
+                    <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
                         {{-- KOTAK PENCARIAN --}}
-                        <div class="relative w-full sm:w-56 md:w-64">
+                        <div class="relative w-48 sm:w-56 md:w-64">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -208,12 +209,12 @@
                                    name="search"
                                    value="{{ $search }}"
                                    placeholder="Cari nama, user, email..."
-                                   class="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-700 transition focus:border-blue-500 focus:bg-white focus:outline-none shadow-2xs">
+                                   class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-700 transition focus:border-blue-500 focus:bg-white focus:outline-none shadow-2xs dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
                         </div>
 
                         {{-- FILTER ROLE --}}
-                        <div class="w-full sm:w-auto">
-                            <select name="role" onchange="this.form.submit()" class="h-9 w-full sm:w-auto rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 focus:border-blue-500 focus:bg-white focus:outline-none cursor-pointer shadow-2xs">
+                        <div class="w-36 sm:w-44">
+                            <select name="role" onchange="this.form.submit()" class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 focus:border-blue-500 focus:bg-white focus:outline-none cursor-pointer shadow-2xs dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
                                 <option value="Semua" {{ $roleFilter === 'Semua' ? 'selected' : '' }}>Semua Role</option>
                                 <option value="kepala" {{ $roleFilter === 'kepala' ? 'selected' : '' }}>Kepala / Pimpinan BBLKL</option>
                                 <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Administrator</option>
@@ -228,41 +229,20 @@
                             </select>
                         </div>
 
-                        {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR) --}}
-                        <div class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 shadow-2xs shrink-0">
-                            <label for="tablePageSizeSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap flex items-center gap-1 cursor-pointer">
-                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                                </svg>
-                                <span>Tampil:</span>
-                            </label>
-                            <select id="tablePageSizeSelect" 
-                                    name="per_page"
-                                    onchange="this.form.submit()" 
-                                    class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer">
-                                <option value="5" {{ (string)($perPageRaw ?? $perPage) === '5' ? 'selected' : '' }}>5 data</option>
-                                <option value="10" {{ (string)($perPageRaw ?? $perPage) === '10' ? 'selected' : '' }}>10 data</option>
-                                <option value="25" {{ (string)($perPageRaw ?? $perPage) === '25' ? 'selected' : '' }}>25 data</option>
-                                <option value="50" {{ (string)($perPageRaw ?? $perPage) === '50' ? 'selected' : '' }}>50 data</option>
-                                <option value="100" {{ (string)($perPageRaw ?? $perPage) === '100' ? 'selected' : '' }}>100 data</option>
-                                <option value="all" {{ (string)($perPageRaw ?? $perPage) === 'all' ? 'selected' : '' }}>Semua data</option>
-                            </select>
-                        </div>
-
                         @if ($search || $roleFilter !== 'Semua')
-                            <a href="{{ route('users.index') }}" class="btn-reset-filter h-9 inline-flex items-center rounded-xl px-3 text-xs font-bold transition shadow-2xs shrink-0">
+                            <a href="{{ route('users.index') }}" class="btn-reset-filter h-10 inline-flex items-center rounded-xl px-3 text-xs font-bold transition shadow-2xs shrink-0" title="Reset pencarian dan filter role">
                                 Reset Filter
                             </a>
                         @endif
                     </div>
 
-                    {{-- GRUP KANAN: TOMBOL CETAK & TAMBAH USER --}}
-                    <div class="flex items-center gap-2 shrink-0 self-start xl:self-auto">
+                    {{-- GRUP KANAN: TOMBOL CETAK & TAMBAH PENGGUNA BARU (SEJAJAR SATU BARIS DENGAN KOTAK SEMUA ROLE) --}}
+                    <div class="flex items-center gap-2.5 shrink-0">
                         <a href="{{ route('users.preview', ['search' => $search, 'role' => $roleFilter]) }}"
                            target="_blank"
-                           class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-3.5 text-xs font-bold text-teal-800 shadow-2xs transition hover:bg-teal-100 hover:border-teal-300 active:scale-95 cursor-pointer whitespace-nowrap"
-                           title="Pratinjau Cetak / Ekspor PDF Resmi">
-                            <svg class="h-3.5 w-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-3.5 sm:px-4 text-xs sm:text-sm font-bold shadow-2xs active:scale-95 transition shrink-0 whitespace-nowrap"
+                           title="Pratinjau Cetak / Ekspor PDF Resmi Pengguna">
+                            <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
                             <span>Cetak</span>
@@ -270,7 +250,7 @@
 
                         <button type="button"
                                 onclick="openAddModal()"
-                                class="h-9 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 text-xs font-bold text-white shadow-md shadow-blue-500/25 transition hover:from-blue-500 hover:to-indigo-500 cursor-pointer whitespace-nowrap">
+                                class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 sm:px-5 text-xs sm:text-sm font-bold text-white shadow-md shadow-blue-500/25 transition hover:from-blue-500 hover:to-indigo-500 active:scale-95 shrink-0 whitespace-nowrap">
                             <span class="text-sm font-bold">+</span>
                             <span>Tambah Pengguna Baru</span>
                         </button>
@@ -304,7 +284,37 @@
             </div>
 
             {{-- TABEL PENGGUNA --}}
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden print-clean-box">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden print-clean-box dark:bg-zinc-900 dark:border-zinc-800">
+                {{-- HEADER ATAS TABEL: INFORMASI TOTAL & KONTROL TAMPIL DATA DI SEBELAH KANAN --}}
+                <div class="px-5 py-3 border-b border-slate-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-zinc-900 no-print">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 leading-tight">Daftar Pengguna Sistem</h3>
+                        <p class="text-[11px] text-slate-400 dark:text-zinc-500 mt-0.5">
+                            Menampilkan {{ $users->firstItem() ?? 0 }} - {{ $users->lastItem() ?? 0 }} dari {{ number_format($users->total(), 0, ',', '.') }} pengguna terdaftar
+                        </p>
+                    </div>
+
+                    {{-- KONTROL TAMPIL DATA (PAGE SIZE SELECTOR) DIPINDAHKAN DI ATAS TABEL SEBELAH KANAN --}}
+                    <div class="h-9 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/80 px-2.5 shadow-2xs shrink-0 dark:border-zinc-700 dark:bg-zinc-800">
+                        <label for="tablePageSizeSelect" class="text-xs font-semibold text-slate-600 dark:text-zinc-300 whitespace-nowrap flex items-center gap-1 cursor-pointer">
+                            <svg class="h-3.5 w-3.5 text-slate-400 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            </svg>
+                            <span>Tampil:</span>
+                        </label>
+                        <select id="tablePageSizeSelect" 
+                                onchange="changeTablePageSize(this.value)" 
+                                class="rounded border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
+                            <option value="5" {{ (string)($perPageRaw ?? $perPage) === '5' ? 'selected' : '' }}>5 data</option>
+                            <option value="10" {{ (string)($perPageRaw ?? $perPage) === '10' ? 'selected' : '' }}>10 data</option>
+                            <option value="25" {{ (string)($perPageRaw ?? $perPage) === '25' ? 'selected' : '' }}>25 data</option>
+                            <option value="50" {{ (string)($perPageRaw ?? $perPage) === '50' ? 'selected' : '' }}>50 data</option>
+                            <option value="100" {{ (string)($perPageRaw ?? $perPage) === '100' ? 'selected' : '' }}>100 data</option>
+                            <option value="all" {{ (string)($perPageRaw ?? $perPage) === 'all' ? 'selected' : '' }}>Semua data</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="overflow-x-auto bg-slate-50">
                     <table class="w-full text-left text-xs table-fixed border-collapse">
                         <thead class="bg-slate-900 text-white uppercase text-[11px] font-bold tracking-wider border-b border-slate-800">
@@ -740,6 +750,14 @@
     </div>
 
     <script>
+        // Kontrol Tampil X Data di Atas Tabel Sebelah Kanan
+        function changeTablePageSize(val) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', val);
+            url.searchParams.delete('page');
+            window.location.href = url.toString();
+        }
+
         function openAddModal() {
             document.getElementById('addModal').classList.remove('hidden');
         }
