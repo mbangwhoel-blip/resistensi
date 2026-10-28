@@ -159,33 +159,33 @@
 
             {{-- WHO EPIDEMIOLOGICAL HEALTH BAR (DISTRIBUSI PROPORSI RESISTENSI) --}}
             <div class="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
-                    <div class="flex items-center gap-2.5">
-                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-50 text-teal-700 font-bold text-sm border border-teal-200/60 dark:bg-teal-950/40 dark:border-teal-800">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700 font-bold text-sm border border-teal-200/60 dark:bg-teal-950/40 dark:border-teal-800">
                             📈
                         </span>
-                        <div>
-                            <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                                <span>Rasio Kesehatan Kerentanan Vektor (Standar WHO)</span>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-900/50 dark:text-teal-300">
+                        <div class="min-w-0">
+                            <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                <span class="leading-snug">Rasio Kesehatan Kerentanan Vektor (Standar WHO)</span>
+                                <span class="whitespace-nowrap shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-900/50 dark:text-teal-300">
                                     Total {{ number_format($stats['total_pemeriksaan']) }} Uji
                                 </span>
                             </h3>
-                            <p class="text-[11px] text-slate-500 mt-0.5">
+                            <p class="text-[11px] text-slate-500 mt-0.5 leading-tight">
                                 Proporsi komparatif efektivitas insektisida terhadap populasi vektor berdasarkan filter aktif
                             </p>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2.5 text-xs font-bold">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 dark:bg-rose-950/40 dark:border-rose-800">
-                            <span class="h-2 w-2 rounded-full bg-rose-500"></span> Resisten: {{ $stats['persen_resisten'] }}%
+                    <div class="flex items-center gap-2 text-xs font-bold shrink-0 flex-nowrap overflow-x-auto pb-0.5 lg:pb-0">
+                        <span class="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 dark:bg-rose-950/40 dark:border-rose-800 text-[11px] sm:text-xs">
+                            <span class="h-2 w-2 rounded-full bg-rose-500 shrink-0"></span> Resisten: {{ $stats['persen_resisten'] }}%
                         </span>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 dark:bg-amber-950/40 dark:border-amber-800">
-                            <span class="h-2 w-2 rounded-full bg-amber-500"></span> Toleran: {{ $stats['persen_toleran'] }}%
+                        <span class="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 dark:bg-amber-950/40 dark:border-amber-800 text-[11px] sm:text-xs">
+                            <span class="h-2 w-2 rounded-full bg-amber-500 shrink-0"></span> Toleran: {{ $stats['persen_toleran'] }}%
                         </span>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-800">
-                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Rentan: {{ $stats['persen_rentan'] }}%
+                        <span class="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-800 text-[11px] sm:text-xs">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span> Rentan: {{ $stats['persen_rentan'] }}%
                         </span>
                     </div>
                 </div>
