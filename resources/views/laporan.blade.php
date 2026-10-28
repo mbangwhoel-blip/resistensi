@@ -231,7 +231,7 @@
 
             {{-- FORM FILTER PENCARIAN LAPORAN --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5">
                         <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-sm font-bold">
                             🔍
@@ -240,32 +240,6 @@
                             <h2 class="text-sm font-extrabold text-slate-900 leading-tight">Filter Parameter Laporan</h2>
                             <p class="text-[11px] text-slate-500">Sesuaikan kriteria data yang ingin ditampilkan dan dicetak ke PDF</p>
                         </div>
-                    </div>
-
-                    {{-- TOMBOL ACTION DENGAN FILTER AKTIF (SAAS STYLE) --}}
-                    @php
-                        $pdfQuery = request()->query();
-                    @endphp
-                    <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
-                        <a href="{{ route('laporan.preview', $pdfQuery) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:shadow-md cursor-pointer"
-                           title="Buka pratinjau dokumen di layar">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            <span>Lihat Pratinjau</span>
-                        </a>
-
-                        <a href="{{ route('laporan.pdf', array_merge($pdfQuery, ['mode' => 'download'])) }}"
-                           class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:shadow-md cursor-pointer"
-                           title="Unduh langsung file berkas PDF">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            <span>Unduh File PDF</span>
-                        </a>
                     </div>
                 </div>
 
@@ -432,21 +406,50 @@
                         </div>
                     </div>
 
-                    {{-- TOMBOL AKSI FILTER --}}
-                    <div class="flex items-center gap-2.5 pt-2">
-                        <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            <span>Terapkan Filter</span>
-                        </button>
+                    {{-- TOMBOL AKSI FILTER & DOKUMEN CETAK/PREVIEW --}}
+                    @php
+                        $pdfQuery = request()->query();
+                    @endphp
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                        {{-- Filter Action Buttons (Kiri) --}}
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                </svg>
+                                <span>Terapkan Filter</span>
+                            </button>
 
-                        <a href="{{ route('laporan.index') }}" class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition shadow-2xs cursor-pointer">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            <span>Reset Filter</span>
-                        </a>
+                            <a href="{{ route('laporan.index') }}" class="btn-reset-filter inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition shadow-2xs cursor-pointer">
+                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Reset Filter</span>
+                            </a>
+                        </div>
+
+                        {{-- Export & Print Document Actions (Sejajar di Sisi Kanan) --}}
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <a href="{{ route('laporan.preview', $pdfQuery) }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:shadow-md cursor-pointer"
+                               title="Buka pratinjau dokumen di layar">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <span>Lihat Pratinjau</span>
+                            </a>
+
+                            <a href="{{ route('laporan.pdf', array_merge($pdfQuery, ['mode' => 'download'])) }}"
+                               class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:shadow-md cursor-pointer"
+                               title="Unduh langsung file berkas PDF">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <span>Unduh File PDF</span>
+                            </a>
+                        </div>
                     </div>
 
                 </form>

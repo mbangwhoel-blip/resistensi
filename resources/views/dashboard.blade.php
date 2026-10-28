@@ -1568,7 +1568,7 @@
                     <div class="pt-2.5 border-t border-slate-100 dark:border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
-                                📌 <strong id="activeFilterTitle">Peta Endemisitas & Resistensi</strong>
+                                📌 <strong id="activeFilterTitle">Peta Resistensi</strong>
                             </span>
                             <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
                                 📍 <span id="activeFilterLevel">Level: NASIONAL (Seluruh Indonesia)</span>
@@ -3128,7 +3128,7 @@
                     maxYear = tmp;
                 }
 
-                const selectedIndikator = document.getElementById('filterIndikator')?.value || 'Peta Endemisitas & Resistensi';
+                const selectedIndikator = document.getElementById('filterIndikator')?.value || 'Peta Resistensi';
 
                 // Perbarui Keterangan Status Filter di Atas Peta (Gambar 2)
                 const titleEl = document.getElementById('activeFilterTitle');
@@ -3878,7 +3878,7 @@
                 handleLevelChange('nasional');
 
                 const indSelect = document.getElementById('filterIndikator');
-                if (indSelect) indSelect.value = 'Peta Endemisitas & Resistensi';
+                if (indSelect) indSelect.value = 'Peta Resistensi';
 
                 const tmMulai = document.getElementById('filterTahunMulai');
                 if (tmMulai) tmMulai.value = '';
