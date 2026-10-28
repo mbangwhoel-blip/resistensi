@@ -159,50 +159,60 @@
                     </a>
                 </div>
 
-                {{-- TOOLBAR PENCARIAN & TOMBOL TAMBAH --}}
-                <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-                    <form method="GET" action="{{ route('kategori.index') }}" class="flex flex-wrap items-center gap-3 flex-1">
+                {{-- TOOLBAR PENCARIAN & TOMBOL AKSI (SEJAJAR SATU BARIS SEMUA TAB) --}}
+                <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <form method="GET" action="{{ route('kategori.index') }}" class="flex items-center gap-2 shrink-0">
                         <input type="hidden" name="tab" value="{{ $tab }}">
-                        <div class="w-full sm:w-72 relative">
-                            <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama parameter..." class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none">
-                            <svg class="absolute left-3.5 top-3 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="w-44 sm:w-52 md:w-60 relative">
+                            <input type="text"
+                                   name="search"
+                                   value="{{ $search }}"
+                                   placeholder="Cari nama parameter..."
+                                   class="w-full h-10 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
+                            <svg class="absolute left-3 top-3 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
 
-                        <button type="submit" class="cursor-pointer rounded-xl bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-900">
-                            Cari
+                        <button type="submit"
+                                class="cursor-pointer h-10 rounded-xl bg-blue-600 px-3.5 text-sm font-semibold text-white shadow-2xs hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-1.5 shrink-0">
+                            <span>Cari</span>
                         </button>
-
-                        @if ($search)
-                            <a href="{{ route('kategori.index', ['tab' => $tab]) }}" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
-                                Reset
-                            </a>
-                        @endif
 
                         <a href="{{ route('kategori.preview', ['tab' => $tab, 'search' => $search]) }}"
                            target="_blank"
-                           class="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 shadow-2xs hover:bg-teal-100 hover:border-teal-300 active:scale-95 transition"
+                           class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-3.5 sm:px-4 text-sm font-bold shadow-2xs active:scale-95 transition shrink-0"
                            title="Pratinjau Cetak / Ekspor PDF Resmi Parameter Uji">
-                            <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
                             <span>Cetak</span>
                         </a>
+
+                        @if ($search)
+                            <a href="{{ route('kategori.index', ['tab' => $tab]) }}"
+                               class="inline-flex items-center h-10 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 px-3 text-sm font-semibold transition shadow-2xs shrink-0"
+                               title="Reset pencarian">
+                                <span>Reset</span>
+                            </a>
+                        @endif
                     </form>
 
-                    <div class="flex items-center gap-2.5 flex-wrap">
+                    <div class="flex items-center gap-2.5 shrink-0">
                         <form method="POST" action="{{ route('kategori.sync') }}" onsubmit="return confirm('Apakah Anda yakin ingin menyinkronkan seluruh parameter (nyamuk, insektisida, metode) dari data uji laboratorium yang belum terdaftar di master data?')">
                             @csrf
-                            <button type="submit" class="cursor-pointer rounded-xl border border-teal-500/50 bg-teal-50 hover:bg-teal-600 hover:text-white px-4 py-2.5 text-sm font-semibold text-teal-700 transition shadow-2xs flex items-center gap-2 dark:bg-teal-950/40 dark:border-teal-700/60 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white" title="Pindai data uji laboratorium dan tambahkan parameter yang belum ada ke master data">
+                            <button type="submit"
+                                    class="cursor-pointer h-10 rounded-xl border border-teal-500/50 bg-teal-50 hover:bg-teal-600 hover:text-white px-3.5 sm:px-4 text-xs sm:text-sm font-semibold text-teal-700 transition shadow-2xs flex items-center gap-2 dark:bg-teal-950/40 dark:border-teal-700/60 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white shrink-0"
+                                    title="Pindai data uji laboratorium dan tambahkan parameter yang belum ada ke master data">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
-                                <span>Sinkronkan dari Data Uji</span>
+                                <span class="whitespace-nowrap">Sinkronkan dari Data Uji</span>
                             </button>
                         </form>
 
-                        <button onclick="openModalTambah('{{ $tab }}')" class="cursor-pointer rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 flex items-center gap-2">
+                        <button onclick="openModalTambah('{{ $tab }}')"
+                                class="cursor-pointer h-10 rounded-xl bg-blue-600 px-4 sm:px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-2 shrink-0 whitespace-nowrap">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>

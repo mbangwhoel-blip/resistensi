@@ -107,12 +107,44 @@
             {{-- 1. KARTU FILTER WILAYAH, PERIODE, & SPESIES NYAMUK --}}
             <div class="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-2xs dark:bg-zinc-900/90 dark:border-zinc-800">
                 <form method="GET" action="{{ route('rekomendasi.index') }}" id="policyFilterForm" class="space-y-4">
+                    {{-- 1. HEADER: JUDUL & AKSI MASUKAN ONLINE (SEJAJAR & PROPORSIONAL) --}}
                     <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-zinc-800">
                         <div class="flex items-center gap-2">
                             <span class="flex h-2 w-2 rounded-full bg-teal-600 ring-4 ring-teal-100 dark:ring-teal-950"></span>
                             <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                                 Parameter Evaluasi Kebijakan
                             </h3>
+                        </div>
+
+                        {{-- TULISAN CAKUPAN DAN KOTAK EDIT & TAMBAH MASUKAN ONLINE --}}
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <span class="text-[11px] text-slate-500 dark:text-zinc-300 font-medium whitespace-nowrap">
+                                Cakupan: <strong class="text-teal-700 dark:text-teal-300 font-bold">{{ $namaWilayah }}</strong>
+                            </span>
+
+                            {{-- TOMBOL UTAMA: EDIT & TAMBAH MASUKAN ONLINE --}}
+                            <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes', 'edit' => '1'])) }}"
+                               target="_blank"
+                               id="btnEditMasukanOnline"
+                               class="btn-edit-masukan-online inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-black text-slate-950 shadow-sm transition active:scale-95 cursor-pointer ring-2 ring-amber-300 dark:ring-amber-400 whitespace-nowrap"
+                               title="Buka template dokumen dan aktifkan Mode Edit Online untuk menambahkan masukan atau catatan arahan">
+                                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                                <span class="font-black tracking-tight">Edit &amp; Tambah Masukan Online</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- 2. BARIS PILIHAN FORMAT CETAK DOKUMEN --}}
+                    <div class="flex flex-wrap items-center justify-between gap-2.5 py-2 px-3 rounded-xl bg-slate-50/80 dark:bg-zinc-800/40 border border-slate-100 dark:border-zinc-800/80">
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-3.5 w-3.5 text-slate-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span class="text-[11px] font-bold text-slate-600 dark:text-zinc-400 uppercase tracking-wider">
+                                Cetak Dokumen:
+                            </span>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             {{-- TEMPLATE 1: STANDAR TEKNIS KEMENKES RI (SESUAI PERMENKES 2/2023 & JUKNIS PVT) --}}
@@ -158,25 +190,6 @@
                                 </svg>
                                 <span>Cetak Policy Brief Agregat</span>
                             </a>
-
-                            {{-- TULISAN CAKUPAN SEBELUM KOTAK EDIT & TAMBAH MASUKAN ONLINE --}}
-                            <div class="inline-flex items-center gap-2.5">
-                                <span class="text-[11px] text-slate-500 dark:text-zinc-300 font-medium whitespace-nowrap">
-                                    Cakupan: <strong class="text-teal-700 dark:text-teal-300 font-bold">{{ $namaWilayah }}</strong>
-                                </span>
-
-                                {{-- TOMBOL UTAMA: EDIT & TAMBAH MASUKAN ONLINE --}}
-                                <a href="{{ route('rekomendasi.preview', array_merge(request()->all(), ['template' => 'kemenkes', 'edit' => '1'])) }}"
-                                   target="_blank"
-                                   id="btnEditMasukanOnline"
-                                   class="btn-edit-masukan-online inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-black text-slate-950 shadow-sm transition active:scale-95 cursor-pointer ring-2 ring-amber-300 dark:ring-amber-400 whitespace-nowrap"
-                                   title="Buka template dokumen dan aktifkan Mode Edit Online untuk menambahkan masukan atau catatan arahan">
-                                    <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                    </svg>
-                                    <span class="font-black tracking-tight">Edit &amp; Tambah Masukan Online</span>
-                                </a>
-                            </div>
                         </div>
                     </div>
 

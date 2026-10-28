@@ -128,21 +128,30 @@
             {{-- TABS & TAB CONTENT --}}
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                 {{-- TAB NAVIGATION WITH CETAK & PDF ACTIONS --}}
-                <div class="flex flex-wrap items-center justify-between border-b border-slate-200 bg-slate-50/70 px-6 pt-3 pb-1 gap-3">
-                    <div class="flex items-center">
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 px-6 pt-3 pb-1 gap-3">
+                    <div class="flex items-center gap-2">
+                        {{-- TAB KABUPATEN / KOTA (WARNA EMERALD / TEAL CERAH) --}}
                         <a href="{{ route('wilayah.index', ['tab' => 'kabupaten']) }}"
-                           class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab === 'kabupaten' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           class="tab-wilayah-kabupaten flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-bold transition rounded-t-xl {{ $tab === 'kabupaten' ? 'active border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400 bg-white dark:bg-zinc-800 shadow-2xs' : 'border-transparent text-slate-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-300' }}">
+                            <svg class="h-4 w-4 {{ $tab === 'kabupaten' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-zinc-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
-                            Daftar Kabupaten / Kota
+                            <span>Daftar Kabupaten / Kota</span>
+                            <span class="tab-badge-kabupaten ml-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold {{ $tab === 'kabupaten' ? 'badge-active-kab' : 'badge-inactive-tab' }}">
+                                {{ number_format($totalKabupaten ?? 514, 0, ',', '.') }}
+                            </span>
                         </a>
+
+                        {{-- TAB PROVINSI (WARNA BLUE / BIRU INDIGO CERAH) --}}
                         <a href="{{ route('wilayah.index', ['tab' => 'provinsi']) }}"
-                           class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab === 'provinsi' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400 bg-white rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           class="tab-wilayah-provinsi flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-bold transition rounded-t-xl {{ $tab === 'provinsi' ? 'active border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 bg-white dark:bg-zinc-800 shadow-2xs' : 'border-transparent text-slate-500 hover:text-blue-600 dark:text-zinc-400 dark:hover:text-blue-300' }}">
+                            <svg class="h-4 w-4 {{ $tab === 'provinsi' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-zinc-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                             </svg>
-                            Daftar Provinsi
+                            <span>Daftar Provinsi</span>
+                            <span class="tab-badge-provinsi ml-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold {{ $tab === 'provinsi' ? 'badge-active-prov' : 'badge-inactive-tab' }}">
+                                {{ number_format($totalProvinsi ?? 38, 0, ',', '.') }}
+                            </span>
                         </a>
                     </div>
                 </div>

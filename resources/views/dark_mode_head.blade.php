@@ -681,10 +681,57 @@
     }
 
     /* 13. Navigasi Tab Aktif & Kartu Gradient */
-    html.dark a.border-blue-600.bg-white {
+    .badge-active-kab {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        border: 1px solid #a7f3d0 !important;
+    }
+    .badge-active-prov {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+        border: 1px solid #bfdbfe !important;
+    }
+    .badge-inactive-tab {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    html.dark a.border-blue-600.bg-white,
+    html.dark .tab-wilayah-provinsi.active {
         background-color: #141417 !important;
         color: #60a5fa !important;
         border-color: #3b82f6 !important;
+    }
+    html.dark .tab-wilayah-kabupaten.active {
+        background-color: #141417 !important;
+        color: #34d399 !important;
+        border-color: #10b981 !important;
+    }
+    html.dark .tab-wilayah-kabupaten:not(.active),
+    html.dark .tab-wilayah-provinsi:not(.active) {
+        color: #94a3b8 !important;
+    }
+    html.dark .tab-wilayah-kabupaten:not(.active):hover {
+        color: #34d399 !important;
+    }
+    html.dark .tab-wilayah-provinsi:not(.active):hover {
+        color: #60a5fa !important;
+    }
+    html.dark .badge-active-kab {
+        background-color: rgba(6, 78, 59, 0.6) !important;
+        color: #6ee7b7 !important;
+        border: 1px solid #047857 !important;
+    }
+    html.dark .badge-active-prov {
+        background-color: rgba(30, 58, 138, 0.6) !important;
+        color: #93c5fd !important;
+        border: 1px solid #1d4ed8 !important;
+    }
+    html.dark .badge-inactive-tab {
+        background-color: #27272a !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #3f3f46 !important;
     }
     html.dark .bg-gradient-to-br.from-blue-50.to-indigo-50,
     html.dark .bg-gradient-to-r.from-blue-50\/80.to-indigo-50\/80,
@@ -796,6 +843,20 @@
     }
     html.dark #dropdownThemeToggle:hover {
         background-color: #1a1a1e !important;
+    }
+    html.dark #btnEditProfileDropdown,
+    html.dark button[onclick*="openProfileModal"] {
+        color: #cbd5e1 !important;
+        background-color: transparent !important;
+    }
+    html.dark #btnEditProfileDropdown:hover,
+    html.dark #btnEditProfileDropdown:focus,
+    html.dark #btnEditProfileDropdown:active,
+    html.dark button[onclick*="openProfileModal"]:hover,
+    html.dark button[onclick*="openProfileModal"]:focus,
+    html.dark button[onclick*="openProfileModal"]:active {
+        background-color: #1a1a1e !important;
+        color: #38bdf8 !important;
     }
 
     /* 16. Modal Dialogs */
