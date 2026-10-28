@@ -1487,7 +1487,7 @@
                         </div>
                     </div>
 
-                    {{-- BARIS 2: PARAMETER UJI LAB (NYAMUK, INSEKTISIDA, METODE, STATUS, PERIODE, INDIKATOR) --}}
+                    {{-- BARIS 2: PARAMETER UJI LAB (NYAMUK, INSEKTISIDA, METODE, STATUS, PERIODE) --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 pt-3 border-t border-slate-100 dark:border-zinc-800/80">
                         {{-- SPESIES NYAMUK --}}
                         <div>
@@ -1542,36 +1542,25 @@
                         </div>
 
                         {{-- PERIODE RENTANG TAHUN --}}
-                        <div class="col-span-1">
+                        <div class="sm:col-span-2 lg:col-span-2">
                             <label class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
                                 Periode Rentang Tahun
                             </label>
-                            <div class="flex items-center gap-1">
-                                <select id="filterTahunMulai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-1.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Mulai (Dari)">
+                            <div class="flex items-center gap-2">
+                                <select id="filterTahunMulai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Mulai (Dari)">
                                     <option value="">Dari...</option>
                                     @foreach ($daftarTahunAsc as $thn)
                                         <option value="{{ $thn }}">{{ $thn }}</option>
                                     @endforeach
                                 </select>
-                                <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500">s.d</span>
-                                <select id="filterTahunSelesai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-1.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Selesai (Sampai)">
+                                <span class="text-xs font-bold text-slate-400 dark:text-zinc-500">s.d</span>
+                                <select id="filterTahunSelesai" onchange="applyRegionalFilter()" class="w-1/2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition" title="Tahun Selesai (Sampai)">
                                     <option value="">Sampai...</option>
                                     @foreach ($daftarTahun as $thn)
                                         <option value="{{ $thn }}">{{ $thn }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-
-                        {{-- INDIKATOR --}}
-                        <div>
-                            <label for="filterIndikator" class="block text-[10.5px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
-                                Indikator
-                            </label>
-                            <select id="filterIndikator" onchange="applyRegionalFilter()" class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs focus:border-emerald-500 focus:outline-none cursor-pointer dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 transition">
-                                <option value="Peta Resistensi">Semua Indikator</option>
-                                <option value="Peta Uji Resistensi Insektisida">Uji Resistensi</option>
-                            </select>
                         </div>
                     </div>
 
