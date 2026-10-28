@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Provinsi;
 use App\Models\Kabupaten;
 use App\Models\DataUjiResistensi;
+use App\Models\User;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -247,7 +249,11 @@ class LaporanController extends Controller
             'user' => auth()->check() ? auth()->user()->name : 'Petugas Peta Resistensi'
         ];
 
-        return view('laporan_preview', compact('dataUji', 'stats', 'filterInfo'));
+        $pimpinan = $this->getPimpinanInfo();
+        $pimpinanNama = $pimpinan['nama'];
+        $pimpinanNip = $pimpinan['nip'];
+
+        return view('laporan_preview', compact('dataUji', 'stats', 'filterInfo', 'pimpinanNama', 'pimpinanNip'));
     }
 
     /**
@@ -339,8 +345,12 @@ class LaporanController extends Controller
             $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
         }
 
+        $pimpinan = $this->getPimpinanInfo();
+        $pimpinanNama = $pimpinan['nama'];
+        $pimpinanNip = $pimpinan['nip'];
+
         // 5. Generate PDF dengan DomPDF (Kertas A4 Landscape)
-        $pdf = Pdf::loadView('laporan_pdf', compact('dataUji', 'stats', 'filterInfo', 'logoBase64'))
+        $pdf = Pdf::loadView('laporan_pdf', compact('dataUji', 'stats', 'filterInfo', 'logoBase64', 'pimpinanNama', 'pimpinanNip'))
             ->setPaper('a4', 'landscape')
             ->setOptions([
                 'isHtml5ParserEnabled' => true,
@@ -469,5 +479,40 @@ class LaporanController extends Controller
         }
 
         return $query;
+    }
+
+    /**
+     * Ambil identitas Kepala / Pimpinan BBLKL untuk pengesahan tanda tangan
+     */
+    private function getPimpinanInfo(): array
+    {
+        $pimpinanUser = null;
+        if (auth()->check() && (method_exists(auth()->user(), 'isKepala') ? auth()->user()->isKepala() : in_array(strtolower(auth()->user()->role ?? ''), ['kepala', 'pimpinan']))) {
+            $pimpinanUser = auth()->user();
+        }
+        if (!$pimpinanUser) {
+            $pimpinanUser = User::whereIn('role', ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'])->first();
+        }
+
+        $nama = $pimpinanUser?->name;
+        $nip = $pimpinanUser?->telepon ?? ($pimpinanUser?->phone ?? null);
+
+        if (!$nama) {
+            $bblkl = Instansi::where('unit_code', 'BBLKL-01')->orWhere('name', 'like', '%BBLKL%')->first();
+            $nama = !empty($bblkl?->person_in_charge) && $bblkl->person_in_charge !== 'Kepala Balai BBLKL'
+                ? $bblkl->person_in_charge
+                : 'Akhmad Saikhu, SKM, M.SC.PH';
+            $nip = '196805251992031004';
+        }
+
+        if (empty($nip)) {
+            $nip = '196805251992031004';
+        }
+
+        return [
+            'nama' => $nama,
+            'nip'  => $nip,
+            'jabatan' => 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan'
+        ];
     }
 }

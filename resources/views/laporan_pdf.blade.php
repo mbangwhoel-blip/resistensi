@@ -422,6 +422,17 @@
 
     {{-- TANDA TANGAN / PENGESAHAN --}}
     <table class="signature-table">
+        @php
+            $pimpinan = $pimpinanUser ?? \App\Models\User::whereIn('role', ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'])->first();
+            $finalNamaPimpinan = $pimpinanNama ?? ($pimpinan?->name ?? 'Akhmad Saikhu, SKM, M.SC.PH');
+            $rawNip = $pimpinanNip ?? ($pimpinan?->telepon ?? ($pimpinan?->phone ?? '196805251992031004'));
+            $cleanNip = trim((string)$rawNip);
+            if (str_starts_with(strtoupper($cleanNip), 'NIP.')) {
+                $cleanNip = trim(substr($cleanNip, 4));
+            } elseif (str_starts_with(strtoupper($cleanNip), 'NIP')) {
+                $cleanNip = trim(substr($cleanNip, 3));
+            }
+        @endphp
         <tr>
             <td style="width: 65%;">
                 <div class="footer-note">
@@ -431,16 +442,16 @@
             </td>
             <td style="width: 35%; text-align: center;">
                 <div style="font-size: 8pt; color: #475569; margin-bottom: 2px;">
-                    Dicetak di BBLKL, {{ date('d F Y') }}
+                    Salatiga, {{ date('d F Y') }}
                 </div>
                 <div style="font-size: 8pt; font-weight: bold; color: #0f172a; margin-bottom: 45px;">
-                    Penanggung Jawab Teknis Pengujian,
+                    Kepala Balai Besar Laboratorium Kesehatan Lingkungan,
                 </div>
                 <div style="font-size: 8.5pt; font-weight: bold; color: #0f172a; text-decoration: underline;">
-                    {{ auth()->check() ? auth()->user()->name : 'Petugas Laboratorium' }}
+                    {{ $finalNamaPimpinan }}
                 </div>
                 <div style="font-size: 7.5pt; color: #64748b;">
-                    NIP. .....................................................
+                    NIP. {{ $cleanNip ?: '-' }}
                 </div>
             </td>
         </tr>
