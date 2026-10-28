@@ -141,29 +141,29 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
                 {{-- TAB NAVIGASI --}}
-                <div class="flex border-b border-slate-200 mb-6 gap-2">
+                <div class="flex border-b border-slate-200 dark:border-zinc-800 mb-6 gap-2">
                     <a href="{{ route('kategori.index', ['tab' => 'nyamuk']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'nyamuk' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'nyamuk' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200' }}">
                         <span>🦟 Jenis Nyamuk</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalNyamuk }}</span>
+                        <span class="rounded-full px-2.5 py-0.5 text-xs font-bold {{ $tab == 'nyamuk' ? 'badge-active-teal' : 'badge-inactive-tab' }}">{{ $totalNyamuk }}</span>
                     </a>
                     <a href="{{ route('kategori.index', ['tab' => 'insektisida']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'insektisida' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'insektisida' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200' }}">
                         <span>🧪 Insektisida</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalInsektisida }}</span>
+                        <span class="rounded-full px-2.5 py-0.5 text-xs font-bold {{ $tab == 'insektisida' ? 'badge-active-teal' : 'badge-inactive-tab' }}">{{ $totalInsektisida }}</span>
                     </a>
                     <a href="{{ route('kategori.index', ['tab' => 'metode']) }}"
-                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'metode' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
+                       class="flex items-center gap-2 border-b-2 px-5 py-3 text-sm font-semibold transition {{ $tab == 'metode' ? 'border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200' }}">
                         <span>🔬 Metode Pengendalian</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{{ $totalMetode }}</span>
+                        <span class="rounded-full px-2.5 py-0.5 text-xs font-bold {{ $tab == 'metode' ? 'badge-active-teal' : 'badge-inactive-tab' }}">{{ $totalMetode }}</span>
                     </a>
                 </div>
 
-                {{-- TOOLBAR PENCARIAN & TOMBOL AKSI (SEJAJAR SATU BARIS SEMUA TAB) --}}
+                {{-- TOOLBAR PENCARIAN & TOMBOL AKSI (SEJAJAR SATU BARIS & PROPORSIONAL) --}}
                 <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
                     <form method="GET" action="{{ route('kategori.index') }}" class="flex items-center gap-2 shrink-0">
                         <input type="hidden" name="tab" value="{{ $tab }}">
-                        <div class="w-44 sm:w-52 md:w-60 relative">
+                        <div class="w-56 sm:w-64 md:w-72 relative">
                             <input type="text"
                                    name="search"
                                    value="{{ $search }}"
@@ -181,7 +181,7 @@
 
                         <a href="{{ route('kategori.preview', ['tab' => $tab, 'search' => $search]) }}"
                            target="_blank"
-                           class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-3.5 sm:px-4 text-sm font-bold shadow-2xs active:scale-95 transition shrink-0"
+                           class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-3.5 sm:px-4 text-sm font-bold shadow-2xs active:scale-95 transition shrink-0 whitespace-nowrap"
                            title="Pratinjau Cetak / Ekspor PDF Resmi Parameter Uji">
                             <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -202,12 +202,12 @@
                         <form method="POST" action="{{ route('kategori.sync') }}" onsubmit="return confirm('Apakah Anda yakin ingin menyinkronkan seluruh parameter (nyamuk, insektisida, metode) dari data uji laboratorium yang belum terdaftar di master data?')">
                             @csrf
                             <button type="submit"
-                                    class="cursor-pointer h-10 rounded-xl border border-teal-500/50 bg-teal-50 hover:bg-teal-600 hover:text-white px-3.5 sm:px-4 text-xs sm:text-sm font-semibold text-teal-700 transition shadow-2xs flex items-center gap-2 dark:bg-teal-950/40 dark:border-teal-700/60 dark:text-teal-300 dark:hover:bg-teal-600 dark:hover:text-white shrink-0"
+                                    class="btn-sync-param cursor-pointer h-10 rounded-xl border px-3.5 sm:px-4 text-xs sm:text-sm font-semibold transition shadow-2xs flex items-center gap-2 shrink-0 whitespace-nowrap"
                                     title="Pindai data uji laboratorium dan tambahkan parameter yang belum ada ke master data">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
-                                <span class="whitespace-nowrap">Sinkronkan dari Data Uji</span>
+                                <span>Sinkronkan dari Data Uji</span>
                             </button>
                         </form>
 
@@ -217,9 +217,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             <span>
-                                @if ($tab == 'nyamuk') Tambah Jenis Nyamuk
+                                @if ($tab == 'nyamuk') Tambah Nyamuk
                                 @elseif ($tab == 'insektisida') Tambah Insektisida
-                                @else Tambah Metode Pengendalian
+                                @else Tambah Metode
                                 @endif
                             </span>
                         </button>

@@ -138,33 +138,32 @@
             {{-- KONTEN UTAMA TABEL --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 
-                {{-- HEADER FILTER & TOMBOL AKSI --}}
-                <div class="mb-6 space-y-3">
-                    {{-- BARIS 1: FORM FILTER (CARI, KATEGORI, PROVINSI SEJAJAR) --}}
-                    <form method="GET" action="{{ route('instansi.index') }}" class="flex flex-wrap items-center gap-2.5">
+                {{-- HEADER FILTER & TOMBOL AKSI (SEJAJAR SEBARIS & PROPORSIONAL) --}}
+                <div class="mb-6 flex flex-wrap items-center justify-between gap-2.5">
+                    <form method="GET" action="{{ route('instansi.index') }}" class="flex flex-wrap items-center gap-2 sm:gap-2.5">
                         {{-- SEARCH BOX & TOMBOL CARI SEJAJAR --}}
                         <div class="flex items-center gap-2">
-                            <div class="relative w-48 sm:w-56 md:w-64">
+                            <div class="relative w-44 sm:w-52 md:w-60">
                                 <input type="text"
                                        name="search"
                                        value="{{ $search }}"
                                        placeholder="Cari unit, kode, penanggung jawab..."
-                                       class="w-full h-10 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
+                                       class="w-full h-10 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-xs sm:text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200">
                                 <svg class="absolute left-3 top-3 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                             <button type="submit"
-                                    class="cursor-pointer h-10 rounded-xl bg-blue-600 px-3.5 text-sm font-semibold text-white shadow-2xs hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-1.5 shrink-0">
+                                    class="cursor-pointer h-10 rounded-xl bg-blue-600 px-3.5 text-xs sm:text-sm font-semibold text-white shadow-2xs hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-1.5 shrink-0">
                                 <span>Cari</span>
                             </button>
                         </div>
 
                         {{-- FILTER KATEGORI --}}
-                        <div class="w-36 sm:w-44">
+                        <div class="w-32 sm:w-36 md:w-40">
                             <select name="kategori"
                                     onchange="this.form.submit()"
-                                    class="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
+                                    class="w-full h-10 rounded-xl border border-slate-200 bg-white px-2.5 sm:px-3 text-xs sm:text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
                                 <option value="">Semua Kategori</option>
                                 @foreach ($kategoriList as $kat)
                                     <option value="{{ $kat }}" {{ $kategori == $kat ? 'selected' : '' }}>{{ $kat }}</option>
@@ -172,11 +171,11 @@
                             </select>
                         </div>
 
-                        {{-- FILTER PROVINSI (SEJAJAR TULISAN CARI & KATEGORI) --}}
-                        <div class="w-40 sm:w-48">
+                        {{-- FILTER PROVINSI --}}
+                        <div class="w-36 sm:w-40 md:w-44">
                             <select name="provinsi_id"
                                     onchange="this.form.submit()"
-                                    class="w-full h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
+                                    class="w-full h-10 rounded-xl border border-slate-200 bg-white px-2.5 sm:px-3 text-xs sm:text-sm text-slate-700 shadow-2xs focus:border-blue-500 focus:outline-none transition dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 cursor-pointer">
                                 <option value="">Semua Provinsi</option>
                                 @foreach ($provinsis as $p)
                                     <option value="{{ $p->id }}" {{ $provinsiId == $p->id ? 'selected' : '' }}>{{ $p->nama_provinsi }}</option>
@@ -184,10 +183,10 @@
                             </select>
                         </div>
 
-                        {{-- TOMBOL CETAK (DINAIKKAN SEJAJAR DENGAN KOTAK SEMUA PROVINSI) --}}
+                        {{-- TOMBOL CETAK --}}
                         <a href="{{ route('instansi.preview', ['search' => $search, 'kategori' => $kategori, 'provinsi_id' => $provinsiId]) }}"
                            target="_blank"
-                           class="cursor-pointer h-10 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-4 text-sm font-bold shadow-2xs active:scale-95 transition shrink-0"
+                           class="cursor-pointer h-10 inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-3.5 sm:px-4 text-xs sm:text-sm font-bold shadow-2xs active:scale-95 transition shrink-0 whitespace-nowrap"
                            title="Pratinjau Cetak / Ekspor PDF Resmi Master Data Unit / Instansi">
                             <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -198,7 +197,7 @@
                         {{-- TOMBOL RESET --}}
                         @if ($search || $kategori || $provinsiId)
                             <a href="{{ route('instansi.index') }}"
-                               class="inline-flex items-center gap-1.5 h-10 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 px-3.5 text-sm font-semibold transition shadow-2xs shrink-0"
+                               class="inline-flex items-center gap-1.5 h-10 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 px-3 text-xs sm:text-sm font-semibold transition shadow-2xs shrink-0"
                                title="Reset semua filter">
                                 <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -208,10 +207,10 @@
                         @endif
                     </form>
 
-                    {{-- BARIS 2: TOMBOL TAMBAH INSTANSI --}}
-                    <div class="flex items-center gap-2.5 pt-0.5">
+                    {{-- TOMBOL TAMBAH INSTANSI (SEJAJAR SEBARIS) --}}
+                    <div class="flex items-center shrink-0">
                         <button onclick="openModal('modalTambahInstansi')"
-                                class="cursor-pointer h-10 rounded-xl bg-blue-600 px-4 sm:px-5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-2">
+                                class="cursor-pointer h-10 rounded-xl bg-blue-600 px-4 sm:px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-1.5 shrink-0 whitespace-nowrap">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
