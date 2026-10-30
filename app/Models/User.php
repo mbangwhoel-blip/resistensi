@@ -147,7 +147,7 @@ class User extends Authenticatable
 
     public function canSeeAllData(): bool
     {
-        return $this->isAdmin();
+        return $this->isAdmin() || $this->isViewer() || $this->isKepala();
     }
 
     public function getBackupFileIdentifier(): string

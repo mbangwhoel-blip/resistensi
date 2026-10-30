@@ -25,8 +25,14 @@ class LaporanController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+        $scopedBase = DataUjiResistensi::query();
+        if ($hasUserIdCol && auth()->check() && !auth()->user()->canSeeAllData()) {
+            $scopedBase->where('user_id', auth()->id());
+        }
+
         // Daftar tahun dari database + rentang tahun sistem (2015 s.d sekarang)
-        $tahunDb = DataUjiResistensi::select('year')
+        $tahunDb = (clone $scopedBase)->select('year')
             ->distinct()
             ->whereNotNull('year')
             ->pluck('year')
@@ -41,14 +47,14 @@ class LaporanController extends Controller
         sort($daftarTahunAsc);
 
         // Daftar jenis nyamuk & insektisida
-        $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
+        $daftarNyamuk = (clone $scopedBase)->select('mosquito_type')
             ->distinct()
             ->whereNotNull('mosquito_type')
             ->where('mosquito_type', '!=', '')
             ->orderBy('mosquito_type', 'asc')
             ->pluck('mosquito_type');
 
-        $daftarInsektisida = DataUjiResistensi::select('insecticide')
+        $daftarInsektisida = (clone $scopedBase)->select('insecticide')
             ->distinct()
             ->whereNotNull('insecticide')
             ->where('insecticide', '!=', '')
@@ -372,7 +378,13 @@ class LaporanController extends Controller
      */
     private function buildFilteredQuery(Request $request)
     {
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten.provinsi']);
+
+        // Scoping hak akses: Non-admin hanya dapat melihat datanya sendiri
+        if ($hasUserIdCol && auth()->check() && !auth()->user()->canSeeAllData()) {
+            $query->where('user_id', auth()->id());
+        }
 
         // Filter Wilayah (Kabupaten spesifik atau Provinsi)
         if ($request->filled('kabupaten_id') && $request->kabupaten_id !== 'Semua') {

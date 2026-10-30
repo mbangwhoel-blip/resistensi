@@ -434,17 +434,23 @@ class DataUjiResistensiController extends Controller
 
     public function dashboard()
     {
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+        $baseQuery = DataUjiResistensi::query();
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
+            $baseQuery->where('user_id', Auth::id());
+        }
+
         // 1. Agregasi ringkasan langsung di tingkat MySQL (Cepat, hemat memori RAM PHP)
-        $totalPemeriksaan = DataUjiResistensi::count();
-        $totalSampel = (int) DataUjiResistensi::sum('sample_count');
-        $totalProvinsi = DataUjiResistensi::whereNotNull('provinsi_id')->distinct()->count('provinsi_id');
-        $totalKabupaten = DataUjiResistensi::whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id');
-        $totalResisten = DataUjiResistensi::where('status', 'Resisten')->count();
-        $totalToleran = DataUjiResistensi::whereIn('status', ['Toleran', 'Toleran/Terduga Resisten', 'Terduga Resisten'])->count();
-        $totalRentan = DataUjiResistensi::where('status', 'Rentan')->count();
+        $totalPemeriksaan = (clone $baseQuery)->count();
+        $totalSampel = (int) (clone $baseQuery)->sum('sample_count');
+        $totalProvinsi = (clone $baseQuery)->whereNotNull('provinsi_id')->distinct()->count('provinsi_id');
+        $totalKabupaten = (clone $baseQuery)->whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id');
+        $totalResisten = (clone $baseQuery)->where('status', 'Resisten')->count();
+        $totalToleran = (clone $baseQuery)->whereIn('status', ['Toleran', 'Toleran/Terduga Resisten', 'Terduga Resisten'])->count();
+        $totalRentan = (clone $baseQuery)->where('status', 'Rentan')->count();
 
         // 2. Ambil data dengan memilih hanya kolom yang diperlukan untuk rendering peta & tabel
-        $data = DataUjiResistensi::select([
+        $data = (clone $baseQuery)->select([
             'id', 'no', 'month', 'year', 'provinsi_id', 'kabupaten_id',
             'address', 'latitude', 'longitude', 'mosquito_type', 'insecticide', 'method',
             'sample_count', 'status', 'mutation', 'publication', 'created_at'
@@ -490,7 +496,7 @@ class DataUjiResistensiController extends Controller
             ];
         }
 
-        $tahunDb = DataUjiResistensi::select('year')
+        $tahunDb = (clone $baseQuery)->select('year')
             ->distinct()
             ->whereNotNull('year')
             ->pluck('year')

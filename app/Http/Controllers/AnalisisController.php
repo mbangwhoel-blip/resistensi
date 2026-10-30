@@ -15,10 +15,16 @@ class AnalisisController extends Controller
      */
     public function index(Request $request)
     {
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+        $baseQuery = DataUjiResistensi::query();
+        if ($hasUserIdCol && auth()->check() && !auth()->user()->canSeeAllData()) {
+            $baseQuery->where('user_id', auth()->id());
+        }
+
         // 1. Ambil Opsi Filter Master
         $provinsis = Provinsi::orderBy('name', 'asc')->get();
 
-        $tahunDb = DataUjiResistensi::select('year')
+        $tahunDb = (clone $baseQuery)->select('year')
             ->distinct()
             ->whereNotNull('year')
             ->pluck('year')
@@ -31,14 +37,14 @@ class AnalisisController extends Controller
         $daftarTahunAsc = $daftarTahun;
         sort($daftarTahunAsc);
 
-        $daftarNyamuk = DataUjiResistensi::select('mosquito_type')
+        $daftarNyamuk = (clone $baseQuery)->select('mosquito_type')
             ->distinct()
             ->whereNotNull('mosquito_type')
             ->where('mosquito_type', '!=', '')
             ->orderBy('mosquito_type', 'asc')
             ->pluck('mosquito_type');
 
-        $daftarInsektisida = DataUjiResistensi::select('insecticide')
+        $daftarInsektisida = (clone $baseQuery)->select('insecticide')
             ->distinct()
             ->whereNotNull('insecticide')
             ->where('insecticide', '!=', '')
@@ -77,7 +83,7 @@ class AnalisisController extends Controller
         $provinsiFilter = $request->get('provinsi_id', 'Semua');
 
         // 3. Query Dasar Terfilter
-        $query = DataUjiResistensi::query();
+        $query = clone $baseQuery;
 
         if ($tahunMulai && $tahunSelesai) {
             $query->whereBetween('year', [$tahunMulai, $tahunSelesai]);
