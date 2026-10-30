@@ -70,50 +70,68 @@
             {{-- INFORMASI STATUS DATABASE / DATA AKUN --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 {{ $isAdmin ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-5 mb-8">
                 @if ($isAdmin)
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Nama Database</p>
-                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ $stats['db_name'] }}</p>
-                    <span class="inline-block mt-2 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 border border-emerald-200 dark:border-emerald-700/60">
-                        ● Online &amp; Terhubung
-                    </span>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Nama Database</p>
+                        <p class="text-base sm:text-lg font-bold text-slate-800 dark:text-white mt-1 break-words leading-snug">{{ $stats['db_name'] }}</p>
+                    </div>
+                    <div class="mt-2.5">
+                        <span class="inline-block rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 border border-emerald-200 dark:border-emerald-700/60">
+                            ● Online &amp; Terhubung
+                        </span>
+                    </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Total Uji Resistensi</p>
-                    <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Seluruh data pemeriksaan tersimpan</p>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Total Uji Resistensi</p>
+                        <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2.5">Seluruh data pemeriksaan tersimpan</p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Master Wilayah &amp; Instansi</p>
-                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['provinsi'] + $stats['kabupaten']) }} Titik</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">{{ $stats['provinsi'] }} Provinsi, {{ $stats['kabupaten'] }} Kab/Kota, {{ $stats['instansi'] }} Instansi</p>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Master Wilayah &amp; Instansi</p>
+                        <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['provinsi'] + $stats['kabupaten']) }} Titik</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2.5">{{ $stats['provinsi'] }} Provinsi, {{ $stats['kabupaten'] }} Kab/Kota, {{ $stats['instansi'] }} Instansi</p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Parameter Uji</p>
-                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['kategori']) }} Kategori</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Nyamuk, Insektisida, Metode</p>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Parameter Uji</p>
+                        <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['kategori']) }} Kategori</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2.5">Nyamuk, Insektisida, Metode</p>
                 </div>
                 @else
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Akun Pengguna</p>
-                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1 truncate">{{ auth()->user()->name }}</p>
-                    <span class="inline-block mt-2 rounded bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 border border-blue-200 dark:border-blue-700/60 uppercase">
-                        Role: {{ auth()->user()->role }}
-                    </span>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Akun Pengguna</p>
+                        <p class="text-base sm:text-lg font-bold text-slate-800 dark:text-white mt-1 break-words leading-snug">{{ auth()->user()->name }}</p>
+                    </div>
+                    <div class="mt-2.5">
+                        <span class="inline-block rounded bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 border border-blue-200 dark:border-blue-700/60 uppercase">
+                            Role: {{ auth()->user()->role }}
+                        </span>
+                    </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Data Uji Milik Anda</p>
-                    <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Data pemeriksaan yang Anda kelola</p>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Data Uji Milik Anda</p>
+                        <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2.5">Data pemeriksaan yang Anda kelola</p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Cakupan Wilayah Anda</p>
-                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['provinsi'] + $stats['kabupaten']) }} Lokasi</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">{{ $stats['provinsi'] }} Provinsi, {{ $stats['kabupaten'] }} Kab/Kota</p>
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Cakupan Wilayah Anda</p>
+                        <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['provinsi'] + $stats['kabupaten']) }} Lokasi</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2.5">{{ $stats['provinsi'] }} Provinsi, {{ $stats['kabupaten'] }} Kab/Kota</p>
                 </div>
                 @endif
             </div>
@@ -332,7 +350,7 @@
                                 <tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition">
                                     <td class="px-4 py-3.5 font-semibold text-slate-800 dark:text-zinc-100 flex items-center gap-2">
                                         <span>{{ $b['extension'] === 'ZIP' ? '📦' : '📄' }}</span>
-                                        <span>{{ $b['filename'] }}</span>
+                                        <span class="break-all">{{ $b['filename'] }}</span>
                                     </td>
                                     <td class="px-4 py-3.5 text-slate-600 dark:text-zinc-300 font-medium">
                                         {{ $b['size'] }}
