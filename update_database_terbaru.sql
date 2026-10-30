@@ -615,3 +615,23 @@ INSERT INTO `users` (`username`, `name`, `email`, `password`, `role`, `status`, 
 VALUES ('direktorat', 'Direktorat Kesehatan Lingkungan', 'direktorat@kemenkes.go.id', '$2y$10$imN.SsIivmRbja7YKsU8T.DFhkqwyKo/RcLTpUs1o4JpdjKS7Lesm', 'direktorat', 'aktif', '081234567899', NOW(), NOW())
 ON DUPLICATE KEY UPDATE `name` = 'Direktorat Kesehatan Lingkungan', `email` = 'direktorat@kemenkes.go.id', `role` = 'direktorat', `status` = 'aktif', `telepon` = '081234567899', `updated_at` = NOW();
 
+-- 8. Tambah kolom user_id pada data_uji_resistensis (Hak Akses & Kepemilikan Data Pengguna)
+SET @dbname = DATABASE();
+SET @tablename = "data_uji_resistensis";
+SET @columnname = "user_id";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      TABLE_SCHEMA = @dbname
+      AND TABLE_NAME = @tablename
+      AND COLUMN_NAME = @columnname
+  ) > 0,
+  "SELECT 1",
+  "ALTER TABLE `data_uji_resistensis` ADD COLUMN `user_id` BIGINT UNSIGNED NULL AFTER `id`, ADD INDEX `data_uji_resistensis_user_id_index` (`user_id`);"
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+

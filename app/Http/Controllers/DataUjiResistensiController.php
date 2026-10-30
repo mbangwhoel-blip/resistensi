@@ -23,10 +23,13 @@ class DataUjiResistensiController extends Controller
         ];
 
         // Ambil daftar tahun dinamis dari database + rentang tahun sistem (2015 s.d sekarang)
-        $tahunDb = DataUjiResistensi::select('year')
+        $tahunDbQuery = DataUjiResistensi::select('year')
             ->distinct()
-            ->whereNotNull('year')
-            ->pluck('year')
+            ->whereNotNull('year');
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $tahunDbQuery->where('user_id', Auth::id());
+        }
+        $tahunDb = $tahunDbQuery->pluck('year')
             ->map(fn($y) => (int)$y)
             ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
             ->toArray();
@@ -84,8 +87,14 @@ class DataUjiResistensiController extends Controller
 
         $query = DataUjiResistensi::with([
             'provinsi',
-            'kabupaten'
+            'kabupaten',
+            'user'
         ]);
+
+        // Scoping akses: Non-admin hanya dapat melihat datanya sendiri
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $query->where('user_id', Auth::id());
+        }
 
         if ($bulan !== 'Semua' && !empty($bulan)) {
             $query->where('month', $bulan);
@@ -132,18 +141,23 @@ class DataUjiResistensiController extends Controller
 
         $data = $query->latest('id')->paginate($perPage)->withQueryString();
 
-        // Data untuk statistik tahun berjalan / rentang tahun / semua tahun
+        // Data untuk statistik tahun berjalan / rentang tahun / semua tahun (disesuaikan hak akses)
+        $baseStatQuery = DataUjiResistensi::query();
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $baseStatQuery->where('user_id', Auth::id());
+        }
+
         if ($tahunMulai && $tahunSelesai) {
-            $dataTahunBerjalan = DataUjiResistensi::whereBetween('year', [$tahunMulai, $tahunSelesai])->get();
+            $dataTahunBerjalan = (clone $baseStatQuery)->whereBetween('year', [$tahunMulai, $tahunSelesai])->get();
         } elseif ($tahunMulai) {
-            $dataTahunBerjalan = DataUjiResistensi::where('year', '>=', $tahunMulai)->get();
+            $dataTahunBerjalan = (clone $baseStatQuery)->where('year', '>=', $tahunMulai)->get();
         } elseif ($tahunSelesai) {
-            $dataTahunBerjalan = DataUjiResistensi::where('year', '<=', $tahunSelesai)->get();
+            $dataTahunBerjalan = (clone $baseStatQuery)->where('year', '<=', $tahunSelesai)->get();
         } else {
-            $dataTahunBerjalan = DataUjiResistensi::all();
+            $dataTahunBerjalan = (clone $baseStatQuery)->get();
         }
         $bulanAktif = ($bulan === 'Semua') ? $bulanSekarang : $bulan;
-        $totalSemuaData = DataUjiResistensi::count();
+        $totalSemuaData = (clone $baseStatQuery)->count();
 
         // Ambil daftar parameter dari Master Data Kategori
         $daftarNyamuk = KategoriUji::nyamuk()->where('is_active', true)->orderBy('name')->pluck('name')->toArray();
@@ -227,6 +241,7 @@ class DataUjiResistensiController extends Controller
                 ->count();
 
             DataUjiResistensi::create([
+                'user_id' => Auth::id(),
                 'no' => (string)($lastCount + 1),
                 'month' => $bulan,
                 'year' => $tahun,
@@ -287,6 +302,7 @@ class DataUjiResistensiController extends Controller
                     ->firstOrFail();
 
                 DataUjiResistensi::create([
+                    'user_id' => Auth::id(),
                     'no' => (string)($lastNo + $i),
                     'month' => $bulan,
                     'year' => $tahun,
@@ -323,6 +339,11 @@ class DataUjiResistensiController extends Controller
         }
 
         $data = DataUjiResistensi::findOrFail($id);
+
+        // Validasi kepemilikan data: Non-admin hanya boleh memperbarui datanya sendiri
+        if (Auth::check() && !Auth::user()->canSeeAllData() && $data->user_id && $data->user_id != Auth::id()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda hanya memiliki izin mengedit data yang Anda inputkan sendiri.');
+        }
 
         $currentYear = (int)date('Y');
         $validated = $request->validate([
@@ -495,6 +516,11 @@ class DataUjiResistensiController extends Controller
         }
 
         $data = DataUjiResistensi::findOrFail($id);
+
+        // Validasi kepemilikan data: Non-admin hanya boleh menghapus datanya sendiri
+        if (Auth::check() && !Auth::user()->canSeeAllData() && $data->user_id && $data->user_id != Auth::id()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Anda hanya memiliki izin menghapus data yang Anda inputkan sendiri.');
+        }
         $bulan = $data->bulan;
         $tahun = $data->tahun;
         $data->delete();

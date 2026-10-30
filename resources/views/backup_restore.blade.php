@@ -67,7 +67,7 @@
                 </div>
             @endif
 
-            {{-- INFORMASI STATUS DATABASE --}}
+            {{-- INFORMASI STATUS DATABASE / DATA AKUN --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 {{ $isAdmin ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-5 mb-8">
                 @if ($isAdmin)
                 <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
@@ -77,12 +77,11 @@
                         ● Online &amp; Terhubung
                     </span>
                 </div>
-                @endif
 
                 <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
                     <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Total Uji Resistensi</p>
                     <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
-                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Data pemeriksaan tersimpan</p>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Seluruh data pemeriksaan tersimpan</p>
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
@@ -96,6 +95,27 @@
                     <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['kategori']) }} Kategori</p>
                     <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Nyamuk, Insektisida, Metode</p>
                 </div>
+                @else
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Akun Pengguna</p>
+                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1 truncate">{{ auth()->user()->name }}</p>
+                    <span class="inline-block mt-2 rounded bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 border border-blue-200 dark:border-blue-700/60 uppercase">
+                        Role: {{ auth()->user()->role }}
+                    </span>
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Data Uji Milik Anda</p>
+                    <p class="text-lg font-bold text-blue-700 dark:text-sky-400 mt-1">{{ number_format($stats['data_uji']) }} Catatan</p>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">Data pemeriksaan yang Anda kelola</p>
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Cakupan Wilayah Anda</p>
+                    <p class="text-lg font-bold text-slate-800 dark:text-white mt-1">{{ number_format($stats['provinsi'] + $stats['kabupaten']) }} Lokasi</p>
+                    <p class="text-[11px] text-slate-400 dark:text-zinc-400 mt-2">{{ $stats['provinsi'] }} Provinsi, {{ $stats['kabupaten'] }} Kab/Kota</p>
+                </div>
+                @endif
             </div>
 
             {{-- KARTU STATUS BACKUP ONLINE OTOMATIS (KHUSUS ADMINISTRATOR) --}}
@@ -169,18 +189,26 @@
                                 💾
                             </span>
                             <div>
-                                <h2 class="text-base font-bold text-slate-800 dark:text-white">Buat Backup Database</h2>
-                                <p class="text-xs text-slate-500 dark:text-zinc-400">Pilih format arsip ZIP terkompresi atau berkas mentah SQL dump</p>
+                                <h2 class="text-base font-bold text-slate-800 dark:text-white">
+                                    {{ $isAdmin ? 'Buat Backup Database Keseluruhan' : 'Buat Backup Data Uji Anda' }}
+                                </h2>
+                                <p class="text-xs text-slate-500 dark:text-zinc-400">
+                                    {{ $isAdmin ? 'Pilih format arsip ZIP terkompresi atau berkas mentah SQL dump' : 'Cadangkan khusus data pengujian milik akun Anda ke berkas ZIP atau SQL' }}
+                                </p>
                             </div>
                         </div>
 
                         <p class="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed mb-4">
+                            @if ($isAdmin)
                             Sistem akan mengekstrak struktur tabel (DDL) dan seluruh data pengujian, master wilayah, instansi, serta parameter uji ke dalam berkas arsip <strong class="text-blue-600 dark:text-sky-400">.zip</strong> terkompresi hemat ruang atau berkas mentah <strong class="text-slate-800 dark:text-white">.sql</strong> standar.
+                            @else
+                            Sistem akan mengekstrak seluruh data uji resistensi yang diinputkan oleh akun <strong class="text-blue-600 dark:text-sky-400">{{ auth()->user()->name }}</strong> ke dalam berkas arsip <strong class="text-blue-600 dark:text-sky-400">.zip</strong> atau berkas query <strong class="text-slate-800 dark:text-white">.sql</strong> dengan penamaan sesuai username akun Anda.
+                            @endif
                         </p>
 
                         <div class="rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/60 p-3.5 mb-6 text-xs text-blue-800 dark:text-blue-200 space-y-1.5">
                             <p class="font-bold text-blue-900 dark:text-blue-100">Keuntungan Format ZIP &amp; SQL:</p>
-                            <p>✓ <strong>Format ZIP:</strong> Ukuran file 5x–10x lebih hemat, unduhan cepat, dan format standar backup server.</p>
+                            <p>✓ <strong>Format ZIP:</strong> Ukuran file 5x–10x lebih hemat, unduhan cepat, dan format standar arsip.</p>
                             <p>✓ <strong>Format SQL:</strong> Berkas query SQL mentah untuk analisis manual atau import langsung via phpMyAdmin.</p>
                             <p>✓ Keduanya dapat langsung dipulihkan sewaktu-waktu melalui fitur Restore di samping.</p>
                         </div>
@@ -235,15 +263,24 @@
                             </span>
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <h2 class="text-base font-bold text-slate-800 dark:text-white">Restore Online Database</h2>
+                                    <h2 class="text-base font-bold text-slate-800 dark:text-white">
+                                        {{ $isAdmin ? 'Restore Online Database' : 'Restore Data Uji Anda' }}
+                                    </h2>
                                     <span class="rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 border border-emerald-300 dark:border-emerald-700">Format .sql &amp; .zip</span>
                                 </div>
-                                <p class="text-xs text-slate-500 dark:text-zinc-400">Pulihkan basis data dari file berkas backup (.sql atau .zip)</p>
+                                <p class="text-xs text-slate-500 dark:text-zinc-400">
+                                    {{ $isAdmin ? 'Pulihkan basis data penuh dari file berkas backup (.sql atau .zip)' : 'Pulihkan data uji resistensi akun Anda dari berkas backup (.sql atau .zip)' }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 p-3.5 mb-5 text-xs text-rose-800 dark:text-rose-200 leading-relaxed">
-                            <strong class="font-bold text-rose-900 dark:text-rose-100">⚠️ Peringatan:</strong> Memulihkan database akan memperbarui atau menimpa tabel data saat ini dengan data yang ada di file backup. Pastikan Anda telah membuat backup terbaru terlebih dahulu.
+                            <strong class="font-bold text-rose-900 dark:text-rose-100">⚠️ Peringatan:</strong>
+                            @if ($isAdmin)
+                            Memulihkan database akan memperbarui atau menimpa tabel data saat ini dengan data yang ada di file backup. Pastikan Anda telah membuat backup terbaru terlebih dahulu.
+                            @else
+                            Memulihkan data akan menggantikan data uji resistensi milik akun Anda dengan data yang tersimpan di berkas backup. Data pengguna lain dan data master tidak akan terpengaruh.
+                            @endif
                         </div>
 
                         <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data" id="restoreForm">
@@ -259,7 +296,7 @@
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
-                                <span>Pulihkan (Restore Online) Database</span>
+                                <span>{{ $isAdmin ? 'Pulihkan (Restore Online) Database' : 'Pulihkan Data Uji Akun Anda' }}</span>
                             </button>
                         </form>
                     </div>
@@ -316,7 +353,7 @@
                                                 <span>📥 Unduh</span>
                                             </a>
 
-                                            @if ($isAdmin)
+                                            @if ($isAdmin || !empty($b['is_user_backup']))
                                             <form action="{{ route('backup.delete', $b['filename']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus file backup {{ $b['filename'] }}?')">
                                                 @csrf
                                                 @method('DELETE')

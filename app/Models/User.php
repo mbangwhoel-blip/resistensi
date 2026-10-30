@@ -145,6 +145,24 @@ class User extends Authenticatable
         return !$this->isViewer();
     }
 
+    public function canSeeAllData(): bool
+    {
+        return $this->isAdmin();
+    }
+
+    public function getBackupFileIdentifier(): string
+    {
+        $raw = !empty($this->username) ? $this->username : $this->name;
+        $slug = preg_replace('/[^a-zA-Z0-9_\-]/', '_', strtolower(trim((string)$raw)));
+        $slug = preg_replace('/_+/', '_', (string)$slug);
+        return trim($slug, '_') ?: 'user_' . $this->id;
+    }
+
+    public function dataUjiResistensi()
+    {
+        return $this->hasMany(DataUjiResistensi::class, 'user_id');
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'aktif';

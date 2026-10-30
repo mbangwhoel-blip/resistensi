@@ -65,7 +65,12 @@ class ExportImportController extends Controller
             $perPage = 25;
         }
 
-        $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'desc');
+        $query = DataUjiResistensi::with(['provinsi', 'kabupaten', 'user'])->orderBy('id', 'desc');
+
+        // Scoping akses: Non-admin hanya dapat melihat & mengekspor data miliknya sendiri
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $query->where('user_id', Auth::id());
+        }
 
         if ($bulanFilter && $bulanFilter !== 'Semua') {
             $query->where('month', $bulanFilter);
@@ -102,11 +107,14 @@ class ExportImportController extends Controller
 
         $provinsis = Provinsi::orderBy('name')->get();
 
-        // Ambil daftar tahun dinamis dari database
-        $tahunDb = DataUjiResistensi::select('year')
+        // Ambil daftar tahun dinamis dari database (disesuaikan hak akses)
+        $tahunDbQuery = DataUjiResistensi::select('year')
             ->distinct()
-            ->whereNotNull('year')
-            ->pluck('year')
+            ->whereNotNull('year');
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $tahunDbQuery->where('user_id', Auth::id());
+        }
+        $tahunDb = $tahunDbQuery->pluck('year')
             ->map(fn($y) => (int)$y)
             ->filter(fn($y) => $y >= 2015 && $y <= (int)date('Y'))
             ->toArray();
@@ -114,14 +122,16 @@ class ExportImportController extends Controller
         $daftarTahun = array_values(array_unique(array_merge($tahunRange, $tahunDb)));
         rsort($daftarTahun);
 
-        // Ambil jenis nyamuk dinamis dari data pengujian
-        $nyamukDb = DataUjiResistensi::select('mosquito_type')
+        // Ambil jenis nyamuk dinamis dari data pengujian (disesuaikan hak akses)
+        $nyamukDbQuery = DataUjiResistensi::select('mosquito_type')
             ->distinct()
             ->whereNotNull('mosquito_type')
             ->where('mosquito_type', '!=', '')
-            ->orderBy('mosquito_type')
-            ->pluck('mosquito_type')
-            ->toArray();
+            ->orderBy('mosquito_type');
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $nyamukDbQuery->where('user_id', Auth::id());
+        }
+        $nyamukDb = $nyamukDbQuery->pluck('mosquito_type')->toArray();
         $daftarNyamuk = !empty($nyamukDb) ? $nyamukDb : KategoriUji::where('category', 'nyamuk')->pluck('name')->toArray();
 
         $daftarBulan = [
@@ -187,6 +197,11 @@ class ExportImportController extends Controller
         $provinsiFilter = $request->get('provinsi_id', '');
 
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'asc');
+
+        // Scoping akses: Non-admin hanya dapat mengunduh data miliknya sendiri
+        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+            $query->where('user_id', Auth::id());
+        }
 
         if ($bulanFilter && $bulanFilter !== 'Semua') {
             $query->where('month', $bulanFilter);
@@ -1376,6 +1391,7 @@ class ExportImportController extends Controller
                 $finalProvId = ($kabObj && $kabObj->provinsi_id) ? $kabObj->provinsi_id : ($provObj ? $provObj->id : null);
 
                 DataUjiResistensi::create([
+                    'user_id' => Auth::id(),
                     'provinsi_id' => $finalProvId,
                     'kabupaten_id' => $kabObj ? $kabObj->id : null,
                     'address' => $alamat ?: null,

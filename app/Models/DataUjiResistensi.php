@@ -10,6 +10,7 @@ class DataUjiResistensi extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'no',
         'month',
         'year',
@@ -246,5 +247,10 @@ class DataUjiResistensi extends Model
     public function regency()
     {
         return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
