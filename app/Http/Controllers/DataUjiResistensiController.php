@@ -22,11 +22,14 @@ class DataUjiResistensiController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        // Pastikan kolom user_id tersedia di database hosting untuk mencegah error 500 / 1054 Unknown column
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+
         // Ambil daftar tahun dinamis dari database + rentang tahun sistem (2015 s.d sekarang)
         $tahunDbQuery = DataUjiResistensi::select('year')
             ->distinct()
             ->whereNotNull('year');
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $tahunDbQuery->where('user_id', Auth::id());
         }
         $tahunDb = $tahunDbQuery->pluck('year')
@@ -85,14 +88,14 @@ class DataUjiResistensiController extends Controller
             $tahun = 'Semua';
         }
 
-        $query = DataUjiResistensi::with([
-            'provinsi',
-            'kabupaten',
-            'user'
-        ]);
+        $relations = ['provinsi', 'kabupaten'];
+        if ($hasUserIdCol) {
+            $relations[] = 'user';
+        }
+        $query = DataUjiResistensi::with($relations);
 
-        // Scoping akses: Non-admin hanya dapat melihat datanya sendiri
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        // Scoping akses: Non-admin hanya dapat melihat datanya sendiri jika kolom user_id tersedia
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $query->where('user_id', Auth::id());
         }
 
@@ -143,7 +146,7 @@ class DataUjiResistensiController extends Controller
 
         // Data untuk statistik tahun berjalan / rentang tahun / semua tahun (disesuaikan hak akses)
         $baseStatQuery = DataUjiResistensi::query();
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $baseStatQuery->where('user_id', Auth::id());
         }
 
@@ -240,8 +243,7 @@ class DataUjiResistensiController extends Controller
                 ->where('year', $tahun)
                 ->count();
 
-            DataUjiResistensi::create([
-                'user_id' => Auth::id(),
+            $storeData = [
                 'no' => (string)($lastCount + 1),
                 'month' => $bulan,
                 'year' => $tahun,
@@ -257,7 +259,13 @@ class DataUjiResistensiController extends Controller
                 'status' => $validated['status'] ?? null,
                 'mutation' => $validated['mutasi'] ?? null,
                 'publication' => $validated['publikasi'] ?? null,
-            ]);
+            ];
+
+            if ($hasUserIdCol) {
+                $storeData['user_id'] = Auth::id();
+            }
+
+            DataUjiResistensi::create($storeData);
 
             // Auto-register parameter ke Master Data Kategori jika belum terdaftar
             KategoriUji::firstOrCreateCategory('nyamuk', $validated['jenis_nyamuk']);
@@ -301,8 +309,7 @@ class DataUjiResistensiController extends Controller
                     ->where('provinsi_id', $row['provinsi_id'])
                     ->firstOrFail();
 
-                DataUjiResistensi::create([
-                    'user_id' => Auth::id(),
+                $rowPayload = [
                     'no' => (string)($lastNo + $i),
                     'month' => $bulan,
                     'year' => $tahun,
@@ -318,7 +325,13 @@ class DataUjiResistensiController extends Controller
                     'status' => $row['status'] ?? null,
                     'mutation' => $row['mutasi'] ?? null,
                     'publication' => $row['publikasi'] ?? null,
-                ]);
+                ];
+
+                if (DataUjiResistensi::checkAndEnsureUserIdColumn()) {
+                    $rowPayload['user_id'] = Auth::id();
+                }
+
+                DataUjiResistensi::create($rowPayload);
 
                 // Auto-register parameter ke Master Data Kategori jika belum terdaftar
                 KategoriUji::firstOrCreateCategory('nyamuk', $row['jenis_nyamuk']);
@@ -341,7 +354,7 @@ class DataUjiResistensiController extends Controller
         $data = DataUjiResistensi::findOrFail($id);
 
         // Validasi kepemilikan data: Non-admin hanya boleh memperbarui datanya sendiri
-        if (Auth::check() && !Auth::user()->canSeeAllData() && $data->user_id && $data->user_id != Auth::id()) {
+        if (DataUjiResistensi::checkAndEnsureUserIdColumn() && Auth::check() && !Auth::user()->canSeeAllData() && !empty($data->user_id) && $data->user_id != Auth::id()) {
             return redirect()->back()->with('error', 'Akses Ditolak: Anda hanya memiliki izin mengedit data yang Anda inputkan sendiri.');
         }
 
@@ -518,7 +531,7 @@ class DataUjiResistensiController extends Controller
         $data = DataUjiResistensi::findOrFail($id);
 
         // Validasi kepemilikan data: Non-admin hanya boleh menghapus datanya sendiri
-        if (Auth::check() && !Auth::user()->canSeeAllData() && $data->user_id && $data->user_id != Auth::id()) {
+        if (DataUjiResistensi::checkAndEnsureUserIdColumn() && Auth::check() && !Auth::user()->canSeeAllData() && !empty($data->user_id) && $data->user_id != Auth::id()) {
             return redirect()->back()->with('error', 'Akses Ditolak: Anda hanya memiliki izin menghapus data yang Anda inputkan sendiri.');
         }
         $bulan = $data->bulan;

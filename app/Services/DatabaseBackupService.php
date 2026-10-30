@@ -148,7 +148,12 @@ class DatabaseBackupService
         $sqlFilename = "{$baseFilename}.sql";
         $sqlPath = $this->backupDir . DIRECTORY_SEPARATOR . $sqlFilename;
 
-        $rows = DB::table('data_uji_resistensis')->where('user_id', $userId)->get();
+        $hasUserIdCol = \App\Models\DataUjiResistensi::checkAndEnsureUserIdColumn();
+        $query = DB::table('data_uji_resistensis');
+        if ($hasUserIdCol) {
+            $query->where('user_id', $userId);
+        }
+        $rows = $query->get();
         $totalRows = $rows->count();
 
         $recordsJson = json_encode($rows->map(function ($r) {

@@ -65,10 +65,17 @@ class ExportImportController extends Controller
             $perPage = 25;
         }
 
-        $query = DataUjiResistensi::with(['provinsi', 'kabupaten', 'user'])->orderBy('id', 'desc');
+        // Pastikan kolom user_id tersedia di database hosting untuk mencegah error 500
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+
+        $relations = ['provinsi', 'kabupaten'];
+        if ($hasUserIdCol) {
+            $relations[] = 'user';
+        }
+        $query = DataUjiResistensi::with($relations)->orderBy('id', 'desc');
 
         // Scoping akses: Non-admin hanya dapat melihat & mengekspor data miliknya sendiri
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $query->where('user_id', Auth::id());
         }
 
@@ -111,7 +118,7 @@ class ExportImportController extends Controller
         $tahunDbQuery = DataUjiResistensi::select('year')
             ->distinct()
             ->whereNotNull('year');
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $tahunDbQuery->where('user_id', Auth::id());
         }
         $tahunDb = $tahunDbQuery->pluck('year')
@@ -128,7 +135,7 @@ class ExportImportController extends Controller
             ->whereNotNull('mosquito_type')
             ->where('mosquito_type', '!=', '')
             ->orderBy('mosquito_type');
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $nyamukDbQuery->where('user_id', Auth::id());
         }
         $nyamukDb = $nyamukDbQuery->pluck('mosquito_type')->toArray();
@@ -196,10 +203,11 @@ class ExportImportController extends Controller
         $nyamukFilter = $request->get('jenis_nyamuk', '');
         $provinsiFilter = $request->get('provinsi_id', '');
 
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
         $query = DataUjiResistensi::with(['provinsi', 'kabupaten'])->orderBy('id', 'asc');
 
         // Scoping akses: Non-admin hanya dapat mengunduh data miliknya sendiri
-        if (Auth::check() && !Auth::user()->canSeeAllData()) {
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
             $query->where('user_id', Auth::id());
         }
 
@@ -1390,8 +1398,7 @@ class ExportImportController extends Controller
                 // Simpan Data Uji Resistensi (prioritaskan provinsi asli kabupaten jika terhubung ke master data)
                 $finalProvId = ($kabObj && $kabObj->provinsi_id) ? $kabObj->provinsi_id : ($provObj ? $provObj->id : null);
 
-                DataUjiResistensi::create([
-                    'user_id' => Auth::id(),
+                $insertPayload = [
                     'provinsi_id' => $finalProvId,
                     'kabupaten_id' => $kabObj ? $kabObj->id : null,
                     'address' => $alamat ?: null,
@@ -1405,7 +1412,13 @@ class ExportImportController extends Controller
                     'month' => $bulan,
                     'year' => $tahun,
                     'no' => (string)($importedCount + 1)
-                ]);
+                ];
+
+                if (DataUjiResistensi::checkAndEnsureUserIdColumn()) {
+                    $insertPayload['user_id'] = Auth::id();
+                }
+
+                DataUjiResistensi::create($insertPayload);
 
                 // Auto-register parameter uji ke master kategori jika belum terdaftar
                 if (!empty($nyamuk)) KategoriUji::firstOrCreateCategory('nyamuk', $nyamuk);

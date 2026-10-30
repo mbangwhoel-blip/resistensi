@@ -253,4 +253,32 @@ class DataUjiResistensi extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    protected static ?bool $hasUserIdColumn = null;
+
+    /**
+     * Memastikan kolom user_id tersedia di tabel database data_uji_resistensis.
+     * Jika belum ada di hosting, otomatis dibuat secara on-the-fly untuk mencegah error 500 / 1054 Unknown column.
+     */
+    public static function checkAndEnsureUserIdColumn(): bool
+    {
+        if (static::$hasUserIdColumn === null) {
+            try {
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('data_uji_resistensis', 'user_id')) {
+                    \Illuminate\Support\Facades\Schema::table('data_uji_resistensis', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->unsignedBigInteger('user_id')->nullable()->after('id')->index();
+                    });
+                }
+                static::$hasUserIdColumn = true;
+            } catch (\Throwable $e) {
+                try {
+                    static::$hasUserIdColumn = \Illuminate\Support\Facades\Schema::hasColumn('data_uji_resistensis', 'user_id');
+                } catch (\Throwable $ex) {
+                    static::$hasUserIdColumn = false;
+                }
+            }
+        }
+
+        return (bool)static::$hasUserIdColumn;
+    }
 }

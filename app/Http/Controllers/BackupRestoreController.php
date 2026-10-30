@@ -75,14 +75,19 @@ class BackupRestoreController extends Controller
                 'db_driver' => 'MySQL 8.0 / MariaDB',
             ];
         } else {
+            $hasUserIdCol = \App\Models\DataUjiResistensi::checkAndEnsureUserIdColumn();
+            $dataUjiCount = $hasUserIdCol ? DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->count() : DB::table('data_uji_resistensis')->count();
+            $provCount = $hasUserIdCol ? DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->whereNotNull('provinsi_id')->distinct()->count('provinsi_id') : DB::table('provinsis')->count();
+            $kabCount = $hasUserIdCol ? DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id') : DB::table('kabupatens')->count();
+
             $stats = [
                 'is_admin' => false,
                 'user_name' => $currentUser->name,
                 'user_role' => $currentUser->role,
                 'user_identifier' => $userIdentifier,
-                'data_uji' => DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->count(),
-                'provinsi' => DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->whereNotNull('provinsi_id')->distinct()->count('provinsi_id'),
-                'kabupaten' => DB::table('data_uji_resistensis')->where('user_id', $currentUser->id)->whereNotNull('kabupaten_id')->distinct()->count('kabupaten_id'),
+                'data_uji' => $dataUjiCount,
+                'provinsi' => $provCount,
+                'kabupaten' => $kabCount,
                 'db_name' => config('database.connections.mysql.database', 'db_simpel'),
                 'db_driver' => 'MySQL 8.0 / MariaDB',
             ];
