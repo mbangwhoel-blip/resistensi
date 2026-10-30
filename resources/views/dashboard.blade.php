@@ -640,12 +640,13 @@
             color: #64748b !important;
         }
         html.dark button[onclick="resetAllFilters()"] {
-            background-color: #27272a !important;
-            border-color: #27272a !important;
-            color: #cbd5e1 !important;
+            background-color: rgba(13, 148, 136, 0.16) !important;
+            border: 1px solid rgba(13, 148, 136, 0.5) !important;
+            color: #2dd4bf !important;
         }
         html.dark button[onclick="resetAllFilters()"]:hover {
-            background-color: #27272a !important;
+            background-color: #0f766e !important;
+            border-color: #14b8a6 !important;
             color: #ffffff !important;
         }
         html.dark button[onclick="resetMapView()"] {
@@ -1071,20 +1072,20 @@
         /* ======================================================== */
         /* RESET FILTER & RESET PETA - AKSI CEPAT DENGAN WARNA JELAS*/
         /* ======================================================== */
-        /* Reset Filter (Amber Glow di Dark Mode) */
+        /* Reset Filter (Diselaraskan dengan Reset Peta / Tema Teal Kemenkes) */
         .btn-reset-filter {
-            background-color: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #b45309;
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
             transition: all 0.2s ease-in-out;
         }
         .btn-reset-filter svg {
-            color: #d97706;
+            color: #0d9488;
             transition: color 0.2s ease-in-out;
         }
         .btn-reset-filter:hover {
-            background-color: #f59e0b;
-            border-color: #f59e0b;
+            background-color: #0d9488;
+            border-color: #0d9488;
             color: #ffffff;
         }
         .btn-reset-filter:hover svg {
@@ -1092,17 +1093,17 @@
         }
 
         html.dark .btn-reset-filter {
-            background-color: rgba(245, 158, 11, 0.16) !important;
-            border: 1px solid rgba(245, 158, 11, 0.5) !important;
-            color: #fde047 !important;
-            box-shadow: 0 2px 8px -1px rgba(245, 158, 11, 0.25) !important;
+            background-color: rgba(13, 148, 136, 0.16) !important;
+            border: 1px solid rgba(13, 148, 136, 0.5) !important;
+            color: #2dd4bf !important;
+            box-shadow: 0 2px 8px -1px rgba(13, 148, 136, 0.25) !important;
         }
         html.dark .btn-reset-filter svg {
-            color: #fbbf24 !important;
+            color: #2dd4bf !important;
         }
         html.dark .btn-reset-filter:hover {
-            background-color: #d97706 !important;
-            border-color: #f59e0b !important;
+            background-color: #0f766e !important;
+            border-color: #14b8a6 !important;
             color: #ffffff !important;
         }
         html.dark .btn-reset-filter:hover svg {
@@ -2534,132 +2535,7 @@
             };
             infoControl.addTo(map);
 
-            // Legenda & Keterangan Lengkap Peta Resistensi (Standar Kemenkes RI / WHO)
-            const legendControl = L.control({ position: 'bottomleft' });
-            legendControl.onAdd = function (map) {
-                const container = L.DomUtil.create('div', 'map-legend-control select-none');
-                L.DomEvent.disableClickPropagation(container);
-                L.DomEvent.disableScrollPropagation(container);
-                container.id = 'mapLegendControl';
-
-                let isCollapsed = true;
-
-                function renderLegendContent() {
-                    if (isCollapsed) {
-                        container.classList.add('is-collapsed');
-                        container.innerHTML = `
-                            <button type="button" onclick="window.toggleMapLegend(event)" class="flex items-center gap-2 text-xs font-bold text-slate-800 hover:text-blue-600 transition cursor-pointer px-1 py-0.5" title="Buka Legenda & Keterangan Peta">
-                                <span class="flex h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse"></span>
-                                <span class="tracking-tight">📋 Legenda Peta</span>
-                                <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold border border-blue-200/60">Buka ▾</span>
-                            </button>
-                        `;
-                    } else {
-                        container.classList.remove('is-collapsed');
-                        container.innerHTML = `
-                            <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-slate-200/80">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="flex h-2.5 w-2.5 rounded-full bg-teal-500 ring-2 ring-teal-200"></span>
-                                    <div class="leading-tight">
-                                        <div class="font-extrabold text-slate-900 text-[11px]">Keterangan & Legenda Peta</div>
-                                        <div class="text-[9px] font-semibold text-slate-500">Standar Kemenkes RI • WHO</div>
-                                    </div>
-                                </div>
-                                <button type="button" onclick="window.toggleMapLegend(event)" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 px-1.5 py-0.5 rounded hover:bg-slate-100 transition cursor-pointer" title="Perkecil Keterangan">
-                                    − Perkecil
-                                </button>
-                            </div>
-
-                            {{-- SEKSI 1: STATUS POLIGON WILAYAH --}}
-                            <div class="mb-2">
-                                <div class="text-[9.5px] font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                    <span>🗺️</span>
-                                    <span>Status Wilayah (Warna Poligon):</span>
-                                </div>
-                                <div class="space-y-1 font-medium text-[10px]">
-                                    <div class="flex items-center justify-between gap-1.5">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="h-2.5 w-3.5 rounded-sm bg-rose-500 border border-rose-600 shrink-0 shadow-2xs"></span>
-                                            <span class="text-slate-800 font-semibold">Resisten</span>
-                                        </div>
-                                        <span class="text-[9px] text-rose-700 font-bold bg-rose-50 px-1 py-0.2 rounded border border-rose-200">Mortalitas &lt; 90%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1.5">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="h-2.5 w-3.5 rounded-sm bg-amber-500 border border-amber-600 shrink-0 shadow-2xs"></span>
-                                            <span class="text-slate-800 font-semibold">Toleran / Terduga</span>
-                                        </div>
-                                        <span class="text-[9px] text-amber-700 font-bold bg-amber-50 px-1 py-0.2 rounded border border-amber-200">Mortalitas 90 - 97%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1.5">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="h-2.5 w-3.5 rounded-sm bg-emerald-500 border border-emerald-600 shrink-0 shadow-2xs"></span>
-                                            <span class="text-slate-800 font-semibold">Rentan</span>
-                                        </div>
-                                        <span class="text-[9px] text-emerald-700 font-bold bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">Mortalitas ≥ 98%</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1.5">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="h-2.5 w-3.5 rounded-sm border border-indigo-400 shrink-0 shadow-2xs" style="background: linear-gradient(135deg, #EF4444 33%, #F59E0B 33%, #F59E0B 66%, #10B981 66%);"></span>
-                                            <span class="text-slate-800 font-semibold">Multi-Status</span>
-                                        </div>
-                                        <span class="text-[9px] text-indigo-700 font-bold bg-indigo-50 px-1 py-0.2 rounded border border-indigo-200">Variasi Uji</span>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-1.5 pt-0.5 border-t border-slate-100">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="h-2.5 w-3.5 rounded-sm bg-slate-50 border border-dashed border-slate-300 shrink-0"></span>
-                                            <span class="text-slate-400 text-[9.5px]">Belum Ada Data Uji</span>
-                                        </div>
-                                        <span class="text-[8.5px] text-slate-400 italic">Netral</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- SEKSI 2: ARTI PIN MARKER & INDIKATOR --}}
-                            <div class="pt-1.5 border-t border-slate-200/80">
-                                <div class="text-[9.5px] font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                    <span>📍</span>
-                                    <span>Arti Simbol & Pin Marker:</span>
-                                </div>
-                                <div class="space-y-1 text-[9.5px] text-slate-600">
-                                    <div class="flex items-start gap-1.5">
-                                        <span class="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-white border border-amber-500 font-bold text-[8.5px] text-slate-900 shrink-0 mt-0.5 shadow-2xs">8</span>
-                                        <div class="leading-tight">
-                                            <strong class="text-slate-800">Angka di Pin</strong>: Jumlah titik uji / pemeriksaan di kabupaten.
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-1.5">
-                                        <span class="inline-flex items-center px-1 py-0.2 rounded bg-slate-800 text-white font-mono text-[7.5px] shrink-0 mt-0.5">
-                                            <span class="h-1 w-1 rounded-full bg-emerald-400 mr-0.5"></span>
-                                            <span class="h-1 w-1 rounded-full bg-amber-400 mr-0.5"></span>
-                                            <span class="h-1 w-1 rounded-full bg-rose-500"></span>
-                                        </span>
-                                        <div class="leading-tight">
-                                            <strong class="text-slate-800">Lampu Indikator</strong>: Status terdeteksi (🟢 Rentan, 🟡 Toleran, 🔴 Resisten).
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-
-                window.toggleMapLegend = function (e) {
-                    if (e) L.DomEvent.stopPropagation(e);
-                    isCollapsed = !isCollapsed;
-                    renderLegendContent();
-                };
-
-                container.onclick = function (e) {
-                    if (isCollapsed) {
-                        window.toggleMapLegend(e);
-                    }
-                };
-
-                renderLegendContent();
-                return container;
-            };
-            legendControl.addTo(map);
+            // Legenda peta pada kanvas ditiadakan sesuai preferensi (penjelasan lengkap tetap tersedia di bawah peta)
 
             window.showKabupatenDetail = function (kabIdOrNorm, isPin = false) {
                 if (!isPin && isDetailPinned) return;

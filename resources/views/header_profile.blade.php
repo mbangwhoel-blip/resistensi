@@ -91,9 +91,9 @@
             }
         @endphp
 
-        {{-- AVATAR DENGAN INISIAL --}}
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr {{ $avatarGrad }} font-extrabold text-white text-sm shadow-xs ring-2">
-            {{ Auth::check() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '?' }}
+        {{-- AVATAR DENGAN LOGO KEMENKES --}}
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 p-1 shadow-xs ring-2 ring-slate-100 dark:ring-zinc-700 overflow-hidden">
+            <img src="{{ asset('kemenkes.png') }}" alt="Logo Kemenkes RI" class="h-full w-full object-contain">
         </div>
 
         {{-- NAMA, ROLE & TANGGAL (HARI DAN TANGGAL DI BAWAH TULISAN ADMINISTRATOR) --}}

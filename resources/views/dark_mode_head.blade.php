@@ -1283,20 +1283,20 @@
             color: #2dd4bf !important;
         }
 
-        /* 26. Reset Filter Button - Warna Jelas & Hangat (Amber) di Mode Gelap */
+        /* 26. Reset Filter Button - Diselaraskan dengan Reset Peta / Tema Teal Kemenkes */
         .btn-reset-filter {
-            background-color: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #b45309;
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
             transition: all 0.2s ease-in-out;
         }
         .btn-reset-filter svg {
-            color: #d97706;
+            color: #0d9488;
             transition: color 0.2s ease-in-out;
         }
         .btn-reset-filter:hover {
-            background-color: #f59e0b;
-            border-color: #f59e0b;
+            background-color: #0d9488;
+            border-color: #0d9488;
             color: #ffffff;
         }
         .btn-reset-filter:hover svg {
@@ -1304,17 +1304,17 @@
         }
 
         html.dark .btn-reset-filter {
-            background-color: rgba(245, 158, 11, 0.16) !important;
-            border: 1px solid rgba(245, 158, 11, 0.5) !important;
-            color: #fde047 !important;
-            box-shadow: 0 2px 8px -1px rgba(245, 158, 11, 0.25) !important;
+            background-color: rgba(13, 148, 136, 0.16) !important;
+            border: 1px solid rgba(13, 148, 136, 0.5) !important;
+            color: #2dd4bf !important;
+            box-shadow: 0 2px 8px -1px rgba(13, 148, 136, 0.25) !important;
         }
         html.dark .btn-reset-filter svg {
-            color: #fbbf24 !important;
+            color: #2dd4bf !important;
         }
         html.dark .btn-reset-filter:hover {
-            background-color: #d97706 !important;
-            border-color: #f59e0b !important;
+            background-color: #0f766e !important;
+            border-color: #14b8a6 !important;
             color: #ffffff !important;
         }
         html.dark .btn-reset-filter:hover svg {
