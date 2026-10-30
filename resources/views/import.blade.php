@@ -64,6 +64,10 @@
                 </div>
             @endif
 
+            @php
+                $currentUser = Auth::user();
+                $canSeeAll = $currentUser && method_exists($currentUser, 'canSeeAllData') && $currentUser->canSeeAllData();
+            @endphp
             {{-- STATISTIK DATA SAAT INI --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -72,7 +76,9 @@
                             📊
                         </div>
                         <div>
-                            <p class="text-xs text-slate-500 font-medium">Data Pemeriksaan Aktif</p>
+                            <p class="text-xs text-slate-500 font-medium">
+                                {{ $canSeeAll ? 'Data Pemeriksaan Aktif' : 'Data Pemeriksaan Milik Anda' }}
+                            </p>
                             <h3 class="text-xl font-bold text-slate-800">{{ number_format($totalData) }}</h3>
                         </div>
                     </div>

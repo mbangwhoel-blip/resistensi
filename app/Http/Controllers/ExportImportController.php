@@ -521,7 +521,12 @@ class ExportImportController extends Controller
             return redirect()->route('dashboard')->with('error', 'Akses Ditolak: Akun dengan role Viewer hanya memiliki izin melihat data (read-only).');
         }
 
-        $totalData = DataUjiResistensi::count();
+        $hasUserIdCol = DataUjiResistensi::checkAndEnsureUserIdColumn();
+        $dataQuery = DataUjiResistensi::query();
+        if ($hasUserIdCol && Auth::check() && !Auth::user()->canSeeAllData()) {
+            $dataQuery->where('user_id', Auth::id());
+        }
+        $totalData = $dataQuery->count();
         $totalProvinsi = Provinsi::count();
         $totalKabupaten = Kabupaten::count();
 
