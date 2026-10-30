@@ -126,23 +126,122 @@
         }
 
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 10mm 12mm 12mm 12mm;
+            }
             aside, header, #filterSection, #actionButtons, .no-print {
                 display: none !important;
             }
             main {
-                margin-left: 0 !important;
+                margin: 0 !important;
                 padding: 0 !important;
+                background: #ffffff !important;
+                width: 100% !important;
             }
             body {
-                background: white !important;
-                color: black !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+                font-size: 9.5pt;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .print-only {
                 display: block !important;
             }
+            /* Pastikan semua section tab tampil utuh saat dicetak */
+            .analisis-tab-section {
+                display: block !important;
+            }
+            #section-tren {
+                display: grid !important;
+                grid-template-columns: 2fr 1.15fr !important;
+                gap: 14px !important;
+                margin-bottom: 14px !important;
+            }
+            #section-vektor, #section-insek {
+                display: block !important;
+            }
             .chart-card {
-                break-inside: avoid;
-                page-break-inside: avoid;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 10px !important;
+                margin-bottom: 14px !important;
+                padding: 12px 14px !important;
+                background: #ffffff !important;
+            }
+            .chart-card .h-\[310px\],
+            .chart-card .h-\[330px\],
+            .chart-card .h-\[340px\],
+            .chart-card .h-\[350px\],
+            .chart-card .h-\[360px\],
+            .chart-card .h-\[380px\] {
+                height: 250px !important;
+            }
+            .chart-card canvas {
+                max-width: 100% !important;
+            }
+            /* KPI grid print */
+            .kpi-grid-container {
+                display: grid !important;
+                grid-template-columns: repeat(6, 1fr) !important;
+                gap: 6px !important;
+                margin-bottom: 14px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .kpi-grid-container a {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                padding: 8px 10px !important;
+                background: #f8fafc !important;
+                text-decoration: none !important;
+            }
+            .kpi-grid-container a .text-2xl {
+                font-size: 13pt !important;
+            }
+            /* Matriks tabel print */
+            .matriks-container {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                margin-bottom: 14px !important;
+                page-break-inside: auto !important;
+            }
+            .matriks-container table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            .matriks-container th, .matriks-container td {
+                padding: 6px 8px !important;
+                font-size: 8pt !important;
+                border-bottom: 1px solid #e2e8f0 !important;
+            }
+            .matriks-container thead {
+                display: table-header-group !important;
+            }
+            .matriks-container tr {
+                page-break-inside: avoid !important;
+            }
+            /* Kriteria Box print */
+            .kriteria-box {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                margin-bottom: 14px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            /* Signature print block */
+            .signature-print-block {
+                display: block !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin-top: 18px !important;
+                padding-top: 10px !important;
             }
         }
         .print-only {
@@ -190,11 +289,60 @@
         {{-- AREA ISI HALAMAN --}}
         <section class="p-6 lg:p-8 space-y-6 flex-1">
 
-            {{-- HEADER PRINT ONLY --}}
-            <div class="print-only mb-6 border-b-2 border-slate-800 pb-4 text-center">
-                <h2 class="text-xl font-black uppercase tracking-wider text-slate-900">KEMENTERIAN KESEHATAN RI • BBLKL</h2>
-                <h3 class="text-base font-bold text-slate-700">Laporan Analisis Grafik Uji Resistensi Insektisida Vektor</h3>
-                <p class="text-xs text-slate-500 mt-1">Dicetak pada: {{ now()->locale('id')->translatedFormat('d F Y, H:i') }} WIB</p>
+            {{-- HEADER RESMI STANDAR KEMENKES RI (PRINT ONLY) --}}
+            <div class="print-only mb-5">
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px;">
+                    <tr>
+                        <td style="width: 15%; text-align: left; vertical-align: middle;">
+                            @if(file_exists(public_path('kemenkes.png')))
+                                <img src="{{ asset('kemenkes.png') }}" alt="Logo Kemenkes" style="max-width: 90px; height: auto;">
+                            @endif
+                        </td>
+                        <td style="width: 70%; text-align: center; vertical-align: middle;">
+                            <div style="font-size: 9pt; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.5px;">KEMENTERIAN KESEHATAN REPUBLIK INDONESIA</div>
+                            <div style="font-size: 8pt; font-weight: 600; color: #475569; text-transform: uppercase;">DIREKTORAT JENDERAL KESEHATAN MASYARAKAT</div>
+                            <div style="font-size: 11pt; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0;">BALAI BESAR LABORATORIUM KESEHATAN LINGKUNGAN SALATIGA</div>
+                            <div style="font-size: 7pt; color: #64748b;">Jl. Hasanudin No. 123 Salatiga, Jawa Tengah 50721 • Telp/Fax: (0298) 327096 • Email: bblklsalatiga@kemkes.go.id</div>
+                        </td>
+                        <td style="width: 15%; text-align: right; vertical-align: middle;">
+                            @if(file_exists(public_path('logo_bblkl.png')))
+                                <img src="{{ asset('logo_bblkl.png') }}" alt="Logo BBLKL" style="max-width: 60px; height: auto; display: inline-block;">
+                            @endif
+                        </td>
+                    </tr>
+                </table>
+                <div style="border-bottom: 2.5px solid #0f172a; margin-top: 4px; margin-bottom: 1.5px;"></div>
+                <div style="border-bottom: 1px solid #0f172a; margin-bottom: 12px;"></div>
+
+                {{-- JUDUL DOKUMEN & METADATA FILTER --}}
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <h2 style="font-size: 11.5pt; font-weight: 800; text-transform: uppercase; color: #0f172a; letter-spacing: 0.5px; margin: 0;">
+                        Laporan Visualisasi Grafik Analisis Resistensi Insektisida Vektor
+                    </h2>
+                    <p style="font-size: 7.5pt; color: #64748b; margin-top: 2px;">
+                        PETA RESISTENSI • Sistem Informasi Surveilans Kerentanan Vektor Vektor Nyamuk Nasional
+                    </p>
+                </div>
+
+                {{-- TABEL METADATA FILTER AKTIF DOKUMEN CETAK --}}
+                <table style="width: 100%; border-collapse: collapse; font-size: 7.5pt; border: 1px solid #cbd5e1; margin-bottom: 12px; background: #f8fafc;">
+                    <tr>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; width: 14%; color: #334155;">Wilayah:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; width: 20%; color: #0f172a;">{{ $provinsiNama ?? 'Semua Provinsi' }}</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; width: 14%; color: #334155;">Periode Tahun:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; width: 20%; color: #0f172a;">{{ $tahunFilter }}</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; width: 14%; color: #334155;">Dicetak Pada:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; width: 18%; color: #0f172a;">{{ now()->locale('id')->translatedFormat('d M Y, H:i') }} WIB</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; color: #334155;">Jenis Nyamuk:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; color: #0f172a;">{{ $nyamukFilter }}</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; color: #334155;">Insektisida:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; color: #0f172a;">{{ $insektisidaFilter }}</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; font-weight: bold; color: #334155;">Operator Cetak:</td>
+                        <td style="padding: 4px 8px; border: 1px solid #cbd5e1; color: #0f172a;">{{ auth()->check() ? auth()->user()->name : 'Petugas' }}</td>
+                    </tr>
+                </table>
             </div>
 
             {{-- KARTU KPI / RINGKASAN STATISTIK (INTERAKTIF KE DATA LAPORAN) --}}
@@ -207,7 +355,7 @@
                     'insektisida'   => $insektisidaFilter !== 'Semua' ? $insektisidaFilter : null,
                 ]);
             @endphp
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 kpi-grid-container">
                 {{-- TOTAL PENGUJIAN --}}
                 <a href="{{ route('laporan.index', $cleanFilterParams) }}"
                    title="Buka seluruh catatan data uji terfilter di Halaman Laporan"
@@ -352,7 +500,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="window.print()" class="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white px-4 py-2 text-xs font-bold shadow-2xs active:scale-95 transition" title="Cetak visualisasi grafik laporan ke printer atau PDF">
+                        <button type="button" onclick="printAnalisisGrafik()" class="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white px-4 py-2 text-xs font-bold shadow-2xs active:scale-95 transition" title="Cetak visualisasi grafik laporan ke printer atau PDF">
                             <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
@@ -800,7 +948,7 @@
                 </div>
 
                 {{-- TABEL MATRIKS ANALISIS: EFEKTIVITAS INSEKTISIDA VS VEKTOR --}}
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+                <div class="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden matriks-container">
                     <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-white">
                     <div>
                         <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
@@ -909,7 +1057,7 @@
             </div>
 
             {{-- KOTAK KETERANGAN KRITERIA STATUS RESISTENSI STANDAR KEMENKES RI / WHO --}}
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs kriteria-box">
                 <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
                     <span class="flex h-2.5 w-2.5 rounded-full bg-blue-600 ring-2 ring-blue-100"></span>
                     <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
@@ -939,6 +1087,34 @@
                         <p class="text-[11px] text-slate-600 leading-relaxed">Populasi vektor rentan dan insektisida efektif untuk pengendalian vektor di wilayah tersebut.</p>
                     </div>
                 </div>
+            </div>
+
+            {{-- BLOK TANDA TANGAN RESMI PENGESAHAN (PRINT ONLY) --}}
+            <div class="print-only signature-print-block">
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr>
+                        <td style="width: 55%; vertical-align: top; font-size: 7.5pt; color: #475569; padding-right: 20px;">
+                            <div style="font-weight: bold; color: #0f172a; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Catatan Analisis Teknis:</div>
+                            <div style="line-height: 1.45;">• Visualisasi grafik diekstrak langsung dari pangkalan data sistem surveilans terpadu Balai Besar Laboratorium Kesehatan Lingkungan (BBLKL).</div>
+                            <div style="line-height: 1.45; margin-top: 2px;">• Kriteria status resistensi didasarkan pada pedoman standar Kemenkes RI dan World Health Organization (WHO).</div>
+                            <div style="line-height: 1.45; margin-top: 2px;">• Lembar laporan visualisasi ini sah untuk digunakan sebagai dasar penyusunan strategi pengendalian vektor dan intervensi insektisida daerah.</div>
+                        </td>
+                        <td style="width: 45%; text-align: center; vertical-align: top;">
+                            <div style="font-size: 8.5pt; color: #334155;">
+                                Salatiga, {{ now()->locale('id')->translatedFormat('d F Y') }}
+                            </div>
+                            <div style="font-size: 8.5pt; font-weight: 700; color: #0f172a; margin-top: 2px; margin-bottom: 50px;">
+                                Kepala Balai Besar Laboratorium Kesehatan Lingkungan,
+                            </div>
+                            <div style="font-size: 9pt; font-weight: 800; color: #0f172a; text-decoration: underline;">
+                                {{ $pimpinanInfo['nama'] ?? 'Akhmad Saikhu, SKM, M.SC.PH' }}
+                            </div>
+                            <div style="font-size: 8pt; color: #475569; margin-top: 1px;">
+                                NIP. {{ $pimpinanInfo['nip'] ?? '196805251992031004' }}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
         </section>
@@ -1533,6 +1709,20 @@
                     });
                 }
             }, 60);
+        };
+
+        // -------------------------------------------------------------
+        // FUNGSI CETAK GRAFIK DENGAN PRE-RESIZE KANVAS & KOP RESMI
+        // -------------------------------------------------------------
+        window.printAnalisisGrafik = function() {
+            // Tampilkan seluruh section grafik agar ikut tercetak utuh
+            if (typeof window.switchAnalisisTab === 'function') {
+                window.switchAnalisisTab('semua');
+            }
+            // Berikan jeda sejenak agar Chart.js merender ulang kanvas dengan resolusi penuh
+            setTimeout(() => {
+                window.print();
+            }, 120);
         };
 
         // Sinkronisasi Grafik saat Ganti Mode Gelap / Terang

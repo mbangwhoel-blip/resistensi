@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Provinsi;
 use App\Models\Kabupaten;
 use App\Models\DataUjiResistensi;
+use App\Models\User;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -283,6 +285,13 @@ class AnalisisController extends Controller
                 return $item;
             });
 
+        $provinsiNama = 'Semua Provinsi';
+        if ($provinsiFilter !== 'Semua') {
+            $p = $provinsis->firstWhere('id', $provinsiFilter);
+            if ($p) $provinsiNama = $p->name;
+        }
+        $pimpinanInfo = $this->getPimpinanInfo();
+
         return view('analisis', compact(
             'provinsis',
             'daftarTahun',
@@ -295,6 +304,8 @@ class AnalisisController extends Controller
             'nyamukFilter',
             'insektisidaFilter',
             'provinsiFilter',
+            'provinsiNama',
+            'pimpinanInfo',
             'totalPemeriksaan',
             'totalSampel',
             'totalResisten',
@@ -325,5 +336,40 @@ class AnalisisController extends Controller
             'chartMetodeData',
             'matriksAnalisis'
         ));
+    }
+
+    /**
+     * Ambil identitas Kepala / Pimpinan BBLKL untuk pengesahan tanda tangan
+     */
+    private function getPimpinanInfo(): array
+    {
+        $pimpinanUser = null;
+        if (auth()->check() && (method_exists(auth()->user(), 'isKepala') ? auth()->user()->isKepala() : in_array(strtolower(auth()->user()->role ?? ''), ['kepala', 'pimpinan']))) {
+            $pimpinanUser = auth()->user();
+        }
+        if (!$pimpinanUser) {
+            $pimpinanUser = User::whereIn('role', ['kepala', 'pimpinan', 'kepala_balai', 'kepala_bblkl', 'pimpinan_bblkl'])->first();
+        }
+
+        $nama = $pimpinanUser?->name;
+        $nip = $pimpinanUser?->telepon ?? ($pimpinanUser?->phone ?? null);
+
+        if (!$nama) {
+            $bblkl = Instansi::where('unit_code', 'BBLKL-01')->orWhere('name', 'like', '%BBLKL%')->first();
+            $nama = !empty($bblkl?->person_in_charge) && $bblkl->person_in_charge !== 'Kepala Balai BBLKL'
+                ? $bblkl->person_in_charge
+                : 'Akhmad Saikhu, SKM, M.SC.PH';
+            $nip = '196805251992031004';
+        }
+
+        if (empty($nip)) {
+            $nip = '196805251992031004';
+        }
+
+        return [
+            'nama' => $nama,
+            'nip'  => $nip,
+            'jabatan' => 'Kepala Balai Besar Laboratorium Kesehatan Lingkungan'
+        ];
     }
 }
